@@ -19,7 +19,7 @@ const history = ref<string[]>([])
 
 let websocketUrl = ''
 if (typeof window !== 'undefined' && window.location) {
-  websocketUrl = `ws://${window.location.host}/api/websocket?room=ti1`
+  websocketUrl = `ws://${window.location.host}/api/websocket?room=ti5`
 }
 
 const { status, data, send, open, close } = useWebSocket(websocketUrl)

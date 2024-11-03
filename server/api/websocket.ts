@@ -1,8 +1,17 @@
-const room = 'ROOM'
+function dynamicRoom(peer: any): string {
+  try{
+  const roomId = peer.request.url.split('?')[1];
+  const params = new URLSearchParams(roomId).get('room')
+  return params ? params.toString (): "defaultRoom";
+  }catch(e){
+    return "defaultRoom"
+  }
+}
 export default defineWebSocketHandler({
   open(peer){
-    peer.subscribe(room)
-    peer.publish(room, 'Another user joined')
+    peer.subscribe(dynamicRoom(peer))
+    peer.publish(dynamicRoom(peer), 'Another user joined')
+    console.log("room number: ", dynamicRoom(peer))
   },
   close(peer){
     peer.publish('user disconected', peer)
@@ -11,7 +20,6 @@ export default defineWebSocketHandler({
     console.log('Error on websocket ',peer,error)
   },
   message(peer, message){
-    console.log('log on peer message ',peer, message)
-    peer.publish(room, message.text())
+    peer.publish(dynamicRoom(peer), message.text())
   }
 })
