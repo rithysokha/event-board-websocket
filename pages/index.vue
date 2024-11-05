@@ -1,40 +1,19 @@
-<template>
-  <div>
-    <form @submit.prevent="sendData">
-      <input v-model="message" placeholder="message">
-      <button type="submit">send</button>
-    </form>
-    <div>
-      <p v-for="entry in history" :key="entry">{{ entry }}</p>
-    </div>
-  </div>
-</template>
+<script setup lang="ts">
 
-<script lang="ts" setup>
-import { ref, watch } from 'vue'
-import { useWebSocket } from '@vueuse/core'
-
-const message = ref('')
-const history = ref<string[]>([])
-
-let websocketUrl = ''
-if (typeof window !== 'undefined' && window.location) {
-  websocketUrl = `ws://${window.location.host}/api/websocket?room=ti1`
-}
-
-const { status, data, send, open, close } = useWebSocket(websocketUrl)
-
-watch(data, (newValue) => {
-  history.value.push(`server: ${newValue}`)
-})
-
-function sendData() {
-  history.value.push(`client: ${message.value}`)
-  send(message.value)
-  message.value = ''
-}
 </script>
 
-<style>
-/* Add your styles here */
-</style>
+<template>
+  <UContainer class="flex w-full justify-end gap-1">
+    <UButton @Click="navigateTo('/auth/login')">Login</UButton>
+    <UButton @Click="navigateTo('/auth/sign_up')">Sign up</UButton>
+  </UContainer>
+  <UContainer class="w-full flex flex-col items-center ">
+    <p class="text-2xl">A virtual board to hype up your event while waiting</p>
+    <UButton @Click="navigateTo('/auth/sign_up')">Sign up for free</UButton>
+  </UContainer>
+  <UContainer>
+    <p>We have event board</p>
+    <Carousel/>
+  </UContainer>
+</template>
+
