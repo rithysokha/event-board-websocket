@@ -1,6 +1,6 @@
 <template>
   <div>
-    hello ffrom home
+    
   </div>
 </template>
 

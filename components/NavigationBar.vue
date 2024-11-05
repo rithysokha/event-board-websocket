@@ -1,26 +1,45 @@
 <script setup lang="ts">
+const isOpen = ref(false)
+const joinUrl = ref('')
 const links = [
   [{
-    label: 'Dashboard',
+    label: 'Home',
     icon: 'i-heroicons-home',
     to: '/dashboard/home'
-  }, {
-    label: 'Make',
-    icon: 'i-heroicons-chart-bar',
-    to: '/dashboard/make'
-  }, {
+  },
+  {
     label: 'Join',
+    icon: 'i-heroicons-home',
+    click: () => isOpen.value=true
+  },
+  {
+    label: 'Make',
     icon: 'i-heroicons-command-line',
-    to: '/dashboard/join'
+    to: '/dashboard/make'
   }], [{
     label: 'Profile',
-    icon: 'i-heroicons-light-bulb',
+    icon: 'i-heroicons-command-line',
     to: '/auth/profile'
   }]
 ]
+const handleJoin = () =>{
+  console.log("Join clicked")
+}
 </script>
 
 <template>
   <UHorizontalNavigation :links="links" class="border-b border-gray-200 dark:border-gray-800" />
+  <div>
+    <UModal v-model="isOpen">
+      <div class="p-4">
+        <p>Please Enter URL</p>
+        <UInput color="primary" variant="outline" v-model="joinUrl" placeholder="Link..." />
+        <div class="flex gap-3">
+          <UButton @click="isOpen = false">Cancel</UButton>
+          <UButton @click="handleJoin">Submit</UButton>
+        </div>
+      </div>
+    </UModal>
+  </div>
 </template>
 
