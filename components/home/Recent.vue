@@ -15,21 +15,6 @@ const items = [
     "id":3,
     "picture_url":"",
     "title":"Title"
-  },
-  {
-    "id":4,
-    "picture_url":"",
-    "title":"My title"
-  },
-  {
-    "id":5,
-    "picture_url":"",
-    "title":"Title"
-  },
-  {
-    "id":6,
-    "picture_url":"",
-    "title":"Title"
   }
 ]
 
