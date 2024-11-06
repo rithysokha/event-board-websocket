@@ -19,7 +19,7 @@ const links = [
   }], [{
     label: 'Profile',
     icon: 'i-heroicons-command-line',
-    to: '/auth/profile'
+    to: '/profile'
   }]
 ]
 const handleJoin = () =>{

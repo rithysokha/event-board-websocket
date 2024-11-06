@@ -6,5 +6,6 @@ export default defineNuxtConfig({
     experimental:{
       websocket:true
     }
-  }
+  },
+  components: true
 })

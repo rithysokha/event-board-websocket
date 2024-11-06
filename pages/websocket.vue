@@ -34,7 +34,3 @@ function sendData() {
   message.value = ''
 }
 </script>
-
-<style>
-/* Add your styles here */
-</style>
