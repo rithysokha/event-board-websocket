@@ -1,10 +1,10 @@
 <template>
-  <div>
-    
-  </div>
+  <SideTab/>
 </template>
 
 <script lang="ts" setup>
+import SideTab from '~/components/SideTab.vue';
+
 
 </script>
 
