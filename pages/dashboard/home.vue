@@ -4,7 +4,7 @@ const  MadeByMe =defineAsyncComponent(() =>import ('~/components/home/MadeByMe.v
 const Trashed =defineAsyncComponent(()=> import('~/components/home/Trashed.vue'))
 const Favorite =defineAsyncComponent(()=> import('~/components/home/Favorite.vue'))
 
-const items = ref([
+const items = [
   {
     key: 'recent',
     label: 'Recents',
@@ -25,7 +25,7 @@ const items = ref([
     label: 'Favorite',
     component: Favorite
   }
-]);
+];
 </script>
 
 <template>

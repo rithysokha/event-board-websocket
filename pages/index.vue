@@ -13,7 +13,7 @@
   </UContainer>
   <UContainer>
     <p>We have event board</p>
-    <Carousel/>
+    <LazyCarousel/>
   </UContainer>
 </template>
 

@@ -22,4 +22,3 @@ const items = [
 <template>
 <HomeItemList :items="items"/>
 </template>
-
