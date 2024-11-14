@@ -1,31 +1,30 @@
 <script setup lang="ts">
-import { Icon } from '#build/components';
 
 const isOpen = ref(false)
 const joinUrl = ref('')
 const links = [
   [{
-    label:'',
+    label:'Home',
     icon: 'i-heroicons-home',
     to: '/dashboard/home'
   },
   {
-    label:'',
+    label:'Gallery',
     icon: 'i-heroicons-photo',
     to: '/dashboard/make'
   },
   {
-    label:'',
+    label:'Make',
     icon: 'i-heroicons-plus-circle',
     to: '/dashboard/make'
   },
   {
-    label:'',
+    label:'Join',
     icon: 'i-heroicons-link',
     click: () => isOpen.value=true
   },
   {
-    label:'',
+    label:'Profile',
     icon: 'i-heroicons-user-circle',
     to: '/profile'
   }
@@ -37,7 +36,7 @@ const handleJoin = () =>{
 </script>
 
 <template>
-  <UHorizontalNavigation :links="links" :ui="{'icon': {'base': 'w-6 h-6 mx-4'}}" class="flex justify-center border-b border-gray-200 dark:border-gray-800" />
+  <UHorizontalNavigation :links="links" :ui="{'icon': {'base': 'w-6 h-6'},'container':'flex gap-6', 'base': 'flex flex-col gap-0 my-0 py-1 text-xs'}" class="flex justify-center border-b border-gray-200 dark:border-gray-800" />
   <div>
     <UModal v-model="isOpen">
       <div class="p-4">
