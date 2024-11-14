@@ -8,17 +8,22 @@ const links = [
     to: '/dashboard/home'
   },
   {
+    label: 'Gallery',
+    icon: 'i-heroicons-photo',
+    to: '/dashboard/make'
+  },
+  {
     label: 'Join',
-    icon: 'i-heroicons-home',
+    icon: 'i-heroicons-link',
     click: () => isOpen.value=true
   },
   {
     label: 'Make',
-    icon: 'i-heroicons-command-line',
+    icon: 'i-heroicons-plus-circle',
     to: '/dashboard/make'
   }], [{
     label: 'Profile',
-    icon: 'i-heroicons-command-line',
+    icon: 'i-heroicons-user-circle',
     to: '/profile'
   }]
 ]

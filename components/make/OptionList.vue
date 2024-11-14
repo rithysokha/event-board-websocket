@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  items: Array<{ label: string, imgUrl: string, to: string }>
+  items: Array<{ label: string,description: string, imgUrl: string, to: string }>
 }>();
 </script>
 

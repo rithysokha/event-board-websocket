@@ -1,16 +1,14 @@
 <script lang="ts" setup>
-import { Link } from '#build/components';
 
 const props = defineProps<{
-  item: { label: string, imgUrl: string, to: string }
+  item: { label: string, description: string ,imgUrl: string, to: string }
 }>();
 
 </script>
 <template>
-  <UCard>
-    <img class="max-w-10 " :src="item.imgUrl" alt="img"/>
-    <template #footer>
-      <p>{{ item.label}} </p>
-    </template>
+  <UCard :ui="{ shadow:'' }" class="px-2">
+    <img class="max-w-full rounded-2xl my-2" :src="item.imgUrl" alt="img"/>
+    <p class="font-bold">{{ item.label }} </p>
+    <p class="text-sm">{{ item.description }} </p>
   </UCard>
 </template>
