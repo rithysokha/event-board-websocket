@@ -1,9 +1,9 @@
 <template>
-  <UContainer class="flex">
-    <UCard v-for="item in items" :key="item.id" class="">
+  <UContainer >
+    <UCard v-for="item in items" :key="item.id">
       <Placeholder class="h-32" />
       <template #footer>
-        <p>{{item.title}}</p>
+        <p class="">{{item.title}}</p>
       </template>
     </UCard>
   </UContainer>

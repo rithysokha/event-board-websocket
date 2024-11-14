@@ -12,7 +12,7 @@ const items = [
   },
   {
     key: 'madeByMe',
-    label: 'Made by me',
+    label: 'Mine',
     component: MadeByMe
   },
   {

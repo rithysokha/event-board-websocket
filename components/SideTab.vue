@@ -5,7 +5,7 @@ const props = defineProps<{
 </script>
 
 <template>
-      <UTabs :items="props.items" class="w-full" :orientation="$device.isMobile?'horizontal': 'vertical'" :ui="{ wrapper: 'flex items-center gap-4', list: { width: 'w-48' } }">
+      <UTabs :items="props.items" class="w-full" :orientation="$device.isMobile?'horizontal': 'vertical'" :ui="$device.isAndroid?{ wrapper: 'flex flex-col items-center gap-4', list: { width: 'w-full' } }: { wrapper: 'flex items-center gap-4', list: { width: 'w-48' } }">
         <template #item="{ item }">
           <div :class="item.key">
             <component :is="item.component" />
