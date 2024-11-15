@@ -2,7 +2,7 @@
   <NavigationBar v-if="!$device.isMobile && !hideAppMenu"/>
   <NuxtRouteAnnouncer />
   <NuxtPage />
-  <div class=" bottom-0 fixed w-full" v-if="$device.isMobile && !hideAppMenu"">
+  <div class=" bottom-0 fixed w-full" v-if="$device.isMobile && !hideAppMenu">
     <NavigationMobile />
   </div>
 </template>

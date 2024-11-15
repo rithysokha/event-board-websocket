@@ -11,7 +11,7 @@ const links = [
   {
     label:'Gallery',
     icon: 'i-heroicons-photo',
-    to: '/dashboard/make'
+    to: '/dashboard/gallery'
   },
   {
     label:'Make',
@@ -39,13 +39,10 @@ const handleJoin = () =>{
   <UHorizontalNavigation :links="links" :ui="{'icon': {'base': 'w-6 h-6'},'container':'flex gap-6', 'base': 'flex flex-col gap-0 my-0 py-1 text-xs'}" class="flex justify-center border-b border-gray-200 dark:border-gray-800" />
   <div>
     <UModal v-model="isOpen">
-      <div class="p-4">
+      <div class="p-4 flex flex-col gap-2">
         <p>Please Enter URL</p>
         <UInput color="primary" variant="outline" v-model="joinUrl" placeholder="Link..." />
-        <div class="flex gap-3">
-          <UButton @click="isOpen = false">Cancel</UButton>
-          <UButton @click="handleJoin">Submit</UButton>
-        </div>
+          <UButton block @click="handleJoin">Submit</UButton>
       </div>
     </UModal>
   </div>

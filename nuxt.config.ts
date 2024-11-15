@@ -6,6 +6,6 @@ export default defineNuxtConfig({
       websocket:true
     }
   },
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   components: true
 })

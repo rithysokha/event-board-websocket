@@ -10,7 +10,7 @@ const links = [
   {
     label: 'Gallery',
     icon: 'i-heroicons-photo',
-    to: '/dashboard/make'
+    to: '/dashboard/gallery'
   },
   {
     label: 'Join',
@@ -39,10 +39,7 @@ const handleJoin = () =>{
       <div class="p-4">
         <p>Please Enter URL</p>
         <UInput color="primary" variant="outline" v-model="joinUrl" placeholder="Link..." />
-        <div class="flex gap-3">
-          <UButton @click="isOpen = false">Cancel</UButton>
-          <UButton @click="handleJoin">Submit</UButton>
-        </div>
+        <UButton block @click="handleJoin">Submit</UButton>
       </div>
     </UModal>
   </div>

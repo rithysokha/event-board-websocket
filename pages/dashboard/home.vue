@@ -29,5 +29,5 @@ const items = [
 </script>
 
 <template>
-  <LazySideTab :items="items" />
+  <SideTab :items="items" />
 </template>

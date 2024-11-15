@@ -20,5 +20,5 @@ const items = [
 
 </script>
 <template>
-<LazyHomeItemList :items="items"/>
+<LazyItemList :items="items"/>
 </template>
