@@ -1,10 +1,9 @@
 <template>
-  <NavigationBar v-if="!$device.isMobile && !hideAppMenu"/>
+  <div :class="$device.isMobile?'bottom-0 fixed w-full': ''" v-if="!hideAppMenu">
+    <NavigationBar/>
+  </div>
   <NuxtRouteAnnouncer />
   <NuxtPage />
-  <div class=" bottom-0 fixed w-full" v-if="$device.isMobile && !hideAppMenu">
-    <NavigationMobile />
-  </div>
 </template>
 <script setup lang="ts">
 const route = useRoute();
