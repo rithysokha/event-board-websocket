@@ -1,5 +1,5 @@
 <template>
-  <div :class="$device.isMobile?'bottom-0 fixed w-full': ''" v-if="!hideAppMenu">
+  <div :class="$device.isMobile&&'bottom-0 fixed w-full'" v-if="!hideAppMenu">
     <NavigationBar/>
   </div>
   <NuxtRouteAnnouncer />
