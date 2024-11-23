@@ -1,8 +1,8 @@
 <template>
   <UContainer>
-    <div class="flex flex-wrap">
-      <UCard v-for="item in items" :key="item.name" :ui="{body:{padding:'p-2 sm:p-2'}}" class="w-full sm:w-[30%] lg:w-[22.5%] m-2">
-        <div class="flex justify-between sm:w-full sm:h-32 lg:h-40 sm:flex-col sm:items-center">
+    <div class="grid gap-2 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <UCard v-for="item in items" :key="item.name" class="w-full">
+        <div class="flex justify-between  sm:w-full sm:h-28 lg:h-30 sm:flex-col sm:items-center">
           <div class="w-10 rounded-md sm:w-full sm:h-full" :class="'bg-'+item.cover"></div>
           <p>{{item.name}}</p>
         </div>
