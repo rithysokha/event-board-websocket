@@ -1,23 +1,11 @@
-<template>
-  <ItemList :items="items"/>
-</template>
+<script setup lang="ts">
+const items = ref()
+const { data } = await useFetch('/api/board/user2345678q9wetrng')
+console.log("data: ",data.value)
+items.value =data.value
+console.log("items: ", items.value)
 
-<script lang="ts" setup>
-const items = [
-  {
-    "id":1,
-    "picture_url":"",
-    "title":"Title"
-  },
-  {
-    "id":2,
-    "picture_url":"",
-    "title":"Title"
-  },
-  {
-    "id":3,
-    "picture_url":"",
-    "title":"Title"
-  }
-]
 </script>
+<template>
+<LazyItemList :items="items"/>
+</template>

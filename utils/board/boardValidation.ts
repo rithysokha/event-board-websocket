@@ -5,11 +5,14 @@ export const boardSchema = Joi.object({
   description: Joi.string().max(100),
   belongsTo: Joi.string().max(200).default('defaultuser'), //change this when auth finish
   wallpaper: Joi.string().default('white'),
+  cover: Joi.string().default('white'),
   format: Joi.string().default('wall'),
   colorScheme: Joi.string().default('Light'),
   font: Joi.string().default('manrope'),
   sort: Joi.string().default('desc'),
   comment: Joi.boolean().default(true),
   reaction: Joi.string().default('like'),
-  moderation: Joi.boolean().default(false)
+  moderation: Joi.boolean().default(false),
+  createdAt: Joi.date().timestamp('javascript').default(() => new Date()),
+  updatedAt: Joi.date().timestamp('javascript').default(null)
 });

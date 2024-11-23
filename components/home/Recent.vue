@@ -1,22 +1,9 @@
 <script setup lang="ts">
-
-const items = [
-  {
-    "id":1,
-    "picture_url":"",
-    "title":"My title"
-  },
-  {
-    "id":2,
-    "picture_url":"",
-    "title":"Title"
-  },
-  {
-    "id":3,
-    "picture_url":"",
-    "title":"Title"
-  }
-]
+const items = ref()
+const { data } = await useFetch('/api/board/user2345678q9wetrng')
+console.log("data: ",data.value)
+items.value =data.value
+console.log("items: ", items.value)
 
 </script>
 <template>
