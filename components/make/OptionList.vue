@@ -3,8 +3,9 @@ const props = defineProps<{
   items: Array<{ label: string, description: string, imgUrl: string, to: string }>
 }>();
 const postBody = {
-  name: "Testing board from UI",
-  belongsTo: "me"
+  name: "my test board",
+  belongsTo: "user2345678q9wetrng",
+  cover: "blue-500"
 }
 
 const createBoard = async () => {
@@ -18,7 +19,8 @@ const createBoard = async () => {
     });
     console.log("Board created")
     const data = await response.json();
-    //navigateTo('/dashboard/home') //change this to dynamic route ### data.insertedId
+    console.log("ID", data.insertedId)
+    navigateTo('/board') //change this to dynamic route ### data.insertedId
   } catch (error) {
     console.error('Error creating board:', error);
   }
