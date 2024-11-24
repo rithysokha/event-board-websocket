@@ -16,6 +16,7 @@ const createBoard = async () => {
       },
       body: JSON.stringify(postBody)
     });
+    console.log("Board created")
     const data = await response.json();
     //navigateTo('/dashboard/home') //change this to dynamic route ### data.insertedId
   } catch (error) {

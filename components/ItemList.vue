@@ -4,7 +4,7 @@
       <UCard v-for="item in items" :key="item.name" class="w-full">
         <div class="flex justify-between  sm:w-full sm:h-28 lg:h-30 sm:flex-col sm:items-center">
           <div class="w-10 rounded-md sm:w-full sm:h-full" :class="'bg-'+item.cover"></div>
-          <p>{{item.name}}</p>
+          <p class="w-full text-end sm:text-center">{{item.name}}</p>
         </div>
       </UCard>
     </div>
