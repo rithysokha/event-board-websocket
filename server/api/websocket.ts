@@ -10,11 +10,6 @@ function dynamicRoom(peer: any): string {
 export default defineWebSocketHandler({
   open(peer){
     peer.subscribe(dynamicRoom(peer))
-    peer.publish(dynamicRoom(peer), 'Another user joined')
-    console.log("room number: ", dynamicRoom(peer))
-  },
-  close(peer){
-    peer.publish('user disconected', peer)
   },
   error(peer, error){
     console.log('Error on websocket ',peer,error)
