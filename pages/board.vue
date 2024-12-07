@@ -11,21 +11,23 @@ const postBody = ref({
   description: '',
   boardId: ''
 })
+
 const route = useRoute();
 const boardId = route.query.boardId;
+
 if (!boardId || typeof boardId !== 'string') {
   throw new Error('Board ID is required and must be a string');
 }
 const { data: boardData } = await useFetch(`/api/board?boardId=${boardId}`);
 header.value = boardData.value.name
-bgColor.value= boardData.value.background
+bgColor.value = boardData.value.background
 let websocketUrl = ''
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl = `ws://${window.location.host}/api/websocket?room=${boardId}`
 }
 const { status, data, send, open, close } = useWebSocket(websocketUrl)
 watch(data, (newValue) => {
-  history.value.push(`server: ${newValue}`)
+  history.value.push(`${newValue}`)
 })
 
 const fetchMessageHistory = async () => {
@@ -39,14 +41,10 @@ const fetchMessageHistory = async () => {
 };
 
 
-onMounted(() => {
-  fetchMessageHistory();
-});
-
 const savePostToDB = async () => {
   try {
     postBody.value.boardId = boardId
-    postBody.value.description='this is default description'
+    postBody.value.description = 'this is default description'
     await fetch('api/board/post', {
       method: 'POST',
       headers: {
@@ -58,22 +56,28 @@ const savePostToDB = async () => {
     console.error('Error creating board:', error);
   }
 };
-const sendData = ()=> {
-  history.value.push(`client: ${postBody.value.title}`)
+
+const sendData = () => {
+  history.value.push(`${postBody.value.title}`)
   send(postBody.value.title);
   savePostToDB();
   postBody.value.title = ''
 }
+
+onMounted(() => {
+  fetchMessageHistory();
+});
 </script>
 
 <template>
-  <UButton @click="isOpenPost=true" label="New Post" class="fixed z-50 bottom-2 right-2"/>
-  <div class="w-full h-screen" :class="'bg-'+bgColor">
+  <UButton @click="isOpenPost = true" label="New Post" class="fixed z-50 bottom-2 right-2" />
+  <div class="w-full h-screen" :class="'bg-' + bgColor">
     <h1 @click="isOpen = true" class=" cursor-default ">
       {{ header }}x
     </h1>
-    <div class=" mx-2 grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-      <UCard  v-for="entry in history" :key="entry">
+    <div
+      class=" mx-2 grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+      <UCard v-for="entry in history" :key="entry">
         <template #header>
           <p>uesr acc and pf</p>
         </template>
@@ -85,20 +89,17 @@ const sendData = ()=> {
     </div>
   </div>
   <div>
+    <!-- this part can devide into component -->
     <UModal v-model="isOpenPost">
       <div class="p-4 flex flex-col gap-2">
         <p>Please Enter Message</p>
-        <UInput v-model="postBody.title"/>
+        <UInput v-model="postBody.title" />
         <UButton block type="submit" @click="sendData">Submit</UButton>
       </div>
     </UModal>
     <USlideover v-model="isOpen">
       <div class="p-4 flex-1">
-        <UButton
-          color="gray"
-          variant="ghost"
-          size="sm"
-        />
+        <UButton color="gray" variant="ghost" size="sm" />
       </div>
     </USlideover>
   </div>
