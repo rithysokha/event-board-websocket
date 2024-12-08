@@ -5,7 +5,7 @@ const isOpen = ref(false)
 const isOpenPost = ref(false)
 const header = ref("")
 const bgColor = ref("")
-const history = ref<string[]>([])
+const history = ref<{ title: string, description: string}[]>([]);
 const postBody = ref({
   title: '',
   description: '',
@@ -26,15 +26,27 @@ if (typeof window !== 'undefined' && window.location) {
   websocketUrl = `ws://${window.location.host}/api/websocket?room=${boardId}`
 }
 const { status, data, send, open, close } = useWebSocket(websocketUrl)
+
 watch(data, (newValue) => {
-  history.value.push(`${newValue}`)
-})
+  try {
+    const message = JSON.parse(newValue);
+    history.value.push({
+      title: message.title,
+      description: message.description
+    });
+  } catch (error) {
+    console.error('Error parsing WebSocket message:', error);
+  }
+});
 
 const fetchMessageHistory = async () => {
   try {
     const response = await fetch(`/api/board/post?boardId=${boardId}`);
-    const post = await response.json();
-    history.value = post.map((post: { title: string }) => post.title);
+    const messages = await response.json();
+    history.value = messages.map((message: { title: string, description: string}) => ({
+      title: message.title,
+      description: message.description
+    }));
   } catch (error) {
     console.error('Error fetching message history:', error);
   }
@@ -44,7 +56,6 @@ const fetchMessageHistory = async () => {
 const savePostToDB = async () => {
   try {
     postBody.value.boardId = boardId
-    postBody.value.description = 'this is default description'
     await fetch('api/board/post', {
       method: 'POST',
       headers: {
@@ -58,10 +69,16 @@ const savePostToDB = async () => {
 };
 
 const sendData = () => {
-  history.value.push(`${postBody.value.title}`)
-  send(postBody.value.title);
+  const message = {
+    title: postBody.value.title,
+    description: postBody.value.description
+  };
+
+  history.value.push(message);
+  send(JSON.stringify(message));
   savePostToDB();
-  postBody.value.title = ''
+  postBody.value.title = '';
+  postBody.value.description = '';
 }
 
 onMounted(() => {
@@ -77,11 +94,12 @@ onMounted(() => {
     </h1>
     <div
       class=" mx-2 grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-      <UCard v-for="entry in history" :key="entry">
+      <UCard v-for="entry in history" :key="entry.title">
         <template #header>
           <p>uesr acc and pf</p>
         </template>
-        <p>{{ entry }}</p>
+        <p>{{ entry.title }}</p>
+        <p>{{ entry.description }}</p>
         <template #footer>
           <p>comment and likes</p>
         </template>
@@ -94,6 +112,7 @@ onMounted(() => {
       <div class="p-4 flex flex-col gap-2">
         <p>Please Enter Message</p>
         <UInput v-model="postBody.title" />
+        <UInput v-model="postBody.description"/>
         <UButton block type="submit" @click="sendData">Submit</UButton>
       </div>
     </UModal>
