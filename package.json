@@ -13,6 +13,7 @@
     "joi": "^17.13.3",
     "mongodb": "^6.10.0",
     "nuxt": "^3.13.2",
+    "qr-code-styling": "^1.8.4",
     "vue": "latest",
     "vue-router": "latest"
   },
