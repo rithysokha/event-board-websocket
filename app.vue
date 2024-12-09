@@ -7,6 +7,6 @@
 </template>
 <script setup lang="ts">
 const route = useRoute();
-const hideAppMenu = route.path === '/';
+const hideAppMenu = route.path === '/' || '/board/*';
 
 </script>

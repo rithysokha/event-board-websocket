@@ -7,7 +7,6 @@ const emit = defineEmits(['update']);
 const state = reactive({
   description : props.boardDesc as string | undefined
 })
-
 const initDesc = props.boardDesc;
 
 const isDescChanged = computed(() => state.description !== initDesc);
@@ -32,10 +31,9 @@ const renameBoard = async () => {
 <template>
   <UCard>
     <template #header>
-      <p>Heading</p>
     </template>
     <UForm :state="state" class="space-y-4" @submit="renameBoard">
-      <UFormGroup label="Name" name="name">
+      <UFormGroup label="Description" name="description">
         <UInput v-model="state.description" />
       </UFormGroup>
       <UButton v-show="isDescChanged" type="submit">

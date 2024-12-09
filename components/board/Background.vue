@@ -4,12 +4,12 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['update']);
 const background = [
-  "slate-100",
-  "slate-300",
-  "red-200",
   "red-400",
-  "teal-200",
-  "teal-400"
+  "teal-400",
+  "blue-500",
+  "red-400",
+  "teal-400",
+  "blue-500"
 ]
 const bgColor = ref('')
 
@@ -35,8 +35,10 @@ const changeColor= (color:string) =>{
 
 </script>
 <template>
-<div class="h-10 w-10" v-for="color in background" :class="'bg-'+color" @click="changeColor(color)">
-</div>
+  <div class="grid grid-cols-3 gap-1 mx-1">
+    <div class="h-20 w-full rounded-md cursor-pointer" v-for="color in background" :class="'bg-'+color" @click="changeColor(color)">
+    </div>
+  </div>
 
 
 </template>
