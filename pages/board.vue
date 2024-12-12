@@ -101,8 +101,10 @@ onMounted(() => {
 </script>
 
 <template>
+
   <UButton @click="isOpenPost = true" label="New Post" class="fixed z-50 bottom-2 right-2" />
   <div class="w-full h-screen" :class="'bg-' + bgColor">
+    
     <h1 @click="isOpen = true" class=" cursor-default ">
       {{ header }}
     </h1>
@@ -146,6 +148,7 @@ onMounted(() => {
       <UButton class="w-10 h-10" @click="isOpenBg=false" label="X"/>
           <BoardBackground :board-id="boardId" @update="handleUpdateColor"/>
       </USlideover>
+      <BoardShare :board-id="boardId"/>
     </USlideover>
   </div>
 </template>
