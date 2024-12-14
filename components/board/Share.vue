@@ -3,7 +3,7 @@ const emit = defineEmits(['update']);
 const props = defineProps<{
     boardId: string
   }>();
-  const url = `http://localhost:3000/board/${props.boardId}`;
+  const url = `https://webboard.live/board/${props.boardId}`;
   const copyToClipboard = () => {
     navigator.clipboard.writeText(url);
   }

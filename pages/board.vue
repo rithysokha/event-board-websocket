@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { ref, watch, onMounted } from 'vue'
 import { useWebSocket } from '@vueuse/core'
+import { CloudinaryImage } from '@cloudinary/url-gen';
+import { scale } from '@cloudinary/url-gen/actions/resize';
+import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 const isOpen = ref(false)
 const isOpenPost = ref(false)
 const isOpenBg = ref(false)
@@ -8,12 +11,7 @@ const header = ref("")
 const description = ref("")
 const bgColor = ref("")
 const websocketUrl = ref('')
-const history = ref<{ title: string, description: string }[]>([]);
-const postBody = ref({
-  title: '',
-  description: '',
-  boardId: ''
-})
+const history = ref<{ title: string, imgPublicId: string, description: string }[]>([]);
 
 const route = useRoute();
 const boardId = route.query.boardId;
@@ -22,6 +20,7 @@ if (!boardId || typeof boardId !== 'string') {
   throw new Error('Board ID is required and must be a string');
 }
 const { data: boardData } = await useFetch(`/api/board?boardId=${boardId}`);
+
 header.value = boardData.value.name
 bgColor.value = boardData.value.background
 description.value = boardData.value.description
@@ -35,6 +34,7 @@ watch(data, (newValue) => {
     const message = JSON.parse(newValue);
     history.value.push({
       title: message.title,
+      imgPublicId: message.imgPublicId,
       description: message.description
     });
   } catch (error) {
@@ -46,8 +46,9 @@ const fetchMessageHistory = async () => {
   try {
     const response = await fetch(`/api/board/post?boardId=${boardId}`);
     const messages = await response.json();
-    history.value = messages.map((message: { title: string, description: string }) => ({
+    history.value = messages.map((message: { title: string, imgPublicId:string ,description: string }) => ({
       title: message.title,
+      imgPublicId: message.imgPublicId,
       description: message.description
     }));
   } catch (error) {
@@ -55,34 +56,23 @@ const fetchMessageHistory = async () => {
   }
 };
 
-
-const savePostToDB = async () => {
-  try {
-    postBody.value.boardId = boardId
-    await fetch('api/board/post', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(postBody.value)
-    });
-    isOpenPost.value = false
-  } catch (error) {
-    console.error('Error creating board:', error);
+const handleGetImage = (publicId : string) => {
+  if(publicId  && publicId.length>0){
+    const myImage = new CloudinaryImage(publicId, { cloudName: 'dbiso7uht' })
+    .resize(scale().width(1000))
+    .delivery(quality('auto'))
+    .delivery(format('auto'));
+    return myImage.toURL();
   }
-};
-
-const sendData = () => {
-  const message = {
-    title: postBody.value.title,
-    description: postBody.value.description
-  };
-
-  history.value.push(message);
+  return '';
+}
+const handlePost = (message: any) => {
+  history.value.push({
+    title: message.title,
+    imgPublicId: message.imgPublicId,
+    description: message.description
+  })
   send(JSON.stringify(message));
-  savePostToDB();
-  postBody.value.title = '';
-  postBody.value.description = '';
 }
 const handleUpdate = (newName: string) => {
   header.value = newName;
@@ -94,61 +84,59 @@ const handleUpdateDesc = (newDesc: string) => {
 const handleUpdateColor = (newColor: string) => {
   bgColor.value = newColor;
 };
-
 onMounted(() => {
   fetchMessageHistory();
 });
 </script>
 
 <template>
-
   <UButton @click="isOpenPost = true" label="New Post" class="fixed z-50 bottom-2 right-2" />
   <div class="w-full h-screen" :class="'bg-' + bgColor">
-    
     <h1 @click="isOpen = true" class=" cursor-default ">
       {{ header }}
     </h1>
-    <p>{{ description }} </p>
+  
     <div
       class=" mx-2 grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
       <UCard v-for="entry in history" :key="entry.title">
         <template #header>
-          <p>uesr acc and pf</p>
+          <div class="flex gap-1">
+            <UAvatar src="https://github.com/benjamincanac.png" />
+            <p class="font-bold">Sokha Rithy</p>
+          </div>
         </template>
         <p>{{ entry.title }}</p>
+        <img :src="handleGetImage(entry.imgPublicId)" alt=""/>
         <p>{{ entry.description }}</p>
         <template #footer>
-          <p>comment and likes</p>
+          <div class="flex justify-between">
+            <UIcon name="i-heroicons-chat-bubble-bottom-center-text" />
+            <UIcon name="i-heroicons-hand-thumb-up" />
+          </div>
         </template>
       </UCard>
     </div>
   </div>
   <div>
-
     <UModal v-model="isOpenPost">
-      <div class="p-4 flex flex-col gap-2">
-        <UButton class="w-20 relative" type="submit" @click="sendData">Submit</UButton>
-        <UInput v-model="postBody.title" />
-        <UInput v-model="postBody.description" />
-      </div>
+      <BoardPost :board-id="boardId" @post-message="handlePost" />
     </UModal>
-
     <USlideover v-model="isOpen">
-      <UButton class="w-10 h-10" @click="isOpen=false" label="X"/>
+      <UButton class="w-10 h-10" @click="isOpen = false" label="X" />
       <BoardName :board-name="header" :board-id="boardId" @update="handleUpdate" />
       <BoardDescription :board-desc="description" :board-id="boardId" @update="handleUpdateDesc" />
       <UCard class="flex justify-between items-center">
         <template #header>
           <p>Background</p>
         </template>
-        <div @click="isOpenBg=true" class="h-20 w-36 ":class="'bg-' + bgColor">
+        <div @click="isOpenBg = true" class="h-20 w-36 " :class="'bg-' + bgColor">
         </div>
       </UCard>
       <USlideover :overlay="false" v-model="isOpenBg">
-      <UButton class="w-10 h-10" @click="isOpenBg=false" label="X"/>
-          <BoardBackground :board-id="boardId" @update="handleUpdateColor"/>
+        <UButton class="w-10 h-10" @click="isOpenBg = false" label="X" />
+        <BoardBackground :board-id="boardId" @update="handleUpdateColor" />
       </USlideover>
-      <BoardShare :board-id="boardId"/>
+      <BoardShare :board-id="boardId" />
     </USlideover>
   </div>
 </template>
