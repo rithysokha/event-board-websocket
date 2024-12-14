@@ -14,25 +14,26 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Step 2: Set up Node.js
+    # Step 3: Set up Node.js
+    -name: Stop and remove old container
+      run: docker stop nuxt3-app || true && docker rm nuxt3-app || true
+      
+    # Step 3: Set up Node.js
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 20
 
-    # Step 3: Install dependencies and build the Nuxt app
+    # Step 4: Install dependencies and build the Nuxt app
     - name: Install dependencies
       run: npm ci
 
     - name: Build Nuxt app
       run: npm run build
 
-    # Step 4: Build and run the Docker container
+    # Step 5: Build and run the Docker container
     - name: Build Docker image
       run: docker build -t nuxt3-app .
-
-    - name: Stop existing container
-      run: docker stop nuxt3-app || true && docker rm nuxt3-app || true
 
     - name: Run Docker container
       run: docker run -d --name nuxt3-app -p 3000:3000 nuxt3-app
