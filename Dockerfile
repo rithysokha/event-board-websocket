@@ -9,4 +9,4 @@ RUN npm install --omit=dev
 
 EXPOSE 3000
 
-CMD ["npm run production"]
+CMD ["node .output/server/index.mjs"]
