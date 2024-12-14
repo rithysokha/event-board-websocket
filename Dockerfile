@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY .output /app/.output
 COPY package*.json ./
+COPY .env /app/
 
 RUN npm install --omit=dev
 
