@@ -26,7 +26,7 @@ header.value = boardData.value.name
 bgColor.value = boardData.value.background
 description.value = boardData.value.description
 if (typeof window !== 'undefined' && window.location) {
-  websocketUrl.value = `${config.public.wsUrl}/api/websocket?room=${boardId}`
+  websocketUrl.value = `/api/websocket?room=${boardId}`
 }
 const { status, data, send, open, close } = useWebSocket(websocketUrl.value)
 
