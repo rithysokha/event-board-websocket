@@ -4,6 +4,7 @@ import { useWebSocket } from '@vueuse/core'
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
+const config = useRuntimeConfig();
 const isOpen = ref(false)
 const isOpenPost = ref(false)
 const isOpenBg = ref(false)
@@ -25,7 +26,7 @@ header.value = boardData.value.name
 bgColor.value = boardData.value.background
 description.value = boardData.value.description
 if (typeof window !== 'undefined' && window.location) {
-  websocketUrl.value = `ws://${window.location.host}/api/websocket?room=${boardId}`
+  websocketUrl.value = `${config.public.wsUrl}/api/websocket?room=${boardId}`
 }
 const { status, data, send, open, close } = useWebSocket(websocketUrl.value)
 
@@ -58,7 +59,7 @@ const fetchMessageHistory = async () => {
 
 const handleGetImage = (publicId : string) => {
   if(publicId  && publicId.length>0){
-    const myImage = new CloudinaryImage(publicId, { cloudName: 'dbiso7uht' })
+    const myImage = new CloudinaryImage(publicId, { cloudName: config.public.cloudeName })
     .resize(scale().width(1000))
     .delivery(quality('auto'))
     .delivery(format('auto'));

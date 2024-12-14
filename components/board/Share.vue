@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+const config = useRuntimeConfig()
 const emit = defineEmits(['update']);
 const props = defineProps<{
     boardId: string
   }>();
-  const url = `https://webboard.live/board/${props.boardId}`;
+  const url = `${config.public.baseUrl}/board/${props.boardId}`;
   const copyToClipboard = () => {
     navigator.clipboard.writeText(url);
   }
