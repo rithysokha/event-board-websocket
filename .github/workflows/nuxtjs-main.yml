@@ -14,8 +14,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Step 3: Set up Node.js
-    -name: Stop and remove old container
+    # Step 3: Remove old container
+    - name: Stop and remove old container
       run: docker stop nuxt3-app || true && docker rm nuxt3-app || true
       
     # Step 3: Set up Node.js
