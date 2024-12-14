@@ -9,4 +9,4 @@ RUN npm install --omit=dev
 
 EXPOSE 3000
 
-CMD ["npx", "nuxt-start", "--port", "3000", "--hostname", "0.0.0.0"]
+CMD ["npm run production"]
