@@ -4,6 +4,9 @@ import { useWebSocket } from '@vueuse/core'
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
+definePageMeta({
+  ssr: false,
+});
 const config = useRuntimeConfig();
 const isOpen = ref(false)
 const isOpenPost = ref(false)
@@ -57,11 +60,11 @@ const fetchMessageHistory = async () => {
   }
 };
 
-const handleGetImage = (publicId : string) => {
+const handleGetImage = (publicId : string, qual: string) => {
   if(publicId  && publicId.length>0){
     const myImage = new CloudinaryImage(publicId, { cloudName: config.public.cloudeName })
     .resize(scale().width(1000))
-    .delivery(quality('auto'))
+    .delivery(quality(qual))
     .delivery(format('auto'));
     return myImage.toURL();
   }
@@ -92,23 +95,22 @@ onMounted(() => {
 </script>
 
 <template>
-  <UButton @click="isOpenPost = true" label="New Post" class="fixed z-50 bottom-2 right-2" />
+  <UButton @click="isOpenPost = true" size="xl" icon="i-heroicons-plus" class="fixed z-50 bottom-2 right-2 rounded-full hover:rotate-90 ease-in-out duration-300 " />
   <div class="bg-cover" :class="'bg-' + bgColor">
-    <h1 @click="isOpen = true" class=" cursor-default ">
+    <h1 @click="isOpen = true" class=" cursor-pointer text-2xl mb-4 ">
       {{ header }}
     </h1>
   
-    <div
-      class=" mx-2 grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-      <UCard v-for="entry in history" :key="entry.title">
+    <div class=" mx-2 grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <UCard class="flex flex-col justify-between" v-for="entry in history" :key="entry.title">
         <template #header>
-          <div class="flex gap-1">
+          <div class="flex gap-1 h-5">
             <UAvatar src="https://github.com/benjamincanac.png" />
             <p class="font-bold">Sokha Rithy</p>
           </div>
         </template>
-        <p>{{ entry.title }}</p>
-        <img :src="handleGetImage(entry.imgPublicId)" alt=""/>
+        <p :class="entry.imgPublicId==''?'text-3xl':'text-md'">{{ entry.title }}</p>
+          <img loading="lazy" class="rounded-md"  v-if="entry.imgPublicId!==''" :src="handleGetImage(entry.imgPublicId, '50')" alt=""/>
         <p>{{ entry.description }}</p>
         <template #footer>
           <div class="flex justify-between">

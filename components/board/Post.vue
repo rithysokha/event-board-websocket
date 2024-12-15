@@ -5,6 +5,7 @@ const props = defineProps<{
 }>();
 const isUploadingPhoto = ref(false)
 const isSendingData = ref(false)
+const previewImage = ref<string | null>(null);
 const emit = defineEmits(['postMessage']);
 const postBody = ref({
   title: '',
@@ -22,6 +23,12 @@ const handleUploadFile = async (event: any) => {
 
   isUploadingPhoto.value = true;
   const file = files[0];
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    previewImage.value = reader.result as string;
+  };
+  reader.readAsDataURL(file);
 
   if (file.size > 1048576) {
     console.log('File is larger than 1MB, compressing...');
@@ -52,7 +59,7 @@ const uploadFile = async (file: File) => {
   formData.append('file', file);
 
   try {
-    const res: { public_id: string } = await $fetch('/api/image', {
+    const res = await $fetch<{ public_id: string }>('/api/image', {
       method: 'POST',
       body: formData,
     });
@@ -103,12 +110,38 @@ const sendData = async () => {
 }
 </script>
 <template>
-  <div class="p-4 flex flex-col gap-2">
-    <UButton class="w-20 relative" :loading="isUploadingPhoto||isSendingData" type="submit" @click="sendData">Submit</UButton>
-    <UInput v-model="postBody.title" />
-    <div class=" w-20 h-20">
-      <input type="file" @change="handleUploadFile" />
+  <div class="p-4 flex flex-col gap-4 items-end">
+    <UButton
+      class="min-w-20 max-w-24 justify-center"
+      :loading="isUploadingPhoto || isSendingData"
+      type="submit"
+      @click="sendData"
+    >
+      Publish
+    </UButton>
+    <UInput v-model="postBody.title" class="w-full" placeholder="Subject" />
+    <div
+      class="w-full aspect-square min-h-40 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer overflow-hidden relative"
+    >
+      <img
+        v-if="previewImage"
+        :src="previewImage"
+        alt="Preview"
+        class="w-full h-full object-cover"
+      />
+      <label
+        v-else
+        class="absolute inset-0 flex items-center justify-center text-gray-500 text-sm"
+      >
+        <span>Select a Photo</span>
+        <input
+          type="file"
+          class="hidden"
+          @change="handleUploadFile"
+          accept="image/*"
+        />
+      </label>
     </div>
-    <UInput v-model="postBody.description" />
+    <UInput class="w-full" v-model="postBody.description" placeholder="Enter description" />
   </div>
 </template>

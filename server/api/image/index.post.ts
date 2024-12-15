@@ -6,7 +6,7 @@ import os from 'os';
 export default defineEventHandler(async (event) => {
   const files = await readMultipartFormData(event);
 
-  if (!files || !files.length) {
+  if (!files?.length) {
     return { error: 'No file uploaded' };
   }
 

@@ -2,7 +2,6 @@
 const props = defineProps<{
   items: Array<{ background: string, name: string, _id:string }>
 }>();
-console.log(props.items)
 const navigateBoard =(boardId:string)=>{
   navigateTo(`/board?boardId=${boardId}`)
 }
