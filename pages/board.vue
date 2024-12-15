@@ -73,6 +73,7 @@ const handlePost = (message: any) => {
     imgPublicId: message.imgPublicId,
     description: message.description
   })
+  isOpenPost.value=message.isOpenPost
   send(JSON.stringify(message));
 }
 const handleUpdate = (newName: string) => {

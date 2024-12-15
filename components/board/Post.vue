@@ -2,8 +2,8 @@
 const props = defineProps<{
   boardId: string
 }>();
-const isOpenPost = ref(false)
 const isUploadingPhoto = ref(false)
+const isSendingData = ref(false)
 const emit = defineEmits(['postMessage']);
 const postBody = ref({
   title: '',
@@ -13,12 +13,12 @@ const postBody = ref({
 })
 
 const handleUploadFile = async (event: any) => {
-  isUploadingPhoto.value = true
   const files = event.target.files;
   if (!files || files.length === 0) {
     console.error('No file selected');
     return;
   }
+  isUploadingPhoto.value = true
   const file = event.target.files[0];
   const formData = new FormData();
   formData.append('file', file);
@@ -44,21 +44,28 @@ const savePostToDB = async () => {
       },
       body: JSON.stringify(postBody.value)
     });
-    isOpenPost.value = false
   } catch (error) {
     console.error('Error creating board:', error);
   }
 };
 
-const sendData = () => {
+const sendData = async () => {
+  isSendingData.value=true
+  if (isUploadingPhoto.value) {
+    console.log('Waiting for file upload to finish...');
+    while (isUploadingPhoto.value) {
+      await new Promise((resolve) => setTimeout(resolve, 100)); 
+    }
+  }
   const message = {
     title: postBody.value.title,
     imgPublicId: postBody.value.imgPublicId,
     description: postBody.value.description,
+    isOpenPost:false
   };
-
   emit('postMessage', message);
   savePostToDB();
+  isSendingData.value=false
   postBody.value.title = '';
   postBody.value.imgPublicId = '';
   postBody.value.description = '';
@@ -66,7 +73,7 @@ const sendData = () => {
 </script>
 <template>
   <div class="p-4 flex flex-col gap-2">
-    <UButton class="w-20 relative" type="submit" :disabled="isUploadingPhoto" @click="sendData">Submit</UButton>
+    <UButton class="w-20 relative" :loading="isUploadingPhoto||isSendingData" type="submit" @click="sendData">Submit</UButton>
     <UInput v-model="postBody.title" />
     <div class=" w-20 h-20">
       <input type="file" @change="handleUploadFile" />
