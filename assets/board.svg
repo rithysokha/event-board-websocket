@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" id="board">
+  <defs>
+    <linearGradient id="a" x1="2" x2="22" y1="8.744" y2="8.744" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#16b0e2"></stop>
+      <stop offset="1" stop-color="#6e5af0"></stop>
+    </linearGradient>
+    <linearGradient xlink:href="#a" id="b" x1="5.723" x2="18.277" y1="18.744" y2="18.744"></linearGradient>
+    <linearGradient xlink:href="#a" id="c" x1="5.721" x2="14.558" y1="6.419" y2="6.419"></linearGradient>
+    <linearGradient xlink:href="#a" id="d" x1="5.721" x2="12.698" y1="10.14" y2="10.14"></linearGradient>
+  </defs>
+  <g>
+    <path fill="url(#a)" d="M22,2.7a.7.7,0,0,1-.7.7H21.07v9.051c0,1.935-1.237,3.042-3.4,3.042H6.326c-2.159,0-3.4-1.107-3.4-3.042V3.4H2.7A.7.7,0,1,1,2.7,2H21.3A.7.7,0,0,1,22,2.7Z" opacity=".4"></path>
+    <path fill="url(#b)" d="M18.074,21.8a.7.7,0,0,1-.986,0l-4.39-4.39v3.9a.7.7,0,0,1-1.4,0v-3.9L6.912,21.8a.7.7,0,0,1-.986,0,.7.7,0,0,1,0-.986l5.321-5.321h1.506l5.321,5.321A.7.7,0,0,1,18.074,21.8Z"></path>
+    <path fill="url(#c)" d="M13.86,7.116H6.419a.7.7,0,1,1,0-1.395H13.86a.7.7,0,1,1,0,1.395Z"></path>
+    <path fill="url(#d)" d="M12,10.837H6.419a.7.7,0,1,1,0-1.395H12a.7.7,0,1,1,0,1.395Z"></path>
+  </g>
+</svg>

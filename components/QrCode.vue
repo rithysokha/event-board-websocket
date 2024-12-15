@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import icon from '../assets/board.svg'
 const config = useRuntimeConfig()
 const props = defineProps<{
   boardId: string
@@ -14,7 +15,7 @@ onMounted(() => {
     width: props.width,
     height: props.height,
     data: `${config.public.baseUrl}/board/${props.boardId}`,
-    // image: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.  m.wikipedia.org%2Fwiki%2FFile%3ANpm-logo.svg&psig=AOvVaw3U9kn4Z7kjWJjsWOaX2v0-&ust=1733841491423000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCPimqIX1mooDFQAAAAAdAAAAABAE",
+    image: icon,
     dotsOptions: {
       color: "#4267b2",
       type: "rounded"
@@ -35,14 +36,5 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="z-50"id="qrcode"></div>
+  <div class="z-50 flex justify-center"id="qrcode"></div>
 </template>
-
-<style scoped>
-#qrcode {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-</style>

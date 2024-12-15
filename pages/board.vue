@@ -8,9 +8,10 @@ definePageMeta({
   ssr: false,
 });
 const config = useRuntimeConfig();
-const isOpen = ref(false)
+const isOpenSlide = ref(false)
 const isOpenPost = ref(false)
 const isOpenBg = ref(false)
+const isOpenQr = ref(false)
 const header = ref("")
 const description = ref("")
 const bgColor = ref("")
@@ -81,7 +82,7 @@ const handlePost = (message: any) => {
 }
 const handleUpdate = (newName: string) => {
   header.value = newName;
-  isOpen.value = false
+  isOpenSlide.value = false
 };
 const handleUpdateDesc = (newDesc: string) => {
   description.value = newDesc;
@@ -89,6 +90,10 @@ const handleUpdateDesc = (newDesc: string) => {
 const handleUpdateColor = (newColor: string) => {
   bgColor.value = newColor;
 };
+const hanldeOpenQr = (isOpen: boolean)=>{
+  isOpenSlide.value=false
+  isOpenQr.value=isOpen;
+}
 onMounted(() => {
   fetchMessageHistory();
 });
@@ -96,11 +101,13 @@ onMounted(() => {
 
 <template>
   <UButton @click="isOpenPost = true" size="xl" icon="i-heroicons-plus" class="fixed z-50 bottom-2 right-2 rounded-full hover:rotate-90 ease-in-out duration-300 " />
-  <div class="bg-cover" :class="'bg-' + bgColor">
-    <h1 @click="isOpen = true" class=" cursor-pointer text-2xl mb-4 ">
+  <UModal v-model="isOpenQr">
+    <QrCode :board-id="boardId" :width="500" :height="500"/>
+  </UModal>
+  <div class="bg-cover min-h-screen" :class="'bg-' + bgColor">
+    <h1 @click="isOpenSlide = true" class=" cursor-pointer text-2xl mb-4 ">
       {{ header }}
     </h1>
-  
     <div class=" mx-2 grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       <UCard class="flex flex-col justify-between" v-for="entry in history" :key="entry.title">
         <template #header>
@@ -125,8 +132,8 @@ onMounted(() => {
     <UModal v-model="isOpenPost">
       <BoardPost :board-id="boardId" @post-message="handlePost" />
     </UModal>
-    <USlideover v-model="isOpen">
-      <UButton class="w-10 h-10" @click="isOpen = false" label="X" />
+    <USlideover v-model="isOpenSlide">
+      <UButton class="w-10 h-10" @click="isOpenSlide = false" label="X" />
       <BoardName :board-name="header" :board-id="boardId" @update="handleUpdate" />
       <BoardDescription :board-desc="description" :board-id="boardId" @update="handleUpdateDesc" />
       <UCard class="flex justify-between items-center">
@@ -140,7 +147,7 @@ onMounted(() => {
         <UButton class="w-10 h-10" @click="isOpenBg = false" label="X" />
         <BoardBackground :board-id="boardId" @update="handleUpdateColor" />
       </USlideover>
-      <BoardShare :board-id="boardId" />
+      <BoardShare :board-id="boardId" @update="hanldeOpenQr"/>
     </USlideover>
   </div>
 </template>

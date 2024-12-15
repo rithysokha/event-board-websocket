@@ -1,15 +1,15 @@
 <template>
-  <div class="w-full z-50" :class="$device.isMobile?'bottom-0': 'top-0'" v-if="!hideAppMenu">
-    <NavigationBar/>
-  </div>
-  <NuxtRouteAnnouncer />
-  <NuxtPage />
+  <NavigationBar v-if="!hideAppMenu" />
+    <NuxtRouteAnnouncer />
+    <NuxtPage />
 </template>
+
 <script setup lang="ts">
 const route = useRoute();
-const hideAppMenu = route.path === '/';
-
+const pathsToHideMenu = ['/', '/board'];
+const hideAppMenu = computed(() => pathsToHideMenu.includes(route.path));
 </script>
+
 <style>
 ::-webkit-scrollbar {
   display: none;
