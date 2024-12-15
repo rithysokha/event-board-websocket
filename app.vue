@@ -10,3 +10,8 @@ const route = useRoute();
 const hideAppMenu = route.path === '/';
 
 </script>
+<style>
+::-webkit-scrollbar {
+  display: none;
+}
+</style>
