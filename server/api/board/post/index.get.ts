@@ -1,5 +1,4 @@
 import { connectToDatabase } from '~/utils/mongodb';
-import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   const { boardId } = getQuery(event);
