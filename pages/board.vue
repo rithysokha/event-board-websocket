@@ -94,6 +94,7 @@ const hanldeOpenQr = (isOpen: boolean)=>{
   isOpenSlide.value=false
   isOpenQr.value=isOpen;
 }
+
 onMounted(() => {
   fetchMessageHistory();
 });
@@ -102,7 +103,7 @@ onMounted(() => {
 <template>
   <UButton @click="isOpenPost = true" size="xl" icon="i-heroicons-plus" class="fixed z-50 bottom-2 right-2 rounded-full hover:rotate-90 ease-in-out duration-300 " />
   <UModal v-model="isOpenQr">
-    <QrCode :board-id="boardId" :width="500" :height="500"/>
+    <QrCode :board-id="boardId" :width="$device.isMobile?200:500" :height="$device.isMobile?200:500"/>
   </UModal>
   <div class="bg-cover min-h-screen" :class="'bg-' + bgColor">
     <h1 @click="isOpenSlide = true" class=" cursor-pointer text-2xl mb-4 ">

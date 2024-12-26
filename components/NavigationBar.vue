@@ -56,7 +56,9 @@ const mobileLinks = [
 ]
 ]
 const handleJoin = () =>{
-  console.log("Join clicked")
+  if(joinUrl){
+    window.open(joinUrl.value, '_blank');
+  }
 }
 </script>
 
