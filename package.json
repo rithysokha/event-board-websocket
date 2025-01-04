@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@nuxt/ui": "^2.18.7",
-    "@nuxtjs/device": "^3.2.4"
+    "@nuxtjs/device": "^3.2.4",
+    "@nuxtjs/i18n": "^9.1.1"
   }
 }
