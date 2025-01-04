@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import Footer from '~/components/Footer.vue';
+
 
 </script>
 
@@ -23,8 +25,6 @@
       :items="[{ label: '1. What is Nuxt UI?', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '2. Getting Started', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '3. Theming', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '4. Components', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }]"
     />
 
-    <div class="w-screen h-20">
-      footer
-    </div>
+    <Footer/>
 </template>
 
