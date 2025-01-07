@@ -71,7 +71,7 @@ watch(language, (newLanguage) =>{
   <div class="w-screen h-52 flex flex-col items-center my-10">
     <div class="flex items-center gap-2">
       <p class="text-2xl font-bold ">Webboard</p>
-      <img src="../assets/board.png" alt="Web board" class="w-10" />
+      <img src="../assets/board.png" alt="Web board" class="w-8" />
     </div>
     <p class="text-center">Oh wow, you're beautiful. <br> Just saying...</p>
     <div class=" w-2/3 ">

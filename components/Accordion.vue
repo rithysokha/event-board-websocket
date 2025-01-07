@@ -1,12 +1,10 @@
 <template>
-  <UAccordion
-  color="primary"
-  variant="soft"
-  size="sm"
-  :items="[{ label: '1. What is Nuxt UI?', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '2. Getting Started', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '3. Theming', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '4. Components', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }]"
-/>
+  <div class="px-5">
+    <UAccordion
+    color="primary"
+    variant="soft"
+    size="sm"
+    :items="[{ label: '1. What is Webboard?', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '2. Getting Started', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '3. Is this free?', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '4. How to sign up?', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }]"
+    />
+  </div>
 </template>
-
-<script lang="ts" setup>
-
-</script>
