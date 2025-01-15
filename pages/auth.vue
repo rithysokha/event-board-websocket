@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import googleIcon from "../assets/google.svg";
 const items = [{
   key: 'login',
   label: 'Log In',
@@ -53,13 +54,20 @@ function onSubmit(form: any) {
           .newPassword" type="signup" required />
           </UFormGroup>
         </div>
-
         <template #footer>
-          <UButton type="submit" color="black">
-            Save {{ item.key === 'login' ? 'login' : 'signup' }}
-          </UButton>
+          <div class="flex justify-center">
+            <UButton type="submit">
+              {{ item.key === 'login' ? 'login' : 'signup' }}
+            </UButton>
+          </div>
         </template>
       </UCard>
+      <div class="pt-10">
+        <UButton block>
+          <img :src="googleIcon" class="w-5" alt="google logo, webboard"/>
+          <p>Continue with google</p>
+        </UButton>
+      </div>
     </template>
   </UTabs>
 </div>
