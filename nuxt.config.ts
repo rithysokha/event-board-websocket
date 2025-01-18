@@ -1,6 +1,11 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
-  modules: ['@nuxt/ui', '@nuxtjs/device', '@nuxtjs/i18n'],
+  modules: [
+    '@nuxt/ui',
+    '@nuxtjs/device',
+    '@nuxtjs/i18n',
+    '@sidebase/nuxt-auth'
+  ],
   nitro:{
     experimental:{
       websocket:true
@@ -16,5 +21,14 @@ export default defineNuxtConfig({
     vueI18n: './i18n.config.ts'
   },
   devtools: { enabled: true },
-  components: true
+  components: true,
+  auth: {
+    provider: {
+      type: 'authjs',
+      trustHost: false,
+      defaultProvider: 'google',
+      addDefaultCallbackUrl: true
+    },
+    originEnvKey: 'AUTH_ORIGIN'
+  }
 })

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  auth: { unauthenticatedOnly: true, navigateAuthenticatedTo: '/' }
+})
+const { signIn } = useAuth()
 import googleIcon from "../assets/google.svg";
 const items = [{
   key: 'login',
@@ -63,7 +67,7 @@ function onSubmit(form: any) {
         </template>
       </UCard>
       <div class="pt-10">
-        <UButton block>
+        <UButton block @click="signIn('google')">
           <img :src="googleIcon" class="w-5" alt="google logo, webboard"/>
           <p>Continue with google</p>
         </UButton>
