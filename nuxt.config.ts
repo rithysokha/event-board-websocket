@@ -23,13 +23,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   components: true,
   auth: {
-    baseURL: 'https://webboard.live/api/auth',
+    isEnabled: true,
+    baseURL: process.env.AUTH_ORIGIN,
     provider: {
-      type: 'authjs',
-      trustHost: true,
-      defaultProvider: 'google',
-      addDefaultCallbackUrl: true
+      type: 'authjs'
     },
-    globalAppMiddleware: true
+    globalAppMiddleware: {
+      isEnabled: true
+    }
   }
 })
