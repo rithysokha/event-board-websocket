@@ -38,10 +38,10 @@ jobs:
         echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> .env
         echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
         echo "BASE_URL=${{ secrets.BASE_URL }}" >> .env
-        echo "AUTH_ORIGIN=${{ secrets.AUTH_ORIGIN }}" .env
-        echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" .env
-        echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" .env
-        echo "AUTH_SECRET=${{ secrets.AUTH_SECRET }}" .env
+        echo "AUTH_ORIGIN=${{ secrets.AUTH_ORIGIN }}" >> .env
+        echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+        echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+        echo "AUTH_SECRET=${{ secrets.AUTH_SECRET }}" >> .env
 
     - name: Build Nuxt app
       run: npm run build
