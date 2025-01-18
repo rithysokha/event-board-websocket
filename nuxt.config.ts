@@ -29,6 +29,6 @@ export default defineNuxtConfig({
       defaultProvider: 'google',
       addDefaultCallbackUrl: true
     },
-    originEnvKey: 'AUTH_ORIGIN'
+    globalAppMiddleware: true
   }
 })

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  unauthenticatedOnly: true,
+  navigateAuthenticatedTo: '/dashboard/home'
+})
 import lottie from 'lottie-web'
 import globe from "../assets/user_research.json"
 
@@ -36,4 +40,3 @@ onMounted(() => {
     <Footer/>
   </div>
 </template>
-
