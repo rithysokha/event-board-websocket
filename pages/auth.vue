@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({
-  auth: { unauthenticatedOnly: true, navigateAuthenticatedTo: '/' }
+  auth: { 
+    unauthenticatedOnly: true, 
+    navigateAuthenticatedTo: '/' }
 })
 const { signIn } = useAuth()
 import googleIcon from "../assets/google.svg";
