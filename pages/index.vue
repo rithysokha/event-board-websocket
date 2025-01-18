@@ -1,11 +1,14 @@
 <script setup lang="ts">
 definePageMeta({
-  unauthenticatedOnly: true,
-  navigateAuthenticatedTo: '/dashboard/home'
+  auth: { 
+    unauthenticatedOnly: true, 
+    navigateAuthenticatedTo: '/dashboard/home' 
+  }
 })
 import lottie from 'lottie-web'
 import globe from "../assets/user_research.json"
 
+const {data} = useAuth()
 const animationContainer = ref<HTMLElement | null>(null)
 onMounted(() => {
   if (animationContainer.value) {
@@ -24,6 +27,7 @@ onMounted(() => {
   <div class="flex flex-col w-screen gap-2 mt-3">
   <UContainer class="flex w-full justify-end gap-2">
     <UButton @Click="navigateTo('/auth')">Login</UButton>
+    <p> {{ data?.user.name }} </p>
     <UButton @Click="navigateTo('/auth')">Sign up</UButton>
   </UContainer>
   <UContainer class="w-full pt-10 flex flex-col items-center gap-2">

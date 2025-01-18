@@ -2,7 +2,7 @@
 definePageMeta({
   auth: { 
     unauthenticatedOnly: true, 
-    navigateAuthenticatedTo: '/' }
+    navigateAuthenticatedTo: '/dashboard/home' }
 })
 const { signIn } = useAuth()
 import googleIcon from "../assets/google.svg";
@@ -16,11 +16,11 @@ const items = [{
   description: 'Change your signup here. After saving, you\'ll be logged out.'
 }]
 
-const loginForm = reactive({ email: '', password: ''})
+const loginForm = reactive({ username: '', password: ''})
 const signUpForm = reactive({ currentPassword: '', newPassword: '' })
 
 function onSubmit(form: any) {
-  console.log('Submitted form:', form)
+  signIn('credentials')
 }
 </script>
 
@@ -41,9 +41,9 @@ function onSubmit(form: any) {
         </template>
 
         <div v-if="item.key === 'login'" class="space-y-3">
-          <UFormGroup label="Email" name="email">
+          <UFormGroup label="Username" name="username">
             <UInput v-model="loginForm
-          .email" />
+          .username" />
           </UFormGroup>
           <UFormGroup label="Password" name="password">
             <UInput v-model="loginForm
