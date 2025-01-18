@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   components: true,
   auth: {
-    baseURL: process.env.AUTH_ORIGIN || 'https://webboard.live/api/auth',
+    baseURL:'http:/localhost:3000/api/auth',
     provider: {
       type: 'authjs',
       trustHost: true,
