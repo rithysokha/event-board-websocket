@@ -16,7 +16,9 @@ jobs:
 
     # Step 3: Remove old container
     - name: Stop and remove old container
-      run: docker stop nuxt3-app || true && docker rm nuxt3-app || true
+      run: |
+        docker stop nuxt3-app || true && docker rm nuxt3-app || true
+        docker stop contactless-backend
       
     # Step 3: Set up Node.js
     - name: Set up Node.js
