@@ -1,5 +1,5 @@
 <template>
-  <!-- <NavigationBar v-if="!hideAppMenu" /> -->
+  <NavigationBar v-if="!hideAppMenu" />
     <NuxtRouteAnnouncer />
     <NuxtPage />
 </template>

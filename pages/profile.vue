@@ -2,14 +2,31 @@
 definePageMeta({
   middleware: 'sidebase-auth',
 })
+const toast = useToast()
+
+const showToast = ()=> {
+  toast.add(
+    {
+      title:'Signed Out',
+      description: 'You have signed out',
+    }
+  )
+}
 const { signOut, data } = useAuth()
+
+const handleSignOut = ()=>{
+  signOut({ callbackUrl: '/auth' })
+  // showToast()
+}
 </script>
 
 <template>
-  <button @click="() => signOut">
-    Signout
-  </button>
-  <button @click="() => signOut({ callbackUrl: '/auth' })">
-    Signout with redirect
-  </button>
+  <div class="flex flex-col items-center gap-2 mt-14">
+    <UAvatar :src="data?.user.image" size="3xl" />
+    <p class="font-bold"> {{ data?.user.name }} </p>
+    <p>{{ data?.user.email }} </p>
+    <UButton class="mt-14" color="red" @click="handleSignOut">
+      Signout
+    </UButton>
+  </div>
 </template>

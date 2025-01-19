@@ -23,5 +23,5 @@ const recipeItems = [
 ]
 </script>
 <template>
- <MakeRecipeList :items="recipeItems"/>
+ <MakeRecipeList :items="recipeItems" :class="!$device.isMobile && 'mt-10'"/>
 </template>

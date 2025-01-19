@@ -37,7 +37,7 @@ const recipeItems = [
 ]
 </script>
 <template>
-  <div class="w-screen flex flex-col items-center">
+  <div class="w-screen flex flex-col items-center" :class="!$device.isMobile && 'mt-10'">
     <div class="w-[96%]">
       <MakeOptionList :items="boardItems"/>
       <MakeRecipeList :items="recipeItems" class="mt-5"/>

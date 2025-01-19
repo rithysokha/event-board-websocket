@@ -2,9 +2,10 @@
 const props = defineProps<{
   items: Array<{ label: string, description: string, imgUrl: string, to: string }>
 }>();
+const {data} = useAuth()
 const postBody = {
-  name: "my test board",
-  belongsTo: "user2345678q9wetrng",
+  name: "My board",
+  belongsTo: data.value?.user.email,
   background: "blue-400"
 }
 

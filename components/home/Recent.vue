@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const items = ref()
-const { data } = await useFetch('/api/board/user2345678q9wetrng')
+const {data : dataAuth} = useAuth()
+const { data } = await useFetch(`/api/board/${dataAuth.value?.user.email}`)
 items.value =data.value
 
 </script>

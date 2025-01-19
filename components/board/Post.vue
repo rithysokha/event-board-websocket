@@ -113,7 +113,7 @@ const sendData = async () => {
   <div class="p-4 flex flex-col gap-4 items-end">
     <UButton
       class="min-w-20 max-w-24 justify-center"
-      :loading="isUploadingPhoto || isSendingData"
+      :loading="isSendingData"
       type="submit"
       @click="sendData"
     >
