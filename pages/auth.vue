@@ -17,11 +17,32 @@ const items = [{
 }]
 
 const loginForm = reactive({ username: '', password: ''})
-const signUpForm = reactive({ currentPassword: '', newPassword: '' })
+const signUpForm = reactive({ username: '', password: '', confirmPassword: '' })
+const errorMessage = ref('')
+const loading = ref(false)
 
-function onSubmit(form: any) {
-  signIn('credentials')
-}
+const onSubmit = async (form: any) => {
+  errorMessage.value = '';
+  loading.value = true;
+
+  try {
+    const response = await signIn('credentials', {
+      redirect: false, // Prevents automatic redirection
+      username: loginForm.username,
+      password: loginForm.password,
+    });
+
+    if (response.error) {
+      errorMessage.value = 'Invalid username or password.';
+    } else {
+      window.location.href = '/dashboard/home'; // Redirect to the desired page
+    }
+  } catch (error) {
+    errorMessage.value = 'An unexpected error occurred.';
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
 <template>
@@ -51,13 +72,17 @@ function onSubmit(form: any) {
           </UFormGroup>
         </div>
         <div v-else-if="item.key === 'signup'" class="space-y-3">
-          <UFormGroup label="Current Sign Up" name="current" required>
+          <UFormGroup label="Username" name="username" required>
             <UInput v-model="signUpForm
-          .currentPassword" type="signup" required />
+          .username" type="text" required />
           </UFormGroup>
-          <UFormGroup label="New Sign Up" name="new" required>
+          <UFormGroup label="Password" name="password" required>
             <UInput v-model="signUpForm
-          .newPassword" type="signup" required />
+          .password" type="password" required />
+          </UFormGroup>
+          <UFormGroup label="Confirm Password" name="conPassword" required>
+            <UInput v-model="signUpForm
+          .confirmPassword" type="password" required />
           </UFormGroup>
         </div>
         <template #footer>

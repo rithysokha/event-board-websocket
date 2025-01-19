@@ -6,6 +6,7 @@ import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 definePageMeta({
   ssr: false,
+  auth:false
 });
 const config = useRuntimeConfig();
 const isOpenSlide = ref(false)
