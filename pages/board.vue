@@ -17,7 +17,7 @@ const header = ref("")
 const description = ref("")
 const bgColor = ref("")
 const websocketUrl = ref('')
-const history = ref<{ title: string, imgPublicId: string, description: string }[]>([]);
+const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh:number, imgWidth:number }[]>([]);
 
 const route = useRoute();
 const boardId = route.query.boardId;
@@ -41,7 +41,9 @@ watch(data, (newValue) => {
     history.value.push({
       title: message.title,
       imgPublicId: message.imgPublicId,
-      description: message.description
+      description: message.description,
+      imgHeigh: message.imgHeigh,
+      imgWidth: message.imgWidth
     });
   } catch (error) {
     console.error('Error parsing WebSocket message:', error);
@@ -52,10 +54,12 @@ const fetchMessageHistory = async () => {
   try {
     const response = await fetch(`/api/board/post?boardId=${boardId}`);
     const messages = await response.json();
-    history.value = messages.map((message: { title: string, imgPublicId:string ,description: string }) => ({
+    history.value = messages.map((message: { title: string, imgPublicId:string ,description: string, imgHeigh:number, imgWidth:number }) => ({
       title: message.title,
       imgPublicId: message.imgPublicId,
-      description: message.description
+      description: message.description,
+      imgHeigh: message.imgHeigh,
+      imgWidth: message.imgWidth
     }));
   } catch (error) {
     console.error('Error fetching message history:', error);
@@ -76,7 +80,9 @@ const handlePost = (message: any) => {
   history.value.push({
     title: message.title,
     imgPublicId: message.imgPublicId,
-    description: message.description
+    description: message.description,
+    imgHeigh: message.imgHeigh,
+    imgWidth: message.imgWidth
   })
   isOpenPost.value=message.isOpenPost
   send(JSON.stringify(message));
@@ -119,7 +125,12 @@ onMounted(() => {
           </div>
         </template>
         <p :class="entry.imgPublicId==''?'text-3xl':'text-md'">{{ entry.title }}</p>
-          <img loading="lazy" class="rounded-md"  v-if="entry.imgPublicId!==''" :src="handleGetImage(entry.imgPublicId, '50')" alt=""/>
+        <div class=" bg-no-repeat bg-center w-full bg-cover " v-if="entry.imgPublicId!==''" :style="{
+          backgroundImage: 'url(' + handleGetImage(entry.imgPublicId, '1')+ ')',
+          aspectRatio: entry.imgWidth + '/' + entry.imgHeigh,
+      }">
+          <img loading="lazy" class="rounded-md"  v-if="entry.imgPublicId!==''" :src="handleGetImage(entry.imgPublicId, '80')" alt=""/>
+        </div>
         <p>{{ entry.description }}</p>
         <template #footer>
           <div class="flex justify-between">

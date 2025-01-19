@@ -11,7 +11,9 @@ const postBody = ref({
   title: '',
   description: '',
   boardId: '',
-  imgPublicId: ''
+  imgPublicId: '',
+  imgHeigh:0,
+  imgWidth:0
 })
 
 const handleUploadFile = async (event: any) => {
@@ -59,12 +61,14 @@ const uploadFile = async (file: File) => {
   formData.append('file', file);
 
   try {
-    const res = await $fetch<{ public_id: string }>('/api/image', {
+    const res = await $fetch<{ public_id: string, height:number, width: number }>('/api/image', {
       method: 'POST',
       body: formData,
     });
     postBody.value.imgPublicId = res.public_id;
-    console.log('File uploaded successfully:', res.public_id);
+    postBody.value.imgHeigh=res.height;
+    postBody.value.imgWidth = res.width;
+    console.log('File uploaded successfully:', res);
   } catch (error) {
     console.error('Upload Error:', error);
   } finally {
@@ -74,6 +78,7 @@ const uploadFile = async (file: File) => {
 
 const savePostToDB = async () => {
   try {
+    console.log(postBody.value)
     postBody.value.boardId = props.boardId
     await fetch('api/board/post', {
       method: 'POST',
@@ -117,7 +122,7 @@ const sendData = async () => {
       type="submit"
       @click="sendData"
     >
-      Publish
+      {{ isSendingData?'Uploading':'Publish' }}
     </UButton>
     <UInput v-model="postBody.title" class="w-full" placeholder="Subject" />
     <div
