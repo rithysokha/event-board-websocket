@@ -25,9 +25,9 @@ onMounted(() => {
     v-slot="{ item }"
     :items="items"
     :ui="{ item: 'basis-full' }"
-    class="rounded-lg overflow-hidden"
+    class="rounded-lg overflow-hidden min-h-40"
   >
-    <img :src="item" class="w-full" draggable="false" alt="Webboard.live">
+    <img :src="item" class="w-full aspect-video" draggable="false" alt="Webboard.live">
   </UCarousel>
 </template>
 

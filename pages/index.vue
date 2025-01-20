@@ -29,7 +29,7 @@ onMounted(() => {
   </UContainer>
   <UContainer class="w-full pt-10 flex flex-col items-center gap-2">
     <p class="text-2xl text-primary text-center font-bold">A virtual board to hype up your event while waiting</p>
-    <div class="w-full" ref="animationContainer"></div>
+    <div class="w-full min-h-[50vh]" ref="animationContainer"></div>
     <UButton @Click="navigateTo('/auth')">Sign up for free</UButton>
   </UContainer>
   <UContainer class="flex flex-col items-center gap-2">
