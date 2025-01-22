@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref, watch, onMounted } from 'vue'
 import { useWebSocket } from '@vueuse/core'
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
@@ -33,7 +32,7 @@ description.value = boardData.value.description
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
 }
-const { status, data, send, open, close } = useWebSocket(websocketUrl.value)
+const {  data, send } = useWebSocket(websocketUrl.value)
 
 watch(data, (newValue) => {
   try {
@@ -101,7 +100,13 @@ const hanldeOpenQr = (isOpen: boolean)=>{
   isOpenSlide.value=false
   isOpenQr.value=isOpen;
 }
+const handleLike = ()=>({
 
+})
+
+const handlePostComment = ()=>{
+
+}
 onMounted(() => {
   fetchMessageHistory();
 });
@@ -134,8 +139,8 @@ onMounted(() => {
         <p>{{ entry.description }}</p>
         <template #footer>
           <div class="flex justify-between">
-            <UIcon name="i-heroicons-chat-bubble-bottom-center-text" />
-            <UIcon name="i-heroicons-hand-thumb-up" />
+            <UButton @Click="handleLike" icon="i-heroicons-heart" variant="ghost" v-if="boardData.reaction"/>
+            <UButton @Click="handlePostComment" icon="i-heroicons-chat-bubble-bottom-center-text" variant="ghost" v-if="boardData.comment" />
           </div>
         </template>
       </UCard>

@@ -1,8 +1,11 @@
 <script setup lang="ts">
-const  Recent  = defineAsyncComponent(()=> import('~/components/home/Recent.vue'))
-const  MadeByMe =defineAsyncComponent(() =>import ('~/components/home/MadeByMe.vue'))
-const Trashed =defineAsyncComponent(()=> import('~/components/home/Trashed.vue'))
-const Favorite =defineAsyncComponent(()=> import('~/components/home/Favorite.vue'))
+definePageMeta({
+  middleware: 'sidebase-auth'
+})
+const Recent = defineAsyncComponent(() => import('~/components/home/Recent.vue'))
+const MadeByMe = defineAsyncComponent(() => import('~/components/home/MadeByMe.vue'))
+const Trashed = defineAsyncComponent(() => import('~/components/home/Trashed.vue'))
+const Favorite = defineAsyncComponent(() => import('~/components/home/Favorite.vue'))
 
 const items = [
   {
@@ -22,10 +25,10 @@ const items = [
   },
   {
     key: 'favorite',
-    label: 'Favorite',
+    label: 'Favorites',
     component: Favorite
   }
-];
+]
 </script>
 
 <template>

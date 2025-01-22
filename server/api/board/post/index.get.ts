@@ -1,6 +1,7 @@
 import { connectToDatabase } from '~/utils/mongodb';
 
 export default defineEventHandler(async (event) => {
+  try{
   const { boardId } = getQuery(event);
 
   if (!boardId || typeof boardId !== 'string') {
@@ -20,6 +21,9 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'No posts found for this board'
     });
   }
-
   return posts;
+}
+  catch(error){
+    return error
+  }
 });

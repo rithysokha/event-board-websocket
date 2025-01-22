@@ -10,7 +10,7 @@ export const boardSchema = Joi.object({
   font: Joi.string().default('manrope'),
   sort: Joi.string().default('desc'),
   comment: Joi.boolean().default(true),
-  reaction: Joi.string().default('like'),
+  reaction: Joi.boolean().default(true),
   moderation: Joi.boolean().default(false),
   createdAt: Joi.date().timestamp('javascript').default(() => new Date()),
   updatedAt: Joi.date().timestamp('javascript').default(null)

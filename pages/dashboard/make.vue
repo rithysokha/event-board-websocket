@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+definePageMeta({
+  middleware:'sidebase-auth'
+})
 const boardItems =[{
   label: 'Blank Board',
   description: 'Wall, grid, Stream',
