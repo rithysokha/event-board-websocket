@@ -5,7 +5,7 @@ definePageMeta({
 </script>
 <template>
   <div>
-    
+    This page is only accessable by admin
   </div>
 </template>
 
