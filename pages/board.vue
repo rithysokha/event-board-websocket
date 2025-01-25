@@ -67,7 +67,7 @@ const fetchMessageHistory = async () => {
 
 const handleGetImage = (publicId : string, qual: string) => {
   if(publicId  && publicId.length>0){
-    const myImage = new CloudinaryImage(publicId, { cloudName: config.public.cloudeName })
+    const myImage = new CloudinaryImage(publicId, { cloudName: "dbiso7uht" })
     .resize(scale().width(1000))
     .delivery(quality(qual))
     .delivery(format('auto'));
