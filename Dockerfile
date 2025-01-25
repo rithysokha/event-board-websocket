@@ -2,7 +2,6 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY .env /app/.env
 COPY .output /app/.output
 COPY package*.json /app/
 
