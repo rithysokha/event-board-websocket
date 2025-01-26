@@ -35,7 +35,7 @@ const onSubmit = async (form: any) => {
     if (response.error) {
       errorMessage.value = 'Invalid username or password.';
     } else {
-      window.location.href = '/dashboard/home'; // Redirect to the desired page
+      window.location.href = '/dashboard/home';
     }
   } catch (error) {
     errorMessage.value = 'An unexpected error occurred.';

@@ -18,6 +18,7 @@ const handleSignOut = ()=>{
   signOut({ callbackUrl: '/auth' })
   // showToast()
 }
+console.log(data.value?.user)
 </script>
 
 <template>
@@ -25,6 +26,7 @@ const handleSignOut = ()=>{
     <UAvatar :src="data?.user.image" size="3xl" />
     <p class="font-bold"> {{ data?.user.name }} </p>
     <p>{{ data?.user.email }} </p>
+    <p>{{data?.user.role}}</p>
     <UButton class="mt-14" color="red" @click="handleSignOut">
       Signout
     </UButton>

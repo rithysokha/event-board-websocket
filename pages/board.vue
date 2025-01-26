@@ -7,7 +7,6 @@ definePageMeta({
   ssr: false,
   auth:false
 });
-const config = useRuntimeConfig();
 const isOpenSlide = ref(false)
 const isOpenPost = ref(false)
 const isOpenBg = ref(false)

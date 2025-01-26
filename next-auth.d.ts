@@ -5,7 +5,14 @@ declare module 'next-auth' {
       name: string
       email: string
       image: string
-      role: 'admin' | 'user'
+      role: 'user' | 'admin'
     }
+  }
+}
+
+declare module 'next-auth/jwt' {
+  /** Returned by the `jwt` callback and `getToken` */
+  interface JWT {
+    sessionToken?: string | unknown
   }
 }
