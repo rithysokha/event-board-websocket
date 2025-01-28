@@ -46,17 +46,11 @@ const onSubmit = async (form: any) => {
   loading.value = true;
 
   try {
-    const response = await signIn('credentials', {
-      redirect: false, // Prevents automatic redirection
+   await signIn('credentials', {
+      redirect: false,
       username: loginForm.username,
       password: loginForm.password,
     });
-
-    if (response.error) {
-      errorMessage.value = 'Invalid username or password.';
-    } else {
-      window.location.href = '/dashboard/home';
-    }
   } catch (error) {
     errorMessage.value = 'An unexpected error occurred.';
   } finally {

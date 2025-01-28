@@ -1,5 +1,5 @@
 <template>
-  <div class="px-5">
+  <div class="px-5 sm:w-3/4 lg:w-1/2">
     <UAccordion
     color="primary"
     variant="soft"

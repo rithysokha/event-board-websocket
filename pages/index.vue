@@ -27,7 +27,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col w-screen gap-2 mt-3">
+  <div class="flex flex-col w-screen gap-2 mt-3 items-center">
   <UContainer class="flex w-full justify-end gap-2">
     <UButton @Click="navigateTo('/auth')">Login</UButton>
     <UButton @Click="navigateTo('/auth')">Sign up</UButton>

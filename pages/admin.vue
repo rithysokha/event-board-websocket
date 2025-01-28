@@ -4,8 +4,14 @@ definePageMeta({
 })
 </script>
 <template>
-  <div>
-    This page is only accessable by admin
-  </div>
+  feature:
+  <ul>
+    <li>
+      Create board template
+    </li>
+    <li>
+      create board recipe
+    </li>
+  </ul>
 </template>
 

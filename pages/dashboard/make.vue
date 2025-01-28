@@ -7,12 +7,6 @@ const boardItems =[{
   description: 'Wall, grid, Stream',
   imgUrl: 'https://cdn.prod.website-files.com/63a02e61e7ffb565c30bcfc7/65ea99845e53084280471b71_most%20beautiful%20landscapes%20in%20the%20world.webp',
   to: '/dashboard/home'
-},
-{
-  label: 'Board 2',
-  description: 'Wall, grid, Stream',
-  imgUrl: 'https://cdn.prod.website-files.com/63a02e61e7ffb565c30bcfc7/65ea99845e53084280471b71_most%20beautiful%20landscapes%20in%20the%20world.webp',
-  to: '/dashboard/home'
 }
 ]
 
