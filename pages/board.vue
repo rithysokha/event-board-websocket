@@ -7,6 +7,7 @@ definePageMeta({
   ssr: false,
   auth:false
 });
+const {data:authData} = useAuth()
 const isOpenSlide = ref(false)
 const isOpenPost = ref(false)
 const isOpenBg = ref(false)
@@ -85,6 +86,13 @@ const handlePost = (message: any) => {
   isOpenPost.value=message.isOpenPost
   send(JSON.stringify(message));
 }
+
+const handleOpenSlide = ()=>{
+  if(authData.value?.user.email==boardData.value.belongsTo){
+    isOpenSlide.value=true
+  }
+}
+
 const handleUpdate = (newName: string) => {
   header.value = newName;
   isOpenSlide.value = false
@@ -117,7 +125,7 @@ onMounted(() => {
     <QrCode :board-id="boardId" :width="$device.isMobile?200:500" :height="$device.isMobile?200:500"/>
   </UModal>
   <div class="bg-cover min-h-screen" :class="'bg-' + bgColor">
-    <h1 @click="isOpenSlide = true" class=" cursor-pointer text-2xl mb-4 ">
+    <h1 @click="handleOpenSlide" class=" cursor-pointer text-2xl mb-4 ">
       {{ header }}
     </h1>
 
