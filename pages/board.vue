@@ -107,8 +107,8 @@ const hanldeOpenQr = (isOpen: boolean)=>{
   isOpenSlide.value=false
   isOpenQr.value=isOpen;
 }
-const handleLike = ()=>({
 
+const handleLike = ()=>({
 })
 
 const handlePostComment = ()=>{
@@ -138,9 +138,19 @@ onMounted(() => {
     >
       <UCard class="flex flex-col justify-between">
         <template #header>
-          <div class="flex gap-1 h-5">
-            <UAvatar src="https://github.com/benjamincanac.png" />
-            <p class="font-bold">Sokha Rithy</p>
+          <div class="flex gap-1 h-5 justify-between">
+            <div class="flex gap-1">
+              <UAvatar src="https://github.com/benjamincanac.png" />
+              <p class="font-bold">Sokha Rithy</p>
+            </div>
+            <UDropdown  :items="[
+              [{
+                label: 'Delete(not finish)',
+                icon: 'i-heroicons-trash-20-solid'
+              }]
+            ]" :ui="{base:'outline-none'}" :popper="{ arrow:true }">
+              <UButton color="white" trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost"/>
+            </UDropdown>
           </div>
         </template>
         <p :class="entry.imgPublicId === '' ? 'text-3xl' : 'text-md'">
