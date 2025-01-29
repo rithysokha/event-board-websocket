@@ -4,7 +4,7 @@ const emit = defineEmits(['update']);
 const props = defineProps<{
   boardId: string
 }>();
-const url = `${config.public.baseUrl}/board?boardId=${props.boardId}`;
+const url = `https://webboard.live/board?boardId=${props.boardId}`;
 const copyToClipboard = () => {
   navigator.clipboard.writeText(url);
 }
