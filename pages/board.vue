@@ -120,30 +120,60 @@ onMounted(() => {
     <h1 @click="isOpenSlide = true" class=" cursor-pointer text-2xl mb-4 ">
       {{ header }}
     </h1>
-    <div class=" mx-2 grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-      <UCard class="flex flex-col justify-between" v-for="entry in history" :key="entry.title">
+
+<!-- Display post -->
+  <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 space-y-4 mx-1">
+    <div
+      v-for="entry in history"
+      :key="entry.title"
+      class="mb-4 break-inside-avoid-column"
+    >
+      <UCard class="flex flex-col justify-between">
         <template #header>
           <div class="flex gap-1 h-5">
             <UAvatar src="https://github.com/benjamincanac.png" />
             <p class="font-bold">Sokha Rithy</p>
           </div>
         </template>
-        <p :class="entry.imgPublicId==''?'text-3xl':'text-md'">{{ entry.title }}</p>
-        <div class=" bg-no-repeat bg-center w-full bg-cover " v-if="entry.imgPublicId!==''" :style="{
-          backgroundImage: 'url(' + handleGetImage(entry.imgPublicId, '1')+ ')',
-          aspectRatio: entry.imgWidth + '/' + entry.imgHeigh,
-      }">
-          <img loading="lazy" class="rounded-md"  v-if="entry.imgPublicId!==''" :src="handleGetImage(entry.imgPublicId, '80')" alt=""/>
+        <p :class="entry.imgPublicId === '' ? 'text-3xl' : 'text-md'">
+          {{ entry.title }}
+        </p>
+        <div
+          v-if="entry.imgPublicId !== ''"
+          class="bg-no-repeat bg-center bg-cover w-full"
+          :style="{
+            backgroundImage: 'url(' + handleGetImage(entry.imgPublicId, '1') + ')',
+            aspectRatio: entry.imgWidth + '/' + entry.imgHeigh
+          }"
+        >
+          <img
+            loading="lazy"
+            class="rounded-md"
+            :src="handleGetImage(entry.imgPublicId, '80')"
+            alt=""
+          />
         </div>
         <p>{{ entry.description }}</p>
         <template #footer>
           <div class="flex justify-between">
-            <UButton @Click="handleLike" icon="i-heroicons-heart" variant="ghost" v-if="boardData.reaction"/>
-            <UButton @Click="handlePostComment" icon="i-heroicons-chat-bubble-bottom-center-text" variant="ghost" v-if="boardData.comment" />
+            <UButton
+              v-if="boardData.reaction"
+              @click="handleLike"
+              icon="i-heroicons-heart"
+              variant="ghost"
+            />
+            <UButton
+              v-if="boardData.comment"
+              @click="handlePostComment"
+              icon="i-heroicons-chat-bubble-bottom-center-text"
+              variant="ghost"
+            />
           </div>
         </template>
       </UCard>
     </div>
+  </div>
+
   </div>
   <div>
     <UModal v-model="isOpenPost">
