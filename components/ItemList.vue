@@ -32,13 +32,14 @@ const handleDeleteBoard = async (boardId: string)=>{
     <div class="grid gap-2 grid-cols-1 sm:grid-cols-3 md:grid-cols-4">
       <UCard v-for="item in items"  :key="item.name"  class="w-full">
   
-        <div class="flex justify-between  sm:w-full sm:h-28 md:h-32 sm:flex-col sm:items-center ">
+        <div class="flex justify-between  sm:w-full sm:h-28 md:h-40 sm:flex-col sm:items-center ">
           <div class="w-10 rounded-md sm:w-full sm:h-full cursor-pointer" @click="navigateBoard(item._id)" :class="'bg-'+item.background"></div>
           <div class="flex w-full justify-between" >
             <p class="w-full text-end sm:text-start">{{item.name}}</p>
             <UDropdown  :items="[
               [{
                 label: 'Delete',
+                icon: 'i-heroicons-trash-20-solid',
                 click: () => handleDeleteBoard(item._id)
               }]
             ]" :ui="{base:'outline-none'}" :popper="{ arrow:true }">
