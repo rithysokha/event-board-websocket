@@ -16,7 +16,8 @@ const header = ref("")
 const description = ref("")
 const bgColor = ref("")
 const websocketUrl = ref('')
-const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh:number, imgWidth:number }[]>([]);
+const isDeleting = ref(false)
+const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh:number, imgWidth:number, id:string }[]>([]);
 
 const route = useRoute();
 const boardId = route.query.boardId;
@@ -42,7 +43,8 @@ watch(data, (newValue) => {
       imgPublicId: message.imgPublicId,
       description: message.description,
       imgHeigh: message.imgHeigh,
-      imgWidth: message.imgWidth
+      imgWidth: message.imgWidth,
+      id:message.id
     });
   } catch (error) {
     console.error('Error parsing WebSocket message:', error);
@@ -53,12 +55,13 @@ const fetchMessageHistory = async () => {
   try {
     const response = await fetch(`/api/board/post?boardId=${boardId}`);
     const messages = await response.json();
-    history.value = messages.map((message: { title: string, imgPublicId:string ,description: string, imgHeigh:number, imgWidth:number }) => ({
+    history.value = messages.map((message: { title: string, imgPublicId:string ,description: string, imgHeigh:number, imgWidth:number, _id:string }) => ({
       title: message.title,
       imgPublicId: message.imgPublicId,
       description: message.description,
       imgHeigh: message.imgHeigh,
-      imgWidth: message.imgWidth
+      imgWidth: message.imgWidth,
+      id:message._id
     }));
   } catch (error) {
     console.error('Error fetching message history:', error);
@@ -81,10 +84,29 @@ const handlePost = (message: any) => {
     imgPublicId: message.imgPublicId,
     description: message.description,
     imgHeigh: message.imgHeigh,
-    imgWidth: message.imgWidth
+    imgWidth: message.imgWidth,
+    id:message.id
   })
   isOpenPost.value=message.isOpenPost
   send(JSON.stringify(message));
+}
+const handleDeletePost = async (postId: string)=>{
+  try{
+    isDeleting.value=true
+   const res = await $fetch(`/api/board/post/${postId}`, {
+      method:'delete'
+    })
+    if(res?.statusCode==200){
+      const index = history.value.findIndex(post => post.id === postId)
+      if (index !== -1) {
+        history.value.splice(index, 1)
+      }
+    }
+    isDeleting.value=false
+  }catch(e){
+    console.log(e)
+    isDeleting.value=false
+  }
 }
 
 const handleOpenSlide = ()=>{
@@ -145,8 +167,9 @@ onMounted(() => {
             </div>
             <UDropdown  :items="[
               [{
-                label: 'Delete(not finish)',
-                icon: 'i-heroicons-trash-20-solid'
+                label: 'Delete',
+                icon: 'i-heroicons-trash-20-solid',
+                click: () => handleDeletePost(entry.id)
               }]
             ]" :ui="{base:'outline-none'}" :popper="{ arrow:true }">
               <UButton color="white" trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost"/>

@@ -6,6 +6,7 @@ const props = defineProps<{
 const isUploadingPhoto = ref(false)
 const isSendingData = ref(false)
 const previewImage = ref<string | null>(null);
+const postId = ref("")
 const emit = defineEmits(['postMessage']);
 const postBody = ref({
   title: '',
@@ -68,7 +69,6 @@ const uploadFile = async (file: File) => {
     postBody.value.imgPublicId = res.public_id;
     postBody.value.imgHeigh=res.height;
     postBody.value.imgWidth = res.width;
-    console.log('File uploaded successfully:', res);
   } catch (error) {
     console.error('Upload Error:', error);
   } finally {
@@ -80,13 +80,15 @@ const savePostToDB = async () => {
   try {
     console.log(postBody.value)
     postBody.value.boardId = props.boardId
-    await fetch('api/board/post', {
+    const savedPost = await fetch('api/board/post', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(postBody.value)
     });
+    const responseData = await savedPost.json()
+    postId.value = responseData.insertedId;
   } catch (error) {
     console.error('Error creating board:', error);
   }
@@ -100,14 +102,16 @@ const sendData = async () => {
       await new Promise((resolve) => setTimeout(resolve, 100)); 
     }
   }
+  savePostToDB();
   const message = {
     title: postBody.value.title,
     imgPublicId: postBody.value.imgPublicId,
     description: postBody.value.description,
+    id: postId,
     isOpenPost:false
   };
   emit('postMessage', message);
-  savePostToDB();
+  
   isSendingData.value=false
   postBody.value.title = '';
   postBody.value.imgPublicId = '';
