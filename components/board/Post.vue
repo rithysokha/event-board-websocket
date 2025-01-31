@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { RefSymbol } from '@vue/reactivity';
 import imageCompression from 'browser-image-compression';
 const props = defineProps<{
   boardId: string
@@ -23,7 +24,6 @@ const handleUploadFile = async (event: any) => {
     console.error('No file selected');
     return;
   }
-
   isUploadingPhoto.value = true;
   const file = files[0];
   const reader = new FileReader();
@@ -78,7 +78,6 @@ const uploadFile = async (file: File) => {
 
 const savePostToDB = async () => {
   try {
-    console.log(postBody.value)
     postBody.value.boardId = props.boardId
     const savedPost = await fetch('api/board/post', {
       method: 'POST',
@@ -107,6 +106,8 @@ const sendData = async () => {
     title: postBody.value.title,
     imgPublicId: postBody.value.imgPublicId,
     description: postBody.value.description,
+    imageHeigh: postBody.value.imgHeigh,
+    imageWidth: postBody.value.imgWidth,
     id: postId,
     isOpenPost:false
   };

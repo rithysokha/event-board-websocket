@@ -69,7 +69,7 @@ const hanldeOpenQr = (isOpen: boolean)=>{
   </div>
   <div>
     <USlideover v-model="isOpenSlide">
-      <UButton class="w-10 h-10" @click="isOpenSlide = false" label="X" />
+      <UButton class="w-10 h-10 flex justify-center" @click="isOpenSlide = false" icon="i-heroicons-x-mark" />
       <BoardName :board-name="header" :board-id="boardId" @update="handleUpdate" />
       <BoardDescription :board-desc="description" :board-id="boardId" @update="handleUpdateDesc" />
       <UCard class="flex justify-between items-center">
@@ -80,7 +80,7 @@ const hanldeOpenQr = (isOpen: boolean)=>{
         </div>
       </UCard>
       <USlideover :overlay="false" v-model="isOpenBg">
-        <UButton class="w-10 h-10" @click="isOpenBg = false" label="X" />
+        <UButton class="w-10 h-10 flex justify-center" @click="isOpenBg = false" icon="i-heroicons-x-mark" />
         <BoardBackground :board-id="boardId" @update="handleUpdateColor" />
       </USlideover>
       <BoardShare :board-id="boardId" @update="hanldeOpenQr"/>

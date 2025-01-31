@@ -15,6 +15,8 @@ const websocketUrl = ref('')
 const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh:number, imgWidth:number, id:string }[]>([]);
 const route = useRoute();
 const boardId = route.query.boardId;
+const isOpenDeletePost = ref(false)
+const postIdToDelete = ref("")
 
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
@@ -66,32 +68,39 @@ const handleGetImage = (publicId : string, qual: string) => {
   return '';
 }
 
-const handleDeletePost = async (postId: string)=>{
+const handleDeletePost = async ()=>{
   try{
     isDeleting.value=true
-   const res = await $fetch(`/api/board/post/${postId}`, {
+    console.log("deleting post ", postIdToDelete.value)
+    const res = await $fetch(`/api/board/post/${postIdToDelete.value}`, {
       method:'delete'
     })
     if(res?.statusCode==200){
-      const index = history.value.findIndex(post => post.id === postId)
+      const index = history.value.findIndex(post => post.id === postIdToDelete.value)
       if (index !== -1) {
         history.value.splice(index, 1)
       }
     }
     isDeleting.value=false
+    isOpenDeletePost.value=false
+    console.log("post deleted")
   }catch(e){
     console.log(e)
     isDeleting.value=false
   }
 }
 
+const handleDisplayDeletePrompt = (postId:string) =>{
+  postIdToDelete.value=postId
+  isOpenDeletePost.value = true
+}
 const handlePost = (message: any) => {
   history.value.push({
     title: message.title,
     imgPublicId: message.imgPublicId,
     description: message.description,
-    imgHeigh: message.imgHeigh,
-    imgWidth: message.imgWidth,
+    imgHeigh: message.imageHeigh,
+    imgWidth: message.imageWidth,
     id:message.id
   })
   isOpenPost.value=message.isOpenPost
@@ -110,6 +119,18 @@ onMounted(() => {
 </script>
 <template>
   <UButton @click="isOpenPost = true" size="xl" icon="i-heroicons-plus" class="fixed z-50 bottom-2 right-2 rounded-full hover:rotate-90 ease-in-out duration-300 " />
+  
+  <UModal v-model="isOpenDeletePost">
+    <div class="p-4 m-4 text-center">
+      <p class="text-red-500 font-bold mb-6">
+        Are you sure to delete this post?
+      </p>
+      <div class="flex justify-center gap-4">
+        <UButton class="w-1/4 flex justify-center"  label="No" @click="isOpenDeletePost=false"/>
+        <UButton :loading="isDeleting" class="w-1/4 flex justify-center" color="red" icon="i-heroicons-trash" label="Yes sure!" @click="handleDeletePost"/>
+      </div>
+    </div>
+  </UModal>
   <UModal v-model="isOpenPost">
     <BoardPost :board-id="boardId" @post-message="handlePost" />
   </UModal>
@@ -124,13 +145,13 @@ onMounted(() => {
           <div class="flex gap-1 h-5 justify-between">
             <div class="flex gap-1">
               <UAvatar src="https://github.com/benjamincanac.png" />
-              <p class="font-bold">Sokha Rithy</p>
+              <p class="font-bold">Lorem ipsum</p>
             </div>
             <UDropdown  :items="[
               [{
                 label: 'Delete',
                 icon: 'i-heroicons-trash-20-solid',
-                click: () => handleDeletePost(entry.id)
+                click: () => handleDisplayDeletePrompt(entry.id)
               }]
             ]" :ui="{base:'outline-none'}" :popper="{ arrow:true }">
               <UButton color="white" trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost"/>
