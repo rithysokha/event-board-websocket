@@ -17,6 +17,7 @@ const route = useRoute();
 const boardId = route.query.boardId;
 const isOpenDeletePost = ref(false)
 const postIdToDelete = ref("")
+const toast = useToast()
 
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
@@ -88,6 +89,7 @@ const handleDeletePost = async ()=>{
     console.log(e)
     isDeleting.value=false
   }
+  toast.add({title: 'Post deleted', icon:'i-heroicons-trash'})
 }
 
 const handleDisplayDeletePrompt = (postId:string) =>{
@@ -119,7 +121,6 @@ onMounted(() => {
 </script>
 <template>
   <UButton @click="isOpenPost = true" size="xl" icon="i-heroicons-plus" class="fixed z-50 bottom-2 right-2 rounded-full hover:rotate-90 ease-in-out duration-300 " />
-  
   <UModal v-model="isOpenDeletePost">
     <div class="p-4 m-4 text-center">
       <p class="text-red-500 font-bold mb-6">
@@ -127,7 +128,7 @@ onMounted(() => {
       </p>
       <div class="flex justify-center gap-4">
         <UButton class="w-1/4 flex justify-center"  label="No" @click="isOpenDeletePost=false"/>
-        <UButton :loading="isDeleting" class="w-1/4 flex justify-center" color="red" icon="i-heroicons-trash" label="Yes sure!" @click="handleDeletePost"/>
+        <UButton :loading="isDeleting" class="w-1/4 flex justify-center" color="red" icon="i-heroicons-trash" label="Yes!" @click="handleDeletePost"/>
       </div>
     </div>
   </UModal>

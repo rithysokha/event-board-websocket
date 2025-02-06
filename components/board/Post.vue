@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { RefSymbol } from '@vue/reactivity';
 import imageCompression from 'browser-image-compression';
 const props = defineProps<{
   boardId: string
 }>();
+const toast = useToast()
 const isUploadingPhoto = ref(false)
 const isSendingData = ref(false)
 const previewImage = ref<string | null>(null);
@@ -88,6 +88,7 @@ const savePostToDB = async () => {
     });
     const responseData = await savedPost.json()
     postId.value = responseData.insertedId;
+    toast.add({title: 'You have posted', icon: 'i-heroicons-check-circle'})
   } catch (error) {
     console.error('Error creating board:', error);
   }
@@ -96,7 +97,6 @@ const savePostToDB = async () => {
 const sendData = async () => {
   isSendingData.value=true
   if (isUploadingPhoto.value) {
-    console.log('Waiting for file upload to finish...');
     while (isUploadingPhoto.value) {
       await new Promise((resolve) => setTimeout(resolve, 100)); 
     }
@@ -117,6 +117,7 @@ const sendData = async () => {
   postBody.value.title = '';
   postBody.value.imgPublicId = '';
   postBody.value.description = '';
+
 }
 </script>
 <template>

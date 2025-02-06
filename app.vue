@@ -1,8 +1,9 @@
 <template>
   <NavigationBar v-if="status=='authenticated'"  />
   <div :class="status=='authenticated'&&'mt-12'"></div>
-    <NuxtRouteAnnouncer />
-    <NuxtPage />
+  <NuxtRouteAnnouncer />
+  <NuxtPage />
+  <UNotifications />
 </template>
 
 <script setup lang="ts">

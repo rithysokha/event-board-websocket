@@ -60,7 +60,7 @@ const hanldeOpenQr = (isOpen: boolean)=>{
     <QrCode :board-id="boardId" :width="$device.isMobile?200:500" :height="$device.isMobile?200:500"/>
   </UModal>
   <div class="bg-cover min-h-screen" :class="'bg-' + bgColor">
-    <h1 @click="handleOpenSlide" class=" cursor-pointer text-2xl mb-4 ">
+    <h1 @click="handleOpenSlide" class="font-bold cursor-pointer text-2xl mb-4 ">
       {{ header }}
     </h1>
 

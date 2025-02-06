@@ -12,6 +12,7 @@ const handleDeleteBoard = async ()=>{
   try{
     isDeleting.value=true
    const res = await $fetch(`/api/board/${boardIdToDelete.value}`, {
+    // @ts-expect-error
       method:'delete'
     })
     if(res?.statusCode==200){
