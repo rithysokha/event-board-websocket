@@ -3,8 +3,8 @@ declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
       name: string
-      email: string
-      image: string
+      username: string
+      picture: string
       role: 'user' | 'admin'
     }
   }

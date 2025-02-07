@@ -8,7 +8,7 @@ definePageMeta({
 import lottie from 'lottie-web'
 import art from "../assets/user_research.json"
 const isLoading = ref(true)
-
+const credentials = { username: 'jsmith', password: 'hunter2' }
 const animationContainer = ref<HTMLElement | null>(null)
 onMounted(() => {
   if (animationContainer.value) {
@@ -44,7 +44,6 @@ const loading = ref(false)
 const onSubmit = async (form: any) => {
   errorMessage.value = '';
   loading.value = true;
-
   try {
    await signIn('credentials', {
       redirect: false,
