@@ -14,7 +14,7 @@ const handleSignOut = ()=>{
 
 <template>
   <div class="flex flex-col items-center gap-2 mt-14">
-    <UAvatar :src="data?.user.picture" size="3xl" />
+    <UAvatar :src="data?.user.image" size="3xl" />
     <p class="font-bold"> {{ data?.user.name }} </p>
     <p>{{ data?.user.username }} </p>
     <p>{{data?.user.role}}</p>

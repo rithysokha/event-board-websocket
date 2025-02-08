@@ -22,7 +22,17 @@ const desktopLinks = [
     label: 'Make',
     icon: 'i-heroicons-plus-circle',
     to: '/dashboard/make'
-  }], [{
+  },
+  ...(data.value?.user?.role === 'admin'
+      ? [
+          {
+            label: 'Admin Dashboard',
+            icon: 'i-heroicons-adjustments-horizontal',
+            to: '/admin'
+          }
+        ]
+      : [])
+], [{
     label: data.value?.user.name,
     avatar: {
       src: data.value?.user.image

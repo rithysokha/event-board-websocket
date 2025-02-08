@@ -62,8 +62,8 @@ export default NuxtAuthHandler({
           if (user) {
         const userInfo = await collection.findOne({ username: user.email})
         token.role = userInfo.role;
-        token.email = userInfo.username;
-        token.picture = userInfo.picture
+        token.username = userInfo.username;
+        token.image = userInfo.image
         token.name = userInfo.name;
       }
       console.log(token)

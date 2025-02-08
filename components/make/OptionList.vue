@@ -12,7 +12,7 @@ const backgroundList =[
 const randomIndex = Math.floor(Math.random()*backgroundList.length)
 const postBody = {
   name: "My board",
-  belongsTo: data.value?.user.email,
+  belongsTo: data.value?.user.username,
   background: backgroundList[randomIndex]
 }
 

@@ -4,7 +4,7 @@ declare module 'next-auth' {
     user: {
       name: string
       username: string
-      picture: string
+      image: string
       role: 'user' | 'admin'
     }
   }

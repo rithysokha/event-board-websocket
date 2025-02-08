@@ -4,12 +4,13 @@ import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   try {
+    const {belongsTo} = getRouterParams(event)
     const { boardId } = getQuery(event);
-    console.log(" id" , boardId)
-    if (!boardId) {
+    
+    if (!boardId || typeof boardId !== 'string') {
       throw createError({
         statusCode: 400,
-        message: 'Board ID is required'
+        statusMessage: 'Board ID is required and must be a string'
       });
     }
 
