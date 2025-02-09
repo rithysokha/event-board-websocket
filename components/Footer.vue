@@ -34,21 +34,21 @@ const socials = [
     name: 'Youtube',
     icon: youtube,
     value: 'tel:+855 968 325 154',
-    placeHolder: 'Facebook'
+    placeHolder: 'Youtube'
   },
   {
     id: 3,
     name: 'X',
     icon: x,
     value: 'tel:+855 968 325 154',
-    placeHolder: 'Facebook'
+    placeHolder: 'X(Twitter)'
   },
   {
     id: 4,
     name: 'Instagarm',
     icon: instagram,
     value: 'tel:+855 968 325 154',
-    placeHolder: 'Facebook'
+    placeHolder: 'Instagram'
   },
 ]
 onMounted(() => {
