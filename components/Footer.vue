@@ -64,6 +64,7 @@ onMounted(() => {
 })
 
 watch(language, (newLanguage) =>{
+  // @ts-expect-error
   setLocale(newLanguage)
 })
 </script>

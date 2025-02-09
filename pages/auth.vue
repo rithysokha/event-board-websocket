@@ -8,9 +8,10 @@ definePageMeta({
 import googleIcon from "../assets/google.svg";
 import lottie from 'lottie-web'
 import art from "../assets/user_research.json"
-import type { FormError } from '#ui/types'
 import Joi from "joi";
 
+const isLoadingBtn = ref(false)
+const isLoadingBtnGoogle = ref(false)
 const isLoading = ref(true)
 const animationContainer = ref<HTMLElement | null>(null)
 
@@ -26,8 +27,8 @@ const items = [{
 }]
 
 const loginSchema = Joi.object({
-  email: Joi.string().email({ tlds: { allow: false } }).required().messages({
-    'string.email': 'Username must be a valid email',
+  email: Joi.string().required().messages({
+    'string.empty': 'Username is not allowed to be empty',
     'any.required': 'Username is required'
   }),
   password: Joi.string().min(8).required().messages({
@@ -37,8 +38,8 @@ const loginSchema = Joi.object({
 });
 
 const signUpSchema = Joi.object({
-  email: Joi.string().email({ tlds: { allow: false } }).required().messages({
-    'string.email': 'Username must be a valid email',
+  email: Joi.string().required().messages({
+    'string.empty': 'Username is not allowed to be empty',
     'any.required': 'Username is required'
   }),
   password: Joi.string().min(8).required().messages({
@@ -53,25 +54,13 @@ const signUpSchema = Joi.object({
   })
 });
 
-const validateSignUp = (state: any): FormError[] => {
-  const errors = []
-  if (!state.email) errors.push({ path: 'email', message: 'Username Required' })
-  if (!state.password) errors.push({ path: 'password', message: 'Password Required' })
-  if(!state.confirmPassword) errors.push({ path: 'conPassword', message: 'Password Required' })
-  if(state.password !== state.confirmPassword) errors.push({ path: 'conPassword', message: 'Password does not match' })
-  return errors
-}
-
-
 const loginForm = reactive({ isLogin: true, email: undefined, password: undefined })
 const signUpForm = reactive({ isLogin: false, email: undefined, password: undefined, confirmPassword: undefined })
 const errorMessage = ref('')
-const loading = ref(false)
 
 const onSubmit = async (form: any) => {
-  console.log(form)
   errorMessage.value = '';
-  loading.value = true;
+  isLoadingBtn.value=true
   try {
     if (form.isLogin) {
       await signIn('credentials', {
@@ -96,9 +85,14 @@ const onSubmit = async (form: any) => {
   } catch (error) {
     errorMessage.value = 'An unexpected error occurred.';
   } finally {
-    loading.value = false;
+    isLoadingBtn.value=false
   }
 };
+
+const hadleGoogleSignIn = ()=>{
+  isLoadingBtnGoogle.value = true
+  signIn('google')
+}
 onMounted(() => {
   if (animationContainer.value) {
     const animation = lottie.loadAnimation({
@@ -148,7 +142,7 @@ onMounted(() => {
               </UForm>
             </div>
             <div v-else-if="item.key === 'signup'" class="space-y-3">
-              <UForm :validate="validateSignUp" :state="signUpForm">
+              <UForm :schema="signUpSchema" :state="signUpForm">
               <UFormGroup label="Username" name="email" required>
                 <UInput v-model="signUpForm
                   .email" type="text" required />
@@ -157,7 +151,7 @@ onMounted(() => {
                 <UInput v-model="signUpForm
                   .password" type="password" required />
               </UFormGroup>
-              <UFormGroup label="Confirm Password" name="conPassword" required>
+              <UFormGroup label="Confirm Password" name="confirmPassword" required>
                 <UInput v-model="signUpForm
                   .confirmPassword" type="password" required />
               </UFormGroup>
@@ -165,14 +159,14 @@ onMounted(() => {
             </div>
             <template #footer>
               <div class="flex justify-center">
-                <UButton type="submit">
+                <UButton type="submit" :loading="isLoadingBtn">
                   {{ item.key === 'login' ? 'login' : 'signup' }}
                 </UButton>
               </div>
             </template>
           </UCard>
           <div class="pt-10">
-            <UButton block @click="signIn('google')">
+            <UButton block @click="hadleGoogleSignIn" :loading="isLoadingBtnGoogle">
               <img :src="googleIcon" class="w-5" alt="google logo, webboard" />
               <p>Continue with google</p>
             </UButton>
