@@ -12,8 +12,11 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, message: error.details[0].message });
     }
     const user = {
-      username: value.username,
+      email: value.email,
+      name: value.email,
+      image:value.image,
       password: value.password,
+      role: value.role,
       createdAt: new Date()
     }
     const result = await collection.insertOne(user);

@@ -27,7 +27,7 @@ bgColor.value = boardData.value.background
 description.value = boardData.value.description
 
 const handleOpenSlide = ()=>{
-  if(authData.value?.user.username==boardData.value.belongsTo){
+  if(authData.value?.user.email==boardData.value.belongsTo){
     isOpenSlide.value=true
   }
 }

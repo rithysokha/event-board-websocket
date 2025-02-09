@@ -12,13 +12,13 @@ const backgroundList =[
 const randomIndex = Math.floor(Math.random()*backgroundList.length)
 const postBody = {
   name: "My board",
-  belongsTo: data.value?.user.username,
+  belongsTo: data.value?.user.email,
   background: backgroundList[randomIndex]
 }
 
 const createBoard = async () => {
   try {
-    const response = await fetch('/api/board', {
+    const response = await $fetch('/api/board', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -14,13 +14,15 @@ export default NuxtAuthHandler({
     }),
     // @ts-expect-error
     CredentialsProvider.default({
-      authorize (credentials: any) {
-        const user = { id: '1', name: 'Rithy', username: 'jsmith', password: 'hunter2', role: 'admin' }
-        if (credentials?.username === user.username && credentials?.password === user.password) {
-          return user
+      
+      async authorize (credentials: any) {
+        const db = await connectToDatabase();
+          const collection = db.collection('user');
+          const existingUser = await collection.findOne({ email: credentials?.email })
+        if (credentials?.email === existingUser.email && credentials?.password === existingUser.password) {
+          return existingUser;
         } else {
           console.error('Warning: Malicious login attempt registered, bad credentials provided')
-
           return null
         }
       }
@@ -32,14 +34,13 @@ export default NuxtAuthHandler({
         try {
           const db = await connectToDatabase();
           const collection = db.collection('user');
-          // Check if user already exists
-          const existingUser = await collection.findOne({ username: user.email })
+          const existingUser = await collection.findOne({ email: user.email })
 
           if (!existingUser) {
             // Save new user to DB
             const newUser = {
               name: user.name,
-              username: user.email,
+              email: user.email,
               image: user.image,
               role: 'user'
             }
@@ -60,13 +61,12 @@ export default NuxtAuthHandler({
       const db = await connectToDatabase();
           const collection = db.collection('user');
           if (user) {
-        const userInfo = await collection.findOne({ username: user.email})
+        const userInfo = await collection.findOne({ email: user.email})
         token.role = userInfo.role;
-        token.username = userInfo.username;
+        token.email = userInfo.email;
         token.image = userInfo.image
         token.name = userInfo.name;
       }
-      console.log(token)
       return token;
     },
     async session({ session, token }) {

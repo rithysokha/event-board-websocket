@@ -5,6 +5,7 @@ definePageMeta({
     navigateAuthenticatedTo: '/dashboard/home'
   }
 })
+import googleIcon from "../assets/google.svg";
 import lottie from 'lottie-web'
 import art from "../assets/user_research.json"
 const isLoading = ref(true)
@@ -25,7 +26,6 @@ onMounted(() => {
   }
 })
 const { signIn } = useAuth()
-import googleIcon from "../assets/google.svg";
 const items = [{
   key: 'login',
   label: 'Log In',
@@ -36,20 +36,36 @@ const items = [{
   description: 'Change your signup here. After saving, you\'ll be logged out.'
 }]
 
-const loginForm = reactive({ username: '', password: '' })
-const signUpForm = reactive({ username: '', password: '', confirmPassword: '' })
+const loginForm = reactive({isLogin:true, email: '', password: '' })
+const signUpForm = reactive({isLogin:false, email: '', password: '', confirmPassword: '' })
 const errorMessage = ref('')
 const loading = ref(false)
 
 const onSubmit = async (form: any) => {
+  console.log(form)
   errorMessage.value = '';
   loading.value = true;
   try {
+  if(form.isLogin){
    await signIn('credentials', {
-      redirect: false,
-      username: loginForm.username,
+      email: loginForm.email,
       password: loginForm.password,
     });
+  }else{
+    const result = await $fetch('/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(signUpForm)
+    });
+    if(result){
+      await signIn('credentials', {
+      email: signUpForm.email,
+      password: signUpForm.password,
+    });
+    }
+  }
   } catch (error) {
     errorMessage.value = 'An unexpected error occurred.';
   } finally {
@@ -82,7 +98,7 @@ const onSubmit = async (form: any) => {
           <div v-if="item.key === 'login'" class="space-y-3">
             <UFormGroup label="Username" name="username">
               <UInput v-model="loginForm
-                .username" />
+                .email" />
             </UFormGroup>
             <UFormGroup label="Password" name="password">
               <UInput v-model="loginForm
@@ -92,7 +108,7 @@ const onSubmit = async (form: any) => {
           <div v-else-if="item.key === 'signup'" class="space-y-3">
             <UFormGroup label="Username" name="username" required>
               <UInput v-model="signUpForm
-                .username" type="text" required />
+                .email" type="text" required />
             </UFormGroup>
             <UFormGroup label="Password" name="password" required>
               <UInput v-model="signUpForm
