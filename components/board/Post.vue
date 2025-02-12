@@ -3,6 +3,7 @@ import imageCompression from 'browser-image-compression';
 const props = defineProps<{
   boardId: string
 }>();
+const userStore = useUserStore()
 const toast = useToast()
 const isUploadingPhoto = ref(false)
 const isSendingData = ref(false)
@@ -15,8 +16,10 @@ const postBody = ref({
   boardId: '',
   imgPublicId: '',
   imgHeigh:0,
-  imgWidth:0
+  imgWidth:0,
+  postedBy:''
 })
+const {data} = useAuth()
 
 const handleUploadFile = async (event: any) => {
   const files = event.target.files;
@@ -94,7 +97,8 @@ const savePostToDB = async () => {
   }
 };
 
-const sendData = async () => {
+const hanldeSubmit = async () => {
+
   isSendingData.value=true
   if (isUploadingPhoto.value) {
     while (isUploadingPhoto.value) {
@@ -102,6 +106,10 @@ const sendData = async () => {
     }
   }
   savePostToDB();
+  if(userStore.displayName.length==0){
+    userStore.setDisplayName(postBody.value.postedBy)
+  }
+
   const message = {
     title: postBody.value.title,
     imgPublicId: postBody.value.imgPublicId,
@@ -109,6 +117,7 @@ const sendData = async () => {
     imageHeigh: postBody.value.imgHeigh,
     imageWidth: postBody.value.imgWidth,
     id: postId,
+    postedBy: postBody.value.postedBy,
     isOpenPost:false
   };
   emit('postMessage', message);
@@ -126,10 +135,12 @@ const sendData = async () => {
       class="min-w-20 max-w-24 justify-center"
       :loading="isSendingData"
       type="submit"
-      @click="sendData"
+      @click="hanldeSubmit"
     >
       {{ isSendingData?'Uploading':'Publish' }}
     </UButton>
+    <UInput v-if="userStore.displayName.length==0" v-model="postBody.postedBy" placeholder="How would we call you?" class="w-full"/>
+    <p v-else>{{ userStore.displayName }} </p>
     <UInput v-model="postBody.title" class="w-full" placeholder="Subject" />
     <div
       class="w-full aspect-square min-h-40 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer overflow-hidden relative"

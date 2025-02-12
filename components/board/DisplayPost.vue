@@ -12,7 +12,7 @@ import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 const isDeleting = ref(false)
 const isOpenPost = ref(false)
 const websocketUrl = ref('')
-const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh:number, imgWidth:number, id:string }[]>([]);
+const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh:number, imgWidth:number, id:string, postedBy:string }[]>([]);
 const route = useRoute();
 const boardId = route.query.boardId as string;
 const isOpenDeletePost = ref(false)
@@ -33,7 +33,8 @@ watch(data, (newValue) => {
       description: message.description,
       imgHeigh: message.imgHeigh,
       imgWidth: message.imgWidth,
-      id:message.id
+      id:message.id,
+      postedBy:message.postedBy
     });
   } catch (error) {
     console.error('Error parsing WebSocket message:', error);
@@ -44,13 +45,14 @@ const fetchMessageHistory = async () => {
   try {
     const response = await fetch(`/api/board/post?boardId=${boardId}`);
     const messages = await response.json();
-    history.value = messages.map((message: { title: string, imgPublicId:string ,description: string, imgHeigh:number, imgWidth:number, _id:string }) => ({
+    history.value = messages.map((message: { title: string, imgPublicId:string ,description: string, imgHeigh:number, imgWidth:number, _id:string, postedBy:string }) => ({
       title: message.title,
       imgPublicId: message.imgPublicId,
       description: message.description,
       imgHeigh: message.imgHeigh,
       imgWidth: message.imgWidth,
-      id:message._id
+      id:message._id,
+      postedBy: message.postedBy
     }));
   } catch (error) {
     console.error('Error fetching message history:', error);
@@ -103,7 +105,8 @@ const handlePost = (message: any) => {
     description: message.description,
     imgHeigh: message.imageHeigh,
     imgWidth: message.imageWidth,
-    id:message.id
+    id:message.id,
+    postedBy:message.postedBy
   })
   isOpenPost.value=message.isOpenPost
   send(JSON.stringify(message));
@@ -146,7 +149,7 @@ onMounted(() => {
           <div class="flex gap-1 h-5 justify-between">
             <div class="flex gap-1">
               <UAvatar src="https://github.com/benjamincanac.png" />
-              <p class="font-bold">Lorem ipsum</p>
+              <p class="font-bold"> {{entry.postedBy}}</p>
             </div>
             <UDropdown  :items="[
               [{

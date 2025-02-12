@@ -4,7 +4,8 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/device',
     '@nuxtjs/i18n',
-    '@sidebase/nuxt-auth'
+    '@sidebase/nuxt-auth',
+    '@pinia/nuxt'
   ],
   nitro:{
     experimental:{

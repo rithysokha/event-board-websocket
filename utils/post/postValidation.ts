@@ -8,5 +8,6 @@ export const postSchema = Joi.object({
   imgWidth: Joi.number(),
   description: Joi.string().max(100).allow(''),
   likes: Joi.number().default(0),
+  postedBy: Joi.string().max(30),
   createdAt: Joi.date().timestamp('javascript').default(() => new Date()),
 })

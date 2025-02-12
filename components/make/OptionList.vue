@@ -25,8 +25,7 @@ const createBoard = async () => {
       },
       body: JSON.stringify(postBody)
     });
-    const data = await response.json();
-    await navigateTo(`/board?boardId=${data.insertedId}`)
+    await navigateTo(`/board?boardId=${response.insertedId}`)
   } catch (error) {
     console.error('Error creating board:', error);
   }
