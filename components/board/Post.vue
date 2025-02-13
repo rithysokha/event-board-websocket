@@ -108,6 +108,8 @@ const hanldeSubmit = async () => {
   savePostToDB();
   if(userStore.displayName.length==0){
     userStore.setDisplayName(postBody.value.postedBy)
+  }else{
+    postBody.value.postedBy = userStore.displayName
   }
 
   const message = {
