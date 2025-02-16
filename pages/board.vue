@@ -59,7 +59,7 @@ const hanldeOpenQr = (isOpen: boolean)=>{
       {{ header }}
     </h1>
 
-    <BoardDisplayPost :board-id="boardId", :comment="boardData.comment" :reaction="boardData.reaction"/>
+    <BoardDisplayPost :board-id="boardId" :comment="boardData.comment" :reaction="boardData.reaction"/>
 
   </div>
   <div>

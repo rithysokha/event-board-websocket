@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 defineProps<{
-  boardId: string,
-  reaction: boolean,
+  boardId: string
+  reaction: boolean
   comment: boolean
 }>();
 import { useWebSocket } from '@vueuse/core'

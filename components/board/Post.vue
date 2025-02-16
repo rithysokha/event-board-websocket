@@ -19,7 +19,7 @@ const postBody = ref({
   imgWidth:0,
   postedBy:''
 })
-const {data} = useAuth()
+const {data:authData, status: authStatus} = useAuth()
 
 const handleUploadFile = async (event: any) => {
   const files = event.target.files;
@@ -106,9 +106,11 @@ const hanldeSubmit = async () => {
     }
   }
   savePostToDB();
-  if(userStore.displayName.length==0){
+  if(authStatus.value != 'authenticated' && userStore.displayName.length==0){
     userStore.setDisplayName(postBody.value.postedBy)
-  }else{
+  }else if(authData.value?.user && userStore.displayName.length==0){
+    userStore.setDisplayName(authData.value.user.name)
+  }else {
     postBody.value.postedBy = userStore.displayName
   }
 
@@ -141,7 +143,8 @@ const hanldeSubmit = async () => {
     >
       {{ isSendingData?'Uploading':'Publish' }}
     </UButton>
-    <UInput v-if="userStore.displayName.length==0" v-model="postBody.postedBy" placeholder="How would we call you?" class="w-full"/>
+    <UInput v-if="userStore.displayName.length==0 && authStatus !='authenticated'" v-model="postBody.postedBy" placeholder="How would we call you?" class="w-full"/>
+    <p v-else-if="userStore.displayName.length==0 && authStatus == 'authenticated'">{{ authData?.user.name }} </p>
     <p v-else>{{ userStore.displayName }} </p>
     <UInput v-model="postBody.title" class="w-full" placeholder="Subject" />
     <div
