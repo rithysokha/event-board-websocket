@@ -27,15 +27,19 @@ const {  data, send } = useWebSocket(websocketUrl.value)
 watch(data, (newValue) => {
   try {
     const message = JSON.parse(newValue);
-    history.value.push({
-      title: message.title,
-      imgPublicId: message.imgPublicId,
-      description: message.description,
-      imgHeigh: message.imgHeigh,
-      imgWidth: message.imgWidth,
-      id:message.id,
-      postedBy:message.postedBy
-    });
+    if(message.type=='post'){
+      history.value.push({
+        title: message.title,
+        imgPublicId: message.imgPublicId,
+        description: message.description,
+        imgHeigh: message.imgHeigh,
+        imgWidth: message.imgWidth,
+        id:message.id,
+        postedBy:message.postedBy
+      });
+    }else{
+      removePostFromHistory(message.postId);
+    }
   } catch (error) {
     console.error('Error parsing WebSocket message:', error);
   }
@@ -71,22 +75,25 @@ const handleGetImage = (publicId : string, qual: string) => {
   return '';
 }
 
+const removePostFromHistory =(postId: string) =>{
+  const index = history.value.findIndex(post => post.id === postId )
+      if (index !== -1) {
+        history.value.splice(index, 1)
+      }
+}
+
 const handleDeletePost = async ()=>{
   try{
     isDeleting.value=true
-    console.log("deleting post ", postIdToDelete.value)
     const res = await $fetch(`/api/board/post/${postIdToDelete.value}`, {
       method:'delete'
     })
     if(res?.statusCode==200){
-      const index = history.value.findIndex(post => post.id === postIdToDelete.value)
-      if (index !== -1) {
-        history.value.splice(index, 1)
-      }
+    removePostFromHistory(postIdToDelete.value)
     }
+    send(JSON.stringify({type:'delete', postId: postIdToDelete.value}))
     isDeleting.value=false
     isOpenDeletePost.value=false
-    console.log("post deleted")
   }catch(e){
     console.log(e)
     isDeleting.value=false
@@ -109,6 +116,7 @@ const handlePost = (message: any) => {
     postedBy:message.postedBy
   })
   isOpenPost.value=message.isOpenPost
+  message.type = 'post'
   send(JSON.stringify(message));
 }
 const handleLike = ()=>({

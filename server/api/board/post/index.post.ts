@@ -1,6 +1,5 @@
 import { connectToDatabase } from "~/utils/mongodb";
 import { postSchema } from "~/utils/post/postValidation";
-
 export default defineEventHandler(async (event) => {
   try {
     const db = await connectToDatabase();

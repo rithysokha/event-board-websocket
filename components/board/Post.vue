@@ -89,8 +89,8 @@ const savePostToDB = async () => {
       },
       body: JSON.stringify(postBody.value)
     });
-    const responseData = await savedPost.json()
-    postId.value = responseData.insertedId;
+    //@ts-expect-error
+    postId.value = savedPost.insertedId;
     toast.add({title: 'You have posted', icon: 'i-heroicons-check-circle'})
   } catch (error) {
     console.error('Error creating board:', error);
@@ -105,14 +105,15 @@ const hanldeSubmit = async () => {
       await new Promise((resolve) => setTimeout(resolve, 100)); 
     }
   }
-  savePostToDB();
   if(authStatus.value != 'authenticated' && userStore.displayName.length==0){
     userStore.setDisplayName(postBody.value.postedBy)
   }else if(authData.value?.user && userStore.displayName.length==0){
     userStore.setDisplayName(authData.value.user.name)
+    postBody.value.postedBy = userStore.displayName
   }else {
     postBody.value.postedBy = userStore.displayName
   }
+  savePostToDB();
 
   const message = {
     title: postBody.value.title,
