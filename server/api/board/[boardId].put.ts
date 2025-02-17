@@ -4,7 +4,6 @@ import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   try {
-    const {belongsTo} = getRouterParams(event)
     const { boardId } = getQuery(event);
     
     if (!boardId || typeof boardId !== 'string') {

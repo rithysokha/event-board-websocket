@@ -12,12 +12,13 @@ import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 const isDeleting = ref(false)
 const isOpenPost = ref(false)
 const websocketUrl = ref('')
-const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh:number, imgWidth:number, id:string, postedBy:string }[]>([]);
+const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh:number, imgWidth:number, id:string, postedBy:string, likes:number }[]>([]);
 const route = useRoute();
 const boardId = route.query.boardId as string;
 const isOpenDeletePost = ref(false)
 const postIdToDelete = ref("")
 const toast = useToast()
+const reactionStore = useReactionStore()
 
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
@@ -35,9 +36,13 @@ watch(data, (newValue) => {
         imgHeigh: message.imgHeigh,
         imgWidth: message.imgWidth,
         id:message.id,
-        postedBy:message.postedBy
+        postedBy:message.postedBy,
+        likes:0
       });
-    }else{
+    }else if(message.type =='put'){
+      editPost(message.postId, "likes", message.likes)
+    }
+    else{
       removePostFromHistory(message.postId);
     }
   } catch (error) {
@@ -49,14 +54,15 @@ const fetchMessageHistory = async () => {
   try {
     const response = await fetch(`/api/board/post?boardId=${boardId}`);
     const messages = await response.json();
-    history.value = messages.map((message: { title: string, imgPublicId:string ,description: string, imgHeigh:number, imgWidth:number, _id:string, postedBy:string }) => ({
+    history.value = messages.map((message: { title: string, imgPublicId:string ,description: string, imgHeigh:number, imgWidth:number, _id:string, postedBy:string, likes:number }) => ({
       title: message.title,
       imgPublicId: message.imgPublicId,
       description: message.description,
       imgHeigh: message.imgHeigh,
       imgWidth: message.imgWidth,
       id:message._id,
-      postedBy: message.postedBy
+      postedBy: message.postedBy,
+      likes:message.likes
     }));
   } catch (error) {
     console.error('Error fetching message history:', error);
@@ -80,6 +86,13 @@ const removePostFromHistory =(postId: string) =>{
       if (index !== -1) {
         history.value.splice(index, 1)
       }
+}
+
+const editPost = (postId: string, field: string, value: any) => {
+  const index = history.value.findIndex(post => post.id === postId)
+  if (index !== -1) {
+    (history.value[index] as any)[field] = value
+  }
 }
 
 const handleDeletePost = async ()=>{
@@ -113,14 +126,18 @@ const handlePost = (message: any) => {
     imgHeigh: message.imageHeigh,
     imgWidth: message.imageWidth,
     id:message.id,
-    postedBy:message.postedBy
+    postedBy:message.postedBy,
+    likes:0
   })
   isOpenPost.value=message.isOpenPost
   message.type = 'post'
   send(JSON.stringify(message));
 }
-const handleLike = ()=>({
-})
+const handleLike = (postId:string, likes:number)=>{
+  send(JSON.stringify({type:"put", postId:postId, likes:likes}))
+  editPost(postId, "likes", likes)
+  
+}
 
 const handlePostComment = ()=>{
 
@@ -191,12 +208,15 @@ onMounted(() => {
         <p>{{ entry.description }}</p>
         <template #footer>
           <div class="flex justify-between">
-            <UButton
+            <div class="flex items-center">
+              <UButton
               v-if="reaction"
-              @click="handleLike"
+              @click="handleLike(entry.id, entry.likes+1)"
               icon="i-heroicons-heart"
               variant="ghost"
-            />
+              />
+              <p>{{ entry.likes }}</p>
+            </div>
             <UButton
               v-if="comment"
               @click="handlePostComment"
