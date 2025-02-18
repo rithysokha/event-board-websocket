@@ -133,10 +133,16 @@ const handlePost = (message: any) => {
   message.type = 'post'
   send(JSON.stringify(message));
 }
-const handleLike = (postId:string, likes:number)=>{
-  send(JSON.stringify({type:"put", postId:postId, likes:likes}))
-  editPost(postId, "likes", likes)
-  
+const handleLike = (postId:string, currentLikes:number)=>{
+  if (reactionStore.hasReacted(postId)) {
+    send(JSON.stringify({ type: 'put', postId, likes: currentLikes - 1 }))
+    editPost(postId, 'likes', currentLikes - 1)
+    reactionStore.removeReaction(postId)
+  } else {
+    send(JSON.stringify({ type: 'put', postId, likes: currentLikes + 1 }))
+    editPost(postId, 'likes', currentLikes + 1)
+    reactionStore.addReaction(postId)
+  }
 }
 
 const handlePostComment = ()=>{
@@ -211,7 +217,7 @@ onMounted(() => {
             <div class="flex items-center">
               <UButton
               v-if="reaction"
-              @click="handleLike(entry.id, entry.likes+1)"
+              @click="handleLike(entry.id, entry.likes)"
               icon="i-heroicons-heart"
               variant="ghost"
               />
@@ -229,4 +235,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-

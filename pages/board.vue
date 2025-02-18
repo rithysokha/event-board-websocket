@@ -20,7 +20,7 @@ const boardId = route.query.boardId;
 if (!boardId || typeof boardId !== 'string') {
   throw new Error('Board ID is required and must be a string');
 }
-const { data: boardData } = await useFetch(`/api/board?boardId=${boardId}`);
+const { data: boardData}:any = await useFetch(`/api/board?boardId=${boardId}`);
 
 header.value = boardData.value.name
 bgColor.value = boardData.value.background
