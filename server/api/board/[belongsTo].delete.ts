@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   try {
-    const {belongsTo} = getRouterParams(event)
+    const {belongsTo} = getRouterParams(event) //this belongs to is id
     const db = await connectToDatabase();
     const collection = db.collection("board");
     const result = await collection.deleteOne({ _id: new ObjectId(belongsTo) });

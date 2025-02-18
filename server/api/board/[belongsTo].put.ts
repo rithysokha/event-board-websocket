@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   try {
-    const { boardId } = getQuery(event);
+    const {belongsTo: boardId} = getRouterParams(event)
     
     if (!boardId || typeof boardId !== 'string') {
       throw createError({
@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
     if (error) {
       throw createError({ statusCode: 400, message: error.message });
     }
-
     const result = await collection.updateOne(
       { _id: new ObjectId(boardId) },
       { $set: { ...value} }

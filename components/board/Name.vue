@@ -19,7 +19,7 @@ const validate = (state: any): FormError[] => {
 const isNameChanged = computed(() => state.name !== initName);
 const renameBoard = async () => {
   try {
-    await fetch(`/api/board?boardId=${props.boardId}`, {
+    await fetch(`/api/board/${props.boardId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
