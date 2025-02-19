@@ -1,10 +1,18 @@
-// ...existing code...
+import { defineStore } from 'pinia'
+
 export const useReactionStore = defineStore('reactionStore', {
-  state: () => ({
-    userReactions: typeof window !== 'undefined'
-      ? JSON.parse(localStorage.getItem('userReactions') || '[]')
-      : []
-  }),
+  state: () => {
+    let storedReactions: string[] = []
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('userReactions')
+      if (stored) {
+        storedReactions = JSON.parse(stored)
+      }
+    }
+    return {
+      userReactions: storedReactions
+    }
+  },
   actions: {
     addReaction(postId: string) {
       if (!this.userReactions.includes(postId)) {

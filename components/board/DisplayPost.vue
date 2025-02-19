@@ -88,10 +88,14 @@ const removePostFromHistory =(postId: string) =>{
       }
 }
 
-const editPost = (postId: string, field: string, value: any) => {
+const editPost = async (postId: string, field: string, value: any) => {
   const index = history.value.findIndex(post => post.id === postId)
   if (index !== -1) {
     (history.value[index] as any)[field] = value
+    await $fetch(`/api/board/post/${postId}`,{
+      method:'PUT',
+      body:JSON.stringify({[field]:(history.value[index] as any)[field]})
+    })
   }
 }
 
@@ -151,6 +155,11 @@ const handlePostComment = ()=>{
 
 onMounted(() => {
   fetchMessageHistory();
+  if (typeof window !== 'undefined') {
+    reactionStore.$patch({
+      userReactions: JSON.parse(localStorage.getItem('userReactions') || '[]')
+    })
+  }
 });
 </script>
 <template>
@@ -218,7 +227,7 @@ onMounted(() => {
               <UButton
               v-if="reaction"
               @click="handleLike(entry.id, entry.likes)"
-              icon="i-heroicons-heart"
+              :icon="reactionStore.hasReacted(entry.id) ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
               variant="ghost"
               />
               <p>{{ entry.likes }}</p>

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 export const useUserStore = defineStore('userStore', {
   state: () => ({
     displayName: typeof window !== 'undefined'
-      ? localStorage.getItem('displayName') || ''
+      ? localStorage.getItem('displayName') ?? ''
       : ''
   }),
   actions: {
