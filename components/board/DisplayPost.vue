@@ -155,11 +155,6 @@ const handlePostComment = ()=>{
 
 onMounted(() => {
   fetchMessageHistory();
-  if (typeof window !== 'undefined') {
-    reactionStore.$patch({
-      userReactions: JSON.parse(localStorage.getItem('userReactions') || '[]')
-    })
-  }
 });
 </script>
 <template>

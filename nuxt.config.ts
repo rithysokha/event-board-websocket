@@ -5,7 +5,8 @@ export default defineNuxtConfig({
     '@nuxtjs/device',
     '@nuxtjs/i18n',
     '@sidebase/nuxt-auth',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate'
   ],
   nitro:{
     experimental:{
@@ -15,7 +16,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       cloudeName: process.env.CLOUDINARY_CLOUD_NAME,
-      baseUrl: process.env.BASE_URL
+      baseUrl: process.env.BASE_URL,
+      persistState: true, 
     },
   },
   i18n: {
