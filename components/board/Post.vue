@@ -109,6 +109,7 @@ const hanldeSubmit = async () => {
     userStore.setDisplayName(postBody.value.postedBy)
   }else if(authData.value?.user && userStore.displayName.length==0){
     userStore.setDisplayName(authData.value.user.name)
+    userStore.setDisplayPhoto(authData.value.user.image)
     postBody.value.postedBy = userStore.displayName
   }else {
     postBody.value.postedBy = userStore.displayName

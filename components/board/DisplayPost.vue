@@ -11,6 +11,8 @@ import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 
 const isDeleting = ref(false)
 const isOpenPost = ref(false)
+const maxCommentLength = 50
+const comments = ref<{ [postId: string]: string }>({})
 const websocketUrl = ref('')
 const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh:number, imgWidth:number, id:string, postedBy:string, likes:number }[]>([]);
 const route = useRoute();
@@ -19,6 +21,7 @@ const isOpenDeletePost = ref(false)
 const postIdToDelete = ref("")
 const toast = useToast()
 const reactionStore = useReactionStore()
+const userStore = useUserStore()
 
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
@@ -149,8 +152,12 @@ const handleLike = (postId:string, currentLikes:number)=>{
   }
 }
 
-const handlePostComment = ()=>{
-
+const handlePostComment = async (postId: string)=>{
+await $fetch(`/api/comment`,{
+  method: 'POST',
+  body: JSON.stringify({comment:comments.value[postId], userDisplayName:userStore.displayName ,postId:postId})
+})
+comments.value[postId]=''
 }
 
 onMounted(() => {
@@ -227,13 +234,27 @@ onMounted(() => {
               />
               <p>{{ entry.likes }}</p>
             </div>
+            <!-- this button should show comment count and when user click then use UPopover to show all the comment -->
             <UButton
-              v-if="comment"
-              @click="handlePostComment"
+              @click="handlePostComment(entry.id)"
               icon="i-heroicons-chat-bubble-bottom-center-text"
               variant="ghost"
             />
           </div>
+          <div class="flex w-full border-2 rounded-lg">
+            <UInput
+            v-model="comments[entry.id]"
+            :maxlength="maxCommentLength"
+            placeholder="Write some comment"
+            class="w-full"
+            variant="none"
+            >
+            <template #trailing>
+              <span class="text-xs text-gray-500 dark:text-gray-400"> {{ (comments[entry.id] || '').length }}/{{ maxCommentLength }}</span>
+            </template>
+          </UInput>
+          <UButton @click="handlePostComment(entry.id)" variant="ghost" icon="i-heroicons-arrow-up-circle"/>
+        </div>
         </template>
       </UCard>
     </div>
