@@ -10,6 +10,6 @@ export const postSchema = Joi.object({
   likes: Joi.number().default(0),
   commentCount: Joi.number().default(0),
   postedBy: Joi.string().max(30),
-  uuid: Joi.string(),
+  uuid: Joi.string().required(),
   createdAt: Joi.date().timestamp('javascript').default(() => new Date()),
 })

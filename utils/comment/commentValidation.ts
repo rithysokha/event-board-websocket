@@ -5,5 +5,6 @@ export const commentSchema = Joi.object({
   userDisplayName: Joi.string().required(),
   // userDisplayPhoto: Joi.string().required(),
   postId: Joi.string().required(),
+  uuid: Joi.string().required(),
   createdAt: Joi.date().timestamp('javascript').default(() => new Date())
 });
