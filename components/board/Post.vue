@@ -18,6 +18,7 @@ const postBody = ref({
   imgPublicId: '',
   imgHeigh:0,
   imgWidth:0,
+  uuid:userStore.uuid,
   postedBy:''
 })
 const {data:authData, status: authStatus} = useAuth()
@@ -124,6 +125,7 @@ const hanldeSubmit = async () => {
     imageHeigh: postBody.value.imgHeigh,
     imageWidth: postBody.value.imgWidth,
     id: postId,
+    uuid:userStore.uuid,
     postedBy: postBody.value.postedBy,
     isOpenPost:false
   };

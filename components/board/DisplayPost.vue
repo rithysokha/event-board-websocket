@@ -14,7 +14,7 @@ const isOpenPost = ref(false)
 const maxCommentLength = 50
 const comment = ref<{ [postId: string]: string }>({})
 const websocketUrl = ref('')
-const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, id: string, postedBy: string, likes: number, commentCount: number }[]>([]);
+const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, id: string, postedBy: string, likes: number, commentCount: number, uuid:string }[]>([]);
 const comments = ref<{ comment: string, userDisplayName: string, postId:string }[]>([]);
 const route = useRoute();
 const boardId = route.query.boardId as string;
@@ -51,6 +51,7 @@ watch(data, (newValue) => {
         id: message.id,
         postedBy: message.postedBy,
         likes: 0,
+        uuid: message.uuid,
         commentCount: 0
       });
     } else if (message.type == 'put') {
@@ -152,6 +153,7 @@ const handlePost = (message: any) => {
     id: message.id,
     postedBy: message.postedBy,
     likes: 0,
+    uuid:message.uuid,
     commentCount: 0
   })
   isOpenPost.value = message.isOpenPost
@@ -240,7 +242,7 @@ onMounted(() => {
                 click: () => handleDisplayDeletePrompt(entry.id)
               }]
             ]" :ui="{ base: 'outline-none' }" :popper="{ arrow: true }">
-              <UButton color="white" trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost" />
+              <UButton v-show="entry.uuid == userStore.uuid" color="white" trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost" />
             </UDropdown>
           </div>
         </template>

@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { useBoardStoreStateStore } from '~/stores/boardStoreState';
 
-
 definePageMeta({
   ssr: false,
   auth:false
 });
-const {data:authData} = useAuth()
+const {data:authData, status:authStatus} = useAuth()
 const isOpenSlide = ref(false)
 
 const isOpenBg = ref(false)
@@ -53,6 +52,11 @@ const handleSetDisplayName = () =>{
   userStore.setDisplayName(userDisplayName.value)
   boardState.setISOpenInputName(false)
 }
+onMounted(() => {
+  if(userStore.uuid ==''){
+    userStore.setUuid(authStatus.value=='authenticated'?authData.value?.user.email??crypto.randomUUID():crypto.randomUUID())
+  }
+});
 </script>
 
 <template>

@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 export const useUserStore = defineStore('displayName', {
   state: () => ({
     displayName: '',
-    displayPhoto: ''
+    displayPhoto: '',
+    uuid:''
   }),
   actions: {
     setDisplayName(displayName:string) {
@@ -11,6 +12,9 @@ export const useUserStore = defineStore('displayName', {
     },
     setDisplayPhoto(displayPhoto:string){
       this.displayPhoto=displayPhoto
+    },
+    setUuid(uuid:string){
+      this.uuid = uuid
     }
   },
   persist: true,
