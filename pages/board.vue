@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useBoardStoreStateStore } from '~/stores/boardStoreState';
+
 
 definePageMeta({
   ssr: false,
@@ -8,11 +10,12 @@ const {data:authData} = useAuth()
 const isOpenSlide = ref(false)
 
 const isOpenBg = ref(false)
-const isOpenQr = ref(false)
 const header = ref("")
 const description = ref("")
 const bgColor = ref("")
-
+const boardState =useBoardStoreStateStore()
+const userStore = useUserStore()
+const userDisplayName = ref("")
 
 const route = useRoute();
 const boardId = route.query.boardId;
@@ -44,18 +47,27 @@ const handleUpdateColor = (newColor: string) => {
 };
 const hanldeOpenQr = (isOpen: boolean)=>{
   isOpenSlide.value=false
-  isOpenQr.value=isOpen;
+  boardState.setIsOpenQr(isOpen)
 }
-
-
+const handleSetDisplayName = () =>{
+  userStore.setDisplayName(userDisplayName.value)
+  boardState.setISOpenInputName(false)
+}
 </script>
 
 <template>
-  <UModal v-model="isOpenQr">
+  <UModal v-model="boardState.isOpenInputName">
+    <div class="p-4">
+      <p>How should we call you?</p>
+      <UInput v-model="userDisplayName" placeholder="Your name here!"/>
+      <UButton label="Submit" @click="handleSetDisplayName"/>
+    </div>
+  </UModal>
+  <UModal v-model="boardState.isOpenQr">
     <QrCode :board-id="boardId" :width="$device.isMobile?200:500" :height="$device.isMobile?200:500"/>
   </UModal>
   <div class="bg-cover min-h-screen" :class="'bg-' + bgColor">
-    <h1 @click="handleOpenSlide" class="font-bold cursor-pointer text-2xl mb-4 ">
+    <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl mb-4 ">
       {{ header }}
     </h1>
 

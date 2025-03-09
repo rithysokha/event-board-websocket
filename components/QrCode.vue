@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import icon from '../assets/board.svg'
-const config = useRuntimeConfig()
 const props = defineProps<{
   boardId: string
   width: number
@@ -17,11 +16,11 @@ onMounted(() => {
     data: `https://webboard.live/board?boardId=${props.boardId}`,
     image: icon,
     dotsOptions: {
-      color: "#4267b2",
+      color: "#16b0e2",
       type: "rounded"
     },
     backgroundOptions: {
-      color: "#e9ebef",
+      color: "#ffffff",
     },
     imageOptions: {
       crossOrigin: "anonymous",

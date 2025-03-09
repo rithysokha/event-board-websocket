@@ -4,6 +4,7 @@ const props = defineProps<{
   boardId: string
 }>();
 const userStore = useUserStore()
+const boardState = useBoardStoreStateStore()
 const toast = useToast()
 const isUploadingPhoto = ref(false)
 const isSendingData = ref(false)
@@ -98,7 +99,6 @@ const savePostToDB = async () => {
 };
 
 const hanldeSubmit = async () => {
-
   isSendingData.value=true
   if (isUploadingPhoto.value) {
     while (isUploadingPhoto.value) {
@@ -106,11 +106,12 @@ const hanldeSubmit = async () => {
     }
   }
   if(authStatus.value != 'authenticated' && userStore.displayName.length==0){
-    userStore.setDisplayName(postBody.value.postedBy)
+    boardState.setISOpenInputName(true) 
+    return
   }else if(authData.value?.user && userStore.displayName.length==0){
     userStore.setDisplayName(authData.value.user.name)
     userStore.setDisplayPhoto(authData.value.user.image)
-    postBody.value.postedBy = userStore.displayName
+    postBody.value.postedBy = authData.value.user.name
   }else {
     postBody.value.postedBy = userStore.displayName
   }
@@ -145,9 +146,6 @@ const hanldeSubmit = async () => {
     >
       {{ isSendingData?'Uploading':'Publish' }}
     </UButton>
-    <UInput v-if="userStore.displayName.length==0 && authStatus !='authenticated'" v-model="postBody.postedBy" placeholder="How would we call you?" class="w-full"/>
-    <p v-else-if="userStore.displayName.length==0 && authStatus == 'authenticated'">{{ authData?.user.name }} </p>
-    <p v-else>{{ userStore.displayName }} </p>
     <UInput v-model="postBody.title" class="w-full" placeholder="Subject" />
     <div
       class="w-full aspect-square min-h-40 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer overflow-hidden relative"

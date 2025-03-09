@@ -12,9 +12,10 @@ import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 const isDeleting = ref(false)
 const isOpenPost = ref(false)
 const maxCommentLength = 50
-const comments = ref<{ [postId: string]: string }>({})
+const comment = ref<{ [postId: string]: string }>({})
 const websocketUrl = ref('')
 const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, id: string, postedBy: string, likes: number, commentCount: number }[]>([]);
+const comments = ref<{ comment: string, userDisplayName: string, postId:string }[]>([]);
 const route = useRoute();
 const boardId = route.query.boardId as string;
 const isOpenDeletePost = ref(false)
@@ -22,15 +23,15 @@ const postIdToDelete = ref("")
 const toast = useToast()
 const reactionStore = useReactionStore()
 const userStore = useUserStore()
-
+const boardState = useBoardStoreStateStore()
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
 }
 const { data, send } = useWebSocket(websocketUrl.value)
 
 
-const liveUpdatePost = async(postId:string, field: string, value:any)=>{
-  
+const liveUpdatePost = async (postId: string, field: string, value: any) => {
+
   const index = history.value.findIndex(post => post.id === postId)
   if (index !== -1) {
     (history.value[index] as any)[field] = value
@@ -53,11 +54,13 @@ watch(data, (newValue) => {
         commentCount: 0
       });
     } else if (message.type == 'put') {
-      if(message.on =='post'){
+      if (message.on == 'post') { //edit post
         liveUpdatePost(message.postId, message.field, message.value)
-      }else{
+      } else {
         console.log("this edit on ", message.on)
       }
+    } else if (message.on =='comment'){
+      appendComment(message.postId,message.comment, message.userDisplayName);
     }
     else {
       removePostFromHistory(message.postId);
@@ -108,13 +111,13 @@ const removePostFromHistory = (postId: string) => {
 
 const editPost = async (postId: string, field: string, value: any) => {
   const index = history.value.findIndex(post => post.id === postId)
-  send(JSON.stringify({ type: 'put', postId, on:'post', field:field, value:value }))
-    liveUpdatePost(postId, field, value)
-    await $fetch(`/api/board/post/${postId}`, {
-      method: 'PUT',
-      body: JSON.stringify({ [field]: (history.value[index] as any)[field] })
-    })
-  }
+  send(JSON.stringify({ type: 'put', postId, on: 'post', field: field, value: value }))
+  liveUpdatePost(postId, field, value)
+  await $fetch(`/api/board/post/${postId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ [field]: (history.value[index] as any)[field] })
+  })
+}
 
 const handleDeletePost = async () => {
   try {
@@ -125,7 +128,7 @@ const handleDeletePost = async () => {
     if (res?.statusCode == 200) {
       removePostFromHistory(postIdToDelete.value)
     }
-    send(JSON.stringify({ type: 'delete', postId:postIdToDelete.value }))
+    send(JSON.stringify({ type: 'delete', postId: postIdToDelete.value }))
     isDeleting.value = false
     isOpenDeletePost.value = false
   } catch (e) {
@@ -165,16 +168,38 @@ const handleLike = (postId: string, currentLikes: number) => {
   }
 }
 
-const handlePostComment = async (postId: string, currentCommentCount: number) => {
-  await $fetch(`/api/comment`, {
-    method: 'POST',
-    body: JSON.stringify({ comment: comments.value[postId], userDisplayName: userStore.displayName, postId: postId })
+const appendComment = (postId: string ,comment:string, displayName:string) =>{
+  comments.value.push({
+    comment: comment,
+    userDisplayName: displayName,
+    postId:postId
   })
-  comments.value[postId] = ''
+}
+
+const handlePostComment = async (postId: string, currentCommentCount: number) => {
+  if(userStore.displayName ==''){
+    boardState.setISOpenInputName(true)
+    return;
+  }
+  appendComment(postId, comment.value[postId],userStore.displayName)
+  if (comment.value[postId] != '')
+    await $fetch(`/api/comment`, {
+      method: 'POST',
+      body: JSON.stringify({ comment: comment.value[postId], userDisplayName: userStore.displayName, postId: postId })
+    })
+
+  send(JSON.stringify({ type: 'comment', on: 'comment', comment: comment.value[postId], userDisplayName: userStore.displayName, postId: postId }))
+  comment.value[postId] = ''
   editPost(postId, "commentCount", currentCommentCount + 1)
 }
 const handleOpenComment = async (postId: string) => {
-  console.log("fetch comment")
+  const response = await fetch(`/api/comment?postId=${postId}`)
+  const comment = await response.json();
+  comments.value = comment.map((comment: { comment: string, userDisplayName: string }) => ({
+    comment: comment.comment,
+    userDisplayName: comment.userDisplayName,
+    postId: postId
+  }));
 }
 
 onMounted(() => {
@@ -237,24 +262,60 @@ onMounted(() => {
                 variant="ghost" />
               <p>{{ entry.likes }}</p>
             </div>
-            <!-- this button should show comment count and when user click then use UPopover to show all the comment -->
-            <UChip v-if="entry.commentCount != 0" :text="entry.commentCount" size="2xl">
+            <!-- if have comment -->
+            <UChip v-if="entry.commentCount>0" :text="entry.commentCount" size="2xl">
+              <UPopover :popper="{ placement: 'bottom-end' }">
+                <UButton @click="handleOpenComment(entry.id)" icon="i-heroicons-chat-bubble-bottom-center-text"
+                  variant="ghost" />
+                <template #panel>
+                  <div v-for="comment in comments.filter(comment => comment.postId === entry.id)" class="flex items-center w-64 gap-4">
+                    <UAvatar size="sm" src="https://github.com/benjamincanac.png" />
+                    <div class="mt-1 text-sm">
+                      <p class="font-bold"> {{ comment.userDisplayName }} </p>
+                      <p class=""> {{ comment.comment }} </p>
+                    </div>
+                  </div>
+                  <div class="flex w-full border-2 rounded-lg">
+                    <UInput v-model="comment[entry.id]" :maxlength="maxCommentLength" placeholder="Write some comment"
+                      class="w-full" variant="none">
+                      <template #trailing>
+                        <span class="text-xs text-gray-500 dark:text-gray-400"> {{ (comment[entry.id] || '').length
+                          }}/{{
+                            maxCommentLength }}</span>
+                      </template>
+                    </UInput>
+                    <UButton @click="handlePostComment(entry.id, entry.commentCount)" variant="ghost"
+                      icon="i-heroicons-arrow-up-circle" />
+                  </div>
+                </template>
+              </UPopover>
+            </UChip>
+            <!-- If no comment -->
+            <UPopover v-else :popper="{ placement: 'bottom-end' }">
               <UButton @click="handleOpenComment(entry.id)" icon="i-heroicons-chat-bubble-bottom-center-text"
                 variant="ghost" />
-            </UChip>
-            <UButton v-else @click="handleOpenComment(entry.id)" icon="i-heroicons-chat-bubble-bottom-center-text"
-              variant="ghost" />
-          </div>
-          <div class="flex w-full border-2 rounded-lg">
-            <UInput v-model="comments[entry.id]" :maxlength="maxCommentLength" placeholder="Write some comment"
-              class="w-full" variant="none">
-              <template #trailing>
-                <span class="text-xs text-gray-500 dark:text-gray-400"> {{ (comments[entry.id] || '').length }}/{{
-                  maxCommentLength }}</span>
+              <template #panel>
+                <div v-for="comment in comments" class="flex items-center w-64 gap-4">
+                  <UAvatar size="sm" src="https://github.com/benjamincanac.png" />
+                  <div class="mt-1 text-sm">
+                    <p class="font-bold"> {{ comment.userDisplayName }} </p>
+                    <p class=""> {{ comment.comment }} </p>
+                  </div>
+                </div>
+                <div class="flex w-full border-2 rounded-lg">
+                  <UInput v-model="comment[entry.id]" :maxlength="maxCommentLength" placeholder="Write some comment"
+                    class="w-full" variant="none">
+                    <template #trailing>
+                      <span class="text-xs text-gray-500 dark:text-gray-400"> {{ (comment[entry.id] || '').length
+                        }}/{{
+                          maxCommentLength }}</span>
+                    </template>
+                  </UInput>
+                  <UButton @click="handlePostComment(entry.id, entry.commentCount)" variant="ghost"
+                    icon="i-heroicons-arrow-up-circle" />
+                </div>
               </template>
-            </UInput>
-            <UButton @click="handlePostComment(entry.id, entry.commentCount)" variant="ghost"
-              icon="i-heroicons-arrow-up-circle" />
+            </UPopover>
           </div>
         </template>
       </UCard>
