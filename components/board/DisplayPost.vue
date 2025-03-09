@@ -8,6 +8,7 @@ import { useWebSocket } from '@vueuse/core'
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
+import { UUID } from 'mongodb';
 
 const isDeleting = ref(false)
 const isOpenPost = ref(false)
@@ -75,7 +76,7 @@ const fetchMessageHistory = async () => {
   try {
     const response = await fetch(`/api/board/post?boardId=${boardId}`);
     const messages = await response.json();
-    history.value = messages.map((message: { title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, _id: string, postedBy: string, likes: number, commentCount: string }) => ({
+    history.value = messages.map((message: { title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, _id: string, postedBy: string, likes: number, commentCount: string, uuid:string }) => ({
       title: message.title,
       imgPublicId: message.imgPublicId,
       description: message.description,
@@ -84,6 +85,7 @@ const fetchMessageHistory = async () => {
       id: message._id,
       postedBy: message.postedBy,
       likes: message.likes,
+      uuid:message.uuid,
       commentCount: message.commentCount
     }));
   } catch (error) {
