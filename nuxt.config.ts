@@ -3,7 +3,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     '@nuxtjs/device',
-    '@nuxtjs/i18n',
     '@sidebase/nuxt-auth',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate'

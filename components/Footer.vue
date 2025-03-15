@@ -5,7 +5,6 @@ import x from "../assets/twitter.svg";
 import youtube from "../assets/youtube.svg";
 import instagram from "../assets/instagram.svg";
 import globe from "../assets/global.json"
-const { setLocale } = useI18n()
 
 const animationContainer = ref<HTMLElement | null>(null)
 const languages = [
@@ -63,10 +62,6 @@ onMounted(() => {
   }
 })
 
-watch(language, (newLanguage) =>{
-  // @ts-expect-error
-  setLocale(newLanguage)
-})
 </script>
 <template>
   <div class="w-screen h-52 flex flex-col items-center my-10">
