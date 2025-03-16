@@ -12,12 +12,12 @@ export default defineEventHandler(async (event) => {
       setResponseStatus(event, 404)
       return {
         statusCode: 404,
-        message: 'Post not found'
+        message: 'Avatar not found'
       }
     }
     return {
       statusCode: 200,
-      message: 'Post deleted successfully'
+      message: 'Avatar deleted successfully'
     }
   } catch (error) {
     console.log(error);
