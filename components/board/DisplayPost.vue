@@ -14,8 +14,8 @@ const isOpenPost = ref(false)
 const maxCommentLength = 50
 const comment = ref<{ [postId: string]: string }>({})
 const websocketUrl = ref('')
-const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, id: string, postedBy: string, likes: number, commentCount: number, uuid: string }[]>([]);
-const comments = ref<{ comment: string, userDisplayName: string, postId: string, id: string, uuid: string }[]>([]);
+const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, id: string, postedBy: string, likes: number, commentCount: number, uuid: string, displayPhoto:string }[]>([]);
+const comments = ref<{ comment: string, userDisplayName: string, postId: string, id: string, uuid: string , displayPhoto:string}[]>([]);
 const route = useRoute();
 const boardId = route.query.boardId as string;
 const isOpenDeletePost = ref(false)
@@ -55,6 +55,7 @@ watch(data, (newValue) => {
           postedBy: message.postedBy,
           likes: 0,
           uuid: message.uuid,
+          displayPhoto:message.displayPhoto,
           commentCount: 0
         });
       } else if (message.type == 'put') {
@@ -64,7 +65,7 @@ watch(data, (newValue) => {
       }
     } else if (message.on == 'comment') {
       if (message.type == 'post') {
-        appendComment(message.postId, message.comment, message.userDisplayName, "","");
+        appendComment(message.postId, message.comment, message.userDisplayName, "","", message.displayPhoto);
       } else {
         removeCommentFromHistory(message.id)
       }
@@ -78,7 +79,7 @@ const fetchMessageHistory = async () => {
   try {
     const response = await fetch(`/api/board/post?boardId=${boardId}`);
     const messages = await response.json();
-    history.value = messages.map((message: { title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, _id: string, postedBy: string, likes: number, commentCount: string, uuid: string }) => ({
+    history.value = messages.map((message: { title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, _id: string, postedBy: string, likes: number, commentCount: string, uuid: string, displayPhoto:string }) => ({
       title: message.title,
       imgPublicId: message.imgPublicId,
       description: message.description,
@@ -88,6 +89,7 @@ const fetchMessageHistory = async () => {
       postedBy: message.postedBy,
       likes: message.likes,
       uuid: message.uuid,
+      displayPhoto:message.displayPhoto,
       commentCount: message.commentCount
     }));
   } catch (error) {
@@ -170,6 +172,7 @@ const handlePost = (message: any) => {
     postedBy: message.postedBy,
     likes: 0,
     uuid: message.uuid,
+    displayPhoto:message.displayPhoto,
     commentCount: 0
   })
   isOpenPost.value = message.isOpenPost
@@ -206,13 +209,14 @@ const hanldeDeleteComment = async () => {
   }
 }
 
-const appendComment = (postId: string, comment: string, displayName: string, id: string, uuid: string) => {
+const appendComment = (postId: string, comment: string, displayName: string, id: string, uuid: string, displayPhoto:string) => {
   comments.value.push({
     comment: comment,
     userDisplayName: displayName,
     postId: postId,
     id: id,
-    uuid: uuid
+    uuid: uuid,
+    displayPhoto:displayPhoto
   })
 }
 
@@ -227,9 +231,9 @@ const handlePostComment = async (postId: string, currentCommentCount: number) =>
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ comment: comment.value[postId], userDisplayName: userStore.displayName, postId: postId, uuid: userStore.uuid })
+      body: JSON.stringify({ comment: comment.value[postId], userDisplayName: userStore.displayName, postId: postId, uuid: userStore.uuid, displayPhoto:userStore.displayPhoto })
     });
-    appendComment(postId, comment.value[postId], userStore.displayName, res.insertedId, userStore.uuid)
+    appendComment(postId, comment.value[postId], userStore.displayName, res.insertedId, userStore.uuid, userStore.displayPhoto)
   }
 
   send(JSON.stringify({ type: 'post', on: 'comment', comment: comment.value[postId], userDisplayName: userStore.displayName, postId: postId }))
@@ -239,12 +243,13 @@ const handlePostComment = async (postId: string, currentCommentCount: number) =>
 const handleOpenComment = async (postId: string) => {
   const response = await fetch(`/api/comment?postId=${postId}`)
   const comment = await response.json();
-  comments.value = comment.map((comment: { comment: string, userDisplayName: string, _id: string, uuid: string }) => ({
+  comments.value = comment.map((comment: { comment: string, userDisplayName: string, _id: string, uuid: string, displayPhoto:string }) => ({
     comment: comment.comment,
     userDisplayName: comment.userDisplayName,
     postId: postId,
     id: comment._id,
-    uuid: comment.uuid
+    uuid: comment.uuid,
+    displayPhoto:comment.displayPhoto
   }));
 }
 
@@ -288,7 +293,7 @@ onMounted(() => {
         <template #header>
           <div class="flex gap-1 h-5 justify-between">
             <div class="flex gap-1">
-              <UAvatar src="https://github.com/benjamincanac.png" />
+              <UAvatar :src="entry.displayPhoto" />
               <p class="font-bold"> {{ entry.postedBy }}</p>
             </div>
             <UDropdown :items="[
@@ -330,13 +335,12 @@ onMounted(() => {
                   <div v-for="comment in comments.filter(comment => comment.postId === entry.id)"
                     class="flex items-center w-64 gap-4">
                     <div class="flex items-center w-64 gap-4">
-                      <UAvatar size="sm" src="https://github.com/benjamincanac.png" />
+                      <UAvatar class="ml-1" size="sm" :src="comment.displayPhoto" />
                       <div class="mt-1 text-sm">
                         <p class="font-bold"> {{ comment.userDisplayName }} </p>
                         <p class=""> {{ comment.comment }} </p>
                       </div>
                     </div>
-
                     <UDropdown :items="[
                       [{
                         label: 'Delete',
@@ -368,13 +372,6 @@ onMounted(() => {
               <UButton @click="handleOpenComment(entry.id)" icon="i-heroicons-chat-bubble-bottom-center-text"
                 variant="ghost" />
               <template #panel>
-                <div v-for="comment in comments" class="flex items-center w-64 gap-4">
-                  <UAvatar size="sm" src="https://github.com/benjamincanac.png" />
-                  <div class="mt-1 text-sm">
-                    <p class="font-bold"> {{ comment.userDisplayName }} </p>
-                    <p class=""> {{ comment.comment }} </p>
-                  </div>
-                </div>
                 <div class="flex w-full border-2 rounded-lg">
                   <UInput v-model="comment[entry.id]" :maxlength="maxCommentLength" placeholder="Write some comment"
                     class="w-full" variant="none">

@@ -19,7 +19,8 @@ const postBody = ref({
   imgHeigh:0,
   imgWidth:0,
   uuid:userStore.uuid,
-  postedBy:''
+  postedBy:'',
+  displayPhoto:''
 })
 const {data:authData, status: authStatus} = useAuth()
 
@@ -84,6 +85,7 @@ const uploadFile = async (file: File) => {
 const savePostToDB = async () => {
   try {
     postBody.value.boardId = props.boardId
+    postBody.value.displayPhoto = userStore.displayPhoto
     const savedPost = await fetch('api/board/post', {
       method: 'POST',
       headers: {
@@ -127,6 +129,7 @@ const hanldeSubmit = async () => {
     id: postId,
     uuid:userStore.uuid,
     postedBy: postBody.value.postedBy,
+    displayPhoto:userStore.displayPhoto,
     isOpenPost:false
   };
   emit('postMessage', message);
