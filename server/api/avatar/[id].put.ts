@@ -1,6 +1,6 @@
 import { connectToDatabase } from "~/utils/mongodb";
 import { ObjectId } from 'mongodb';
-import { editPostSchema } from "~/utils/post/editPostSchema";
+import { avatarSchema } from "~/utils/avatar/avatarValidation";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     const collection = db.collection("avatar");
 
     const body = await readBody(event);
-    const { error, value } = editPostSchema.validate(body);
+    const { error, value } = avatarSchema.validate(body);
     if (error) {
       throw createError({ statusCode: 400, message: error.message });
     }

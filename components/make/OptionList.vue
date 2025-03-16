@@ -48,5 +48,4 @@ const onImageLoad = () => {
       </div>
     </UCard>
   </div>
-  <USkeleton class="w-12 h-12" />
 </template>
