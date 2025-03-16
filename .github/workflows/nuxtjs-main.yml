@@ -52,4 +52,4 @@ jobs:
           docker stop nuxt3-app || true
           docker rm nuxt3-app || true
           docker pull ${{ secrets.DOCKER_USERNAME }}/nuxt3-app:latest
-          docker run -d --name nuxt3-app --env-file /home/thy/appConfig/.env -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/nuxt3-app:latest
+          docker run -d --name nuxt3-app --env-file /home/server/appConfig/.env -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/nuxt3-app:latest
