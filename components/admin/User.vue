@@ -5,7 +5,7 @@ const columns = [
     { key: 'name', label: 'Name' }, 
     { key: 'username', label: 'Username/Email' }, 
     { key: 'role', label: 'Role' },
-    {key: 'actions'}
+    {key: 'actions', label:'Action', class: 'w-24'}
 ]
 
 const items = row => [
