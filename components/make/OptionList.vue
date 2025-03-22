@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
 const props = defineProps<{
-  items: Array<{ label: string, description: string, imgUrl: string, to: string }>
+  items: Array<{ label: string, description: string, imgUrl: string}>
 }>();
 const { data } = useAuth()
 const backgroundList =[
@@ -10,7 +10,7 @@ const backgroundList =[
   "fuchsia-400"
 ]
 const randomIndex = Math.floor(Math.random()*backgroundList.length)
-const postBody = {
+const boardBody = {
   name: "My board",
   belongsTo: data.value?.user.email,
   background: backgroundList[randomIndex]
@@ -23,7 +23,7 @@ const createBoard = async () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(postBody)
+      body: JSON.stringify(boardBody)
     });
     await navigateTo(`/board?boardId=${response.insertedId}`)
   } catch (error) {
@@ -40,7 +40,7 @@ const onImageLoad = () => {
 
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-    <UCard v-for="item in items" :key="item.to" class="my-3" @click="createBoard">
+    <UCard v-for="item in items" class="my-3" @click="createBoard">
       <div class=" hover:cursor-pointer">
         <img class="w-full rounded-2xl my-2" :src="item.imgUrl" alt="img" @load="onImageLoad" />
         <p class="font-bold">{{ item.label }} </p>

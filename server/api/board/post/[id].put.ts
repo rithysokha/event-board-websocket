@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     if (!id || typeof id !== 'string') {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Board ID is required and must be a string'
+        statusMessage: 'Post ID is required and must be a string'
       });
     }
 
@@ -29,12 +29,12 @@ export default defineEventHandler(async (event) => {
     if (result.matchedCount === 0) {
       throw createError({
         statusCode: 404,
-        message: 'Board not found'
+        message: 'Post not found'
       });
     }
 
     return {
-      message: 'Board updated successfully',
+      message: 'Post updated successfully',
       data: value
     };
   } catch (error) {

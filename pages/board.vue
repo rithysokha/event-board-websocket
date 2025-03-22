@@ -9,7 +9,8 @@ definePageMeta({
 });
 const { data: authData, status: authStatus } = useAuth()
 const isOpenSlide = ref(false)
-
+const like = ref(true)
+const comment = ref(true)
 const isOpenBg = ref(false)
 const header = ref("")
 const description = ref("")
@@ -17,7 +18,11 @@ const bgColor = ref("")
 const boardState = useBoardStoreStateStore()
 const userStore = useUserStore()
 const userDisplayName = ref("")
-
+const formats = [
+  { name: 'Grid'},
+  { name: 'Stream'}
+]
+const selectedFormat = ref(formats[0])
 const route = useRoute();
 const boardId = route.query.boardId;
 
@@ -93,15 +98,31 @@ const handleGetImage = (publicId: string, qual: string) => {
     <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl mb-4 ">
       {{ header }}
     </h1>
-
     <BoardDisplayPost :board-id="boardId" :comment="boardData.comment" :reaction="boardData.reaction" />
-
   </div>
   <div>
     <USlideover v-model="isOpenSlide">
       <UButton class="w-10 h-10 flex justify-center" @click="isOpenSlide = false" icon="i-heroicons-x-mark" />
       <BoardName :board-name="header" :board-id="boardId" @update="handleUpdate" />
       <BoardDescription :board-desc="description" :board-id="boardId" @update="handleUpdateDesc" />
+      <div class="pl-6">
+        <div class="flex justify-between w-full">
+          <p>Like</p>
+          <UToggle v-model="like"/>
+      </div>
+      <div class="w-full flex justify-between">
+        <p>Comment</p>
+        <UToggle v-model="comment"/>
+      </div>
+      <div class="w-full flex justify-between">
+        <p>Board Format</p>
+        <UInputMenu v-model="selectedFormat" :options="formats" option-attribute="name">
+          <template #option="{ option: formatOption }">
+            <span class="truncate">{{ formatOption.name }}</span>
+          </template>
+        </UInputMenu>
+      </div>
+    </div>
       <UCard class="flex justify-between items-center">
         <template #header>
           <p>Background</p>
