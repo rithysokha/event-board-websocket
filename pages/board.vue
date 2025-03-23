@@ -8,8 +8,6 @@ definePageMeta({
 });
 const { data: authData, status: authStatus } = useAuth()
 const isOpenSlide = ref(false)
-const like = ref(true)
-const comment = ref(true)
 const isOpenBg = ref(false)
 const header = ref("")
 const description = ref("")
@@ -24,6 +22,7 @@ const formats = [
 const selectedFormat = ref(formats[0])
 const route = useRoute();
 const boardId = route.query.boardId;
+const { socket, isConnected, connect, sendMessage, data } = useWebSocket()
 
 if (!boardId || typeof boardId !== 'string') {
   throw new Error('Board ID is required and must be a string');
@@ -39,16 +38,53 @@ const handleOpenSlide = () => {
     isOpenSlide.value = true
   }
 }
+watch(data, (newValue) => {
+  try {
+    const message = JSON.parse(newValue);
+    console.log("message on board", message)
+    if (message.on == 'board') {
+      liveUpdateBoard(message.field, message.value)
+    }
+  } catch (error) {
+    console.error('Error parsing WebSocket message:', error);
+  }
+});
 
-const handleChangeFormat = ()=>{
-  console.log('format changed to ', selectedFormat.value)
+const handleChangeFormat = () => {
+  sendMessage({
+    on:'board',
+    type: 'put',
+    field:'format',
+    value: selectedFormat.value.name
+  })
 }
-const hadleToggleLike = () =>{
-  console.log('like changed to ', boardState.likeable)
+
+const hadleToggleLike = () => {
+  liveUpdateBoard('reaction',boardState.likeable)
+  sendMessage({
+    on:'board',
+    type: 'put',
+    field:'reaction',
+    value: boardState.likeable
+  })
 }
-const handleToggleComment = () =>{
-  console.log('comment chanegd to ', boardState.commentable)
+
+const handleToggleComment = () => {
+  liveUpdateBoard('comment', boardState.commentable)
+  sendMessage({
+    on:'board',
+    type: 'put',
+    field:'comment',
+    value: boardState.commentable,
+  })
 }
+
+const liveUpdateBoard = async ( field: string, value: any) => {
+  if (boardData.value) {
+    boardData.value[field] = value;
+  }
+}
+
 
 const handleUpdate = (newName: string) => {
   header.value = newName;
@@ -70,6 +106,8 @@ const handleSetDisplayName = () => {
 }
 const { data: avatarData } = await useFetch("/api/avatar")
 onMounted(() => {
+
+  connect(`/api/websocket?room=${boardId}`)
   if (userStore.uuid == '') {
     userStore.setUuid(authStatus.value == 'authenticated' ? authData.value?.user.email ?? crypto.randomUUID() : crypto.randomUUID())
   }
@@ -107,7 +145,7 @@ const handleGetImage = (publicId: string, qual: string) => {
     <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl mb-4 ">
       {{ header }}
     </h1>
-    <BoardDisplayPost :board-id="boardId" :comment="boardData.comment" :reaction="boardData.reaction" />
+    <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" />
   </div>
   <div>
     <USlideover v-model="isOpenSlide">

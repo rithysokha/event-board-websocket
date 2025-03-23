@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 export const useWebSocket = () => {
   const socket = ref<WebSocket | null>(null)
   const isConnected = ref(false)
+  const data = ref<string>('')
 
   const connect = (url: string) => {
     if (socket.value?.readyState === WebSocket.OPEN) return
@@ -21,6 +22,9 @@ export const useWebSocket = () => {
     
     socket.value.onerror = (error) => {
       console.error('WebSocket error:', error)
+    }
+    socket.value.onmessage = (event) => {
+      data.value = event.data
     }
   }
 
@@ -47,6 +51,7 @@ export const useWebSocket = () => {
     isConnected,
     connect,
     disconnect,
-    sendMessage
+    sendMessage,
+    data 
   }
 }

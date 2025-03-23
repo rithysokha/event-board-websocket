@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 defineProps<{
-  boardId: string
   reaction: boolean
-  comment: boolean
+  commentable: boolean
 }>();
-import { useWebSocket } from '@vueuse/core'
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
@@ -25,11 +23,12 @@ const toast = useToast()
 const reactionStore = useReactionStore()
 const userStore = useUserStore()
 const boardState = useBoardStateStore()
+const { socket, isConnected, connect, data, sendMessage } = useWebSocket()
 const boardId = route.query.boardId as string;
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
 }
-const { data, send } = useWebSocket(websocketUrl.value)
+
 
 
 const liveUpdatePost = async (postId: string, field: string, value: any) => {
@@ -125,7 +124,7 @@ const removeCommentFromHistory = (commentId: string) => {
 
 const editPost = async (postId: string, field: string, value: any) => {
   const index = history.value.findIndex(post => post.id === postId)
-  send(JSON.stringify({ type: 'put', postId, on: 'post', field: field, value: value }))
+  sendMessage({ type: 'put', postId, on: 'post', field: field, value: value })
   liveUpdatePost(postId, field, value)
   await $fetch(`/api/board/post/${postId}`, {
     method: 'PUT',
@@ -142,7 +141,7 @@ const handleDeletePost = async () => {
     if (res?.statusCode == 200) {
       removePostFromHistory(postIdToDelete.value)
     }
-    send(JSON.stringify({ type: 'delete', on: 'post', postId: postIdToDelete.value }))
+    sendMessage({ type: 'delete', on: 'post', postId: postIdToDelete.value })
     isDeleting.value = false
     isOpenDeletePost.value = false
   } catch (e) {
@@ -178,7 +177,7 @@ const handlePost = (message: any) => {
   isOpenPost.value = message.isOpenPost
   message.type = 'post'
   message.on = 'post'
-  send(JSON.stringify(message));
+  sendMessage(message);
 }
 const handleLike = (postId: string, currentLikes: number) => {
   if (reactionStore.hasReacted(postId)) {
@@ -199,7 +198,7 @@ const hanldeDeleteComment = async () => {
     if (index !== -1) {
       editPost(postIdToDelete.value, 'commentCount', history.value[index].commentCount - 1)
     }
-    send(JSON.stringify({ type: 'delete', on: 'comment', id: commentIdToDelete.value }))
+    sendMessage({ type: 'delete', on: 'comment', id: commentIdToDelete.value })
     isDeleting.value = false
     isOpenDeleteComment.value = false
     toast.add({ title: 'Comment deleted', icon: 'i-heroicons-trash' })
@@ -236,7 +235,7 @@ const handlePostComment = async (postId: string, currentCommentCount: number) =>
     appendComment(postId, comment.value[postId], userStore.displayName, res.insertedId, userStore.uuid, userStore.displayPhoto)
   }
 
-  send(JSON.stringify({ type: 'post', on: 'comment', comment: comment.value[postId], userDisplayName: userStore.displayName, postId: postId }))
+  sendMessage({ type: 'post', on: 'comment', comment: comment.value[postId], userDisplayName: userStore.displayName, postId: postId })
   comment.value[postId] = ''
   editPost(postId, "commentCount", currentCommentCount + 1)
 }
@@ -254,6 +253,7 @@ const handleOpenComment = async (postId: string) => {
 }
 
 onMounted(() => {
+  connect(`/api/websocket?room=${boardId}`)
   fetchMessageHistory();
 });
 </script>
@@ -320,14 +320,15 @@ onMounted(() => {
         <p>{{ entry.description }}</p>
         <template #footer>
           <div class="flex justify-between">
-            <div class="flex items-center">
-              <UButton v-if="reaction" @click="handleLike(entry.id, entry.likes)"
+            <div class="flex items-center" v-if="reaction">
+              <UButton @click="handleLike(entry.id, entry.likes)"
                 :icon="reactionStore.hasReacted(entry.id) ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
                 variant="ghost" />
               <p>{{ entry.likes }}</p>
             </div>
+            <div v-if="commentable">
             <!-- if have comment -->
-            <UChip v-if="entry.commentCount > 0" :text="entry.commentCount" size="2xl">
+            <UChip v-if=" entry.commentCount > 0" :text="entry.commentCount" size="2xl">
               <UPopover :popper="{ placement: 'bottom-end' }">
                 <UButton @click="handleOpenComment(entry.id)" icon="i-heroicons-chat-bubble-bottom-center-text"
                   variant="ghost" />
@@ -386,6 +387,7 @@ onMounted(() => {
                 </div>
               </template>
             </UPopover>
+          </div>
           </div>
         </template>
       </UCard>
