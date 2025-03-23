@@ -17,7 +17,6 @@ const websocketUrl = ref('')
 const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, id: string, postedBy: string, likes: number, commentCount: number, uuid: string, displayPhoto:string }[]>([]);
 const comments = ref<{ comment: string, userDisplayName: string, postId: string, id: string, uuid: string , displayPhoto:string}[]>([]);
 const route = useRoute();
-const boardId = route.query.boardId as string;
 const isOpenDeletePost = ref(false)
 const isOpenDeleteComment = ref(false)
 const postIdToDelete = ref("")
@@ -25,7 +24,8 @@ const commentIdToDelete = ref("")
 const toast = useToast()
 const reactionStore = useReactionStore()
 const userStore = useUserStore()
-const boardState = useBoardStoreStateStore()
+const boardState = useBoardStateStore()
+const boardId = route.query.boardId as string;
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
 }

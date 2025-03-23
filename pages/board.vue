@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useBoardStoreStateStore } from '~/stores/boardStoreState';
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
@@ -15,7 +14,7 @@ const isOpenBg = ref(false)
 const header = ref("")
 const description = ref("")
 const bgColor = ref("")
-const boardState = useBoardStoreStateStore()
+const boardState = useBoardStateStore()
 const userStore = useUserStore()
 const userDisplayName = ref("")
 const formats = [
@@ -39,6 +38,16 @@ const handleOpenSlide = () => {
   if (authData.value?.user.email == boardData.value.belongsTo) {
     isOpenSlide.value = true
   }
+}
+
+const handleChangeFormat = ()=>{
+  console.log('format changed to ', selectedFormat.value)
+}
+const hadleToggleLike = () =>{
+  console.log('like changed to ', boardState.likeable)
+}
+const handleToggleComment = () =>{
+  console.log('comment chanegd to ', boardState.commentable)
 }
 
 const handleUpdate = (newName: string) => {
@@ -108,15 +117,15 @@ const handleGetImage = (publicId: string, qual: string) => {
       <div class="pl-6">
         <div class="flex justify-between w-full">
           <p>Like</p>
-          <UToggle v-model="like"/>
+          <UToggle v-model="boardState.likeable" @update:model-value="hadleToggleLike"/>
       </div>
       <div class="w-full flex justify-between">
         <p>Comment</p>
-        <UToggle v-model="comment"/>
+        <UToggle v-model="boardState.commentable" @update:model-value="handleToggleComment"/>
       </div>
       <div class="w-full flex justify-between">
         <p>Board Format</p>
-        <UInputMenu v-model="selectedFormat" :options="formats" option-attribute="name">
+        <UInputMenu v-model="selectedFormat" :options="formats" option-attribute="name" @update:model-value="handleChangeFormat">
           <template #option="{ option: formatOption }">
             <span class="truncate">{{ formatOption.name }}</span>
           </template>

@@ -1,13 +1,15 @@
 import { defineStore } from 'pinia'
 
-export const useBoardStoreStateStore = defineStore({
-  id: 'boardStoreStateStore',
+export const useBoardStateStore = defineStore({
+  id: 'boardStateStore',
   state: () => ({
     isOpenQr:false,
     description:'',
     bgColor:'',
     header:'',
-    isOpenInputName:false
+    isOpenInputName:false,
+    likeable:true,
+    commentable:true
    }),
   actions: {
     setIsOpenQr(state:boolean){
