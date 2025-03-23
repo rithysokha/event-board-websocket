@@ -4,9 +4,9 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['update']);
 const background = [
-  "red-400",
-  "teal-400",
-  "blue-500",
+  "red-200",
+  "teal-200",
+  "blue-200",
   "red-400",
   "teal-400",
   "blue-500"

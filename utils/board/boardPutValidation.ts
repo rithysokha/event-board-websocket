@@ -10,7 +10,7 @@ export const boardSchema = Joi.object({
   font: Joi.string(),
   sort: Joi.string(),
   comment: Joi.boolean(),
-  reaction: Joi.string(),
+  reaction: Joi.boolean(),
   moderation: Joi.boolean(),
   updatedAt: Joi.date().timestamp('javascript').default(() => new Date())
 });

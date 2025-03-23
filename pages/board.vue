@@ -41,7 +41,6 @@ const handleOpenSlide = () => {
 watch(data, (newValue) => {
   try {
     const message = JSON.parse(newValue);
-    console.log("message on board", message)
     if (message.on == 'board') {
       liveUpdateBoard(message.field, message.value)
     }
@@ -51,37 +50,32 @@ watch(data, (newValue) => {
 });
 
 const handleChangeFormat = () => {
-  sendMessage({
-    on:'board',
-    type: 'put',
-    field:'format',
-    value: selectedFormat.value.name
-  })
+  editBoard(boardId, 'format', selectedFormat.value.name )
 }
 
 const hadleToggleLike = () => {
-  liveUpdateBoard('reaction',boardState.likeable)
-  sendMessage({
-    on:'board',
-    type: 'put',
-    field:'reaction',
-    value: boardState.likeable
-  })
+ editBoard(boardId, 'reaction', boardState.likeable)
 }
 
 const handleToggleComment = () => {
-  liveUpdateBoard('comment', boardState.commentable)
-  sendMessage({
-    on:'board',
-    type: 'put',
-    field:'comment',
-    value: boardState.commentable,
-  })
+editBoard(boardId, 'comment', boardState.commentable)
 }
 
 const liveUpdateBoard = async ( field: string, value: any) => {
   if (boardData.value) {
     boardData.value[field] = value;
+  }
+}
+
+const editBoard = async (boardId: string, field: string, value: string | boolean) => {
+  try{
+    await $fetch(`/api/board/${boardId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ [field]:value})
+    })
+     sendMessage({ on:'board',type: 'put',field:field,value: value})
+  }catch(error){
+    console.log(error)
   }
 }
 
