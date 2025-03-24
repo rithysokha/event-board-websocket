@@ -16,7 +16,7 @@ const boardState = useBoardStateStore()
 const userStore = useUserStore()
 const userDisplayName = ref("")
 const formats = [
-  { name: 'Grid'},
+  { name: 'Wall'},
   { name: 'Stream'}
 ]
 const selectedFormat = ref(formats[0])
@@ -69,10 +69,11 @@ const liveUpdateBoard = async ( field: string, value: any) => {
 
 const editBoard = async (boardId: string, field: string, value: string | boolean) => {
   try{
-    await $fetch(`/api/board/${boardId}`, {
+    await useFetch(`/api/board/${boardId}`, {
       method: 'PUT',
       body: JSON.stringify({ [field]:value})
     })
+    liveUpdateBoard(field, value)
      sendMessage({ on:'board',type: 'put',field:field,value: value})
   }catch(error){
     console.log(error)
@@ -139,7 +140,7 @@ const handleGetImage = (publicId: string, qual: string) => {
     <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl mb-4 ">
       {{ header }}
     </h1>
-    <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" />
+    <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" :board-format="boardData.format" />
   </div>
   <div>
     <USlideover v-model="isOpenSlide">

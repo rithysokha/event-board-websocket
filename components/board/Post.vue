@@ -4,7 +4,7 @@ const props = defineProps<{
   boardId: string
 }>();
 const userStore = useUserStore()
-const boardState = useBoardStoreStateStore()
+const boardState = useBoardStateStore()
 const toast = useToast()
 const isUploadingPhoto = ref(false)
 const isSendingData = ref(false)

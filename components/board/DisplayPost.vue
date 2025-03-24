@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 defineProps<{
   reaction: boolean
-  commentable: boolean
+  commentable: boolean,
+  boardFormat:string
 }>();
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
@@ -287,7 +288,7 @@ onMounted(() => {
   <UModal v-model="isOpenPost">
     <BoardPost :board-id="boardId" @post-message="handlePost" />
   </UModal>
-  <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 space-y-4 mx-1">
+  <div :class="boardFormat=='Wall'?'columns-1 sm:columns-2 md:columns-3 lg:columns-4 space-y-4 mx-1':'columns-1 p-5 sm:p-10'">
     <div v-for="entry in history" :key="entry.title" class="mb-4 break-inside-avoid-column">
       <UCard class="flex flex-col justify-between">
         <template #header>
@@ -315,7 +316,7 @@ onMounted(() => {
           backgroundImage: 'url(' + handleGetImage(entry.imgPublicId, '1') + ')',
           aspectRatio: entry.imgWidth + '/' + entry.imgHeigh
         }">
-          <img loading="lazy" class="rounded-md" :src="handleGetImage(entry.imgPublicId, '80')" alt="" />
+          <img loading="lazy" class="rounded-md w-full" :src="handleGetImage(entry.imgPublicId, '80')" alt="" />
         </div>
         <p>{{ entry.description }}</p>
         <template #footer>
