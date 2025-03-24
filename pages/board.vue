@@ -70,6 +70,7 @@ const liveUpdateBoard = async ( field: string, value: any) => {
 const editBoard = async (boardId: string, field: string, value: string | boolean) => {
   try{
     await useFetch(`/api/board/${boardId}`, {
+      //@ts-expect-error
       method: 'PUT',
       body: JSON.stringify({ [field]:value})
     })
