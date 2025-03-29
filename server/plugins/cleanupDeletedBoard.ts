@@ -16,7 +16,7 @@ export default defineNitroPlugin(async () => {
 
 async function cleanupDeletedBoards() {
   try {
-    console.log('Running scheduled cleanup of deleted boards')
+    console.log('Running scheduled cleanup of deleted boards | ', new Date())
     const db = await connectToDatabase()
     const boardCollection = db.collection('board')
     const postCollection = db.collection('post')
@@ -31,9 +31,7 @@ async function cleanupDeletedBoards() {
     for (const board of oldDeletedBoards) {
       const boardId = board._id.toString()
         await postCollection.deleteMany({ boardId: boardId })
-      // Delete the board itself
       await boardCollection.deleteOne({ _id: board._id })
-      console.log(`Permanently deleted board: ${boardId}`)
     }
     console.log('Cleanup completed successfully')
   } catch (error) {
