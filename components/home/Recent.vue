@@ -1,10 +1,9 @@
 <script setup lang="ts">
 const items = ref()
-const {data : dataAuth} = useAuth()
-const { data } = await useFetch(`/api/board/${dataAuth.value?.user.email}`)
+const {data : authData} = useAuth()
+const { data } = await useFetch(`/api/recent/${authData.value?.user.email}`)
 items.value =data.value
-
 </script>
 <template>
-<LazyItemList :items="items"/>
+<LazyItemList :items="items" :place="'recent'"/>
 </template>

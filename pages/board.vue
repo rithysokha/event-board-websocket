@@ -101,6 +101,16 @@ const handleSetDisplayName = () => {
   boardState.setISOpenInputName(false)
 }
 const { data: avatarData } = await useFetch("/api/avatar")
+const handlePostRecentBoard = async (userId:string, boardId:string)=>{
+try{
+  await $fetch('/api/recent',{
+    method: 'POST',
+    body: JSON.stringify({userId:userId, boardId:boardId, name:header.value, background:boardData.value.background})
+  })
+}catch(error){
+  console.log(error)
+}
+}
 onMounted(() => {
 
   connect(`/api/websocket?room=${boardId}`)
@@ -111,6 +121,10 @@ onMounted(() => {
       const randomIndex = Math.floor(Math.random() * avatarData.value.length)
       const randomAvatar = avatarData.value[randomIndex]
       userStore.setDisplayPhoto(authStatus.value == 'authenticated' ? authData.value?.user.image?? handleGetImage(randomAvatar.url, '50') : handleGetImage(randomAvatar.url, '50'))
+    }
+
+    if(authStatus.value =='authenticated' && authData.value?.user.email){
+      handlePostRecentBoard(authData.value.user.email, boardId)
     }
 });
 

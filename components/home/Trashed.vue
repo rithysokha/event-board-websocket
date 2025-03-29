@@ -5,5 +5,5 @@ items.value =data.value
 
 </script>
 <template>
-<LazyItemList :items="items"/>
+<LazyItemList :items="items" :place="'trash'"/>
 </template>
