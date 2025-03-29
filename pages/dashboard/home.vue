@@ -5,8 +5,6 @@ definePageMeta({
 const Recent = defineAsyncComponent(() => import('~/components/home/Recent.vue'))
 const MadeByMe = defineAsyncComponent(() => import('~/components/home/MadeByMe.vue'))
 const Trashed = defineAsyncComponent(() => import('~/components/home/Trashed.vue'))
-const Favorite = defineAsyncComponent(() => import('~/components/home/Favorite.vue'))
-
 const items = [
   {
     key: 'recent',
@@ -22,11 +20,6 @@ const items = [
     key: 'trashed',
     label: 'Trashed',
     component: Trashed
-  },
-  {
-    key: 'favorite',
-    label: 'Favorites',
-    component: Favorite
   }
 ]
 </script>
