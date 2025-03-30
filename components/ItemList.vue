@@ -7,6 +7,7 @@ const boardIdToDelete = ref("")
 const boardIdToRestore = ref("")
 const isOpenDeleteBoard = ref(false)
 const isOpenRestoreBoard = ref(false)
+const itemStore = useItemStoreStore()
 const navigateBoard = (boardId: string) => {
   navigateTo(`/board?boardId=${boardId}`)
 }
@@ -29,6 +30,9 @@ const handleDeleteBoard = async () => {
     // @ts-expect-error
     if (res?.statusCode == 200) {
       const index = props.items.findIndex(item => item._id === boardIdToDelete.value)
+      if(props.place==='mine'){
+      itemStore.addTrash(props.items[index].background,props.items[index].name,props.items[index]._id,props.items[index].boardId )
+      }
       if (index !== -1) {
         props.items.splice(index, 1)
       }
@@ -49,9 +53,11 @@ const hanldeRestoreBoard = async () => {
     })
     if (res?.statusCode == 200) {
       const index = props.items.findIndex(item => item._id === boardIdToRestore.value)
+      itemStore.addMine(props.items[index].background,props.items[index].name,props.items[index]._id,props.items[index].boardId )
       if (index !== -1) {
         props.items.splice(index, 1)
       }
+
     }
     isProcessing.value = false
     isOpenRestoreBoard.value = false
