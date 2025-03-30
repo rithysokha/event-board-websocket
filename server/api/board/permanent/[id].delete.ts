@@ -3,27 +3,20 @@ import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   try {
-    const {belongsTo: id} = getRouterParams(event) //this belongs to is id
+    const {id} = getRouterParams(event)
     const db = await connectToDatabase();
     const collectionBoard = db.collection("board");
-    const collectionRecent = db.collection("recent")
-    const result = await collectionBoard.updateOne({ _id: new ObjectId(id) }
-  ,{
-    $set:{
-      deletedAt: new Date()
-    }
-  }
-  );
+    const postCollection = db.collection("post")
+    const result = await collectionBoard.findOneAndDelete({ _id: new ObjectId(id) });
     if (result.deletedCount < 1) {
       setResponseStatus(event, 404)
       return {
         statusCode: 404,
-        message: 'Board not found'
+        message: 'Post not found'
       }
     }
-    await collectionRecent.deleteMany(
-      {boardId:id}
-    )
+    await postCollection.deleteMany({ boardId: id })
+  
     return {
       statusCode: 200,
       message: 'deleted'

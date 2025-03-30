@@ -11,10 +11,19 @@ const navigateBoard = (boardId: string) => {
   navigateTo(`/board?boardId=${boardId}`)
 }
 const isProcessing = ref(false)
+
+const getDeleteUrl = (place: string) => {
+  if (place == 'mine')
+    return 'board'
+  else if ( place=='recent')
+    return 'recent'
+  else return 'board/permanent'
+}
+
 const handleDeleteBoard = async () => {
   try {
     isProcessing.value = true
-    const res = await $fetch(`/api/${props.place == 'mine' ? 'board' : 'recent'}/${boardIdToDelete.value}`, {
+    const res = await $fetch(`/api/${getDeleteUrl(props.place)}/${boardIdToDelete.value}`, {
       method: 'delete'
     })
     // @ts-expect-error
@@ -35,17 +44,17 @@ const handleDeleteBoard = async () => {
 const hanldeRestoreBoard = async () => {
   try {
     isProcessing.value = true
-    const res = await $fetch(`/api/board/restore/${boardIdToDelete.value}`, {
+    const res = await $fetch(`/api/board/restore/${boardIdToRestore.value}`, {
       method: 'put'
     })
     if (res?.statusCode == 200) {
-      const index = props.items.findIndex(item => item._id === boardIdToDelete.value)
+      const index = props.items.findIndex(item => item._id === boardIdToRestore.value)
       if (index !== -1) {
         props.items.splice(index, 1)
       }
     }
     isProcessing.value = false
-    isOpenDeleteBoard.value = false
+    isOpenRestoreBoard.value = false
   } catch (e) {
     console.log(e)
     isProcessing.value = false
