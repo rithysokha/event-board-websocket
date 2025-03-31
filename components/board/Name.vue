@@ -35,10 +35,6 @@ const renameBoard = async () => {
 </script>
 
 <template>
-  <UCard>
-    <template #header>
-      <p>Heading</p>
-    </template>
     <UForm :validate="validate" :state="state" class="space-y-4" @submit="renameBoard">
       <UFormGroup label="Name" name="name">
         <UInput v-model="state.name" />
@@ -47,6 +43,4 @@ const renameBoard = async () => {
         Done
       </UButton>
     </UForm>
-  </UCard>
-
 </template>

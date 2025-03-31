@@ -152,15 +152,17 @@ const handleGetImage = (publicId: string, qual: string) => {
     <QrCode :board-id="boardId" :width="$device.isMobile ? 200 : 500" :height="$device.isMobile ? 200 : 500" />
   </UModal>
   <div class="bg-cover min-h-screen" :class="'bg-' + bgColor">
-    <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl mb-4 ">
-      {{ header }}
-    </h1>
+      <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl mb-4 ">
+        {{ header }}
+      </h1>
+   
     <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" :board-format="boardData.format" />
   </div>
   <div>
     <USlideover v-model="isOpenSlide">
-      <UButton class="w-10 h-10 flex justify-center" @click="isOpenSlide = false" icon="i-heroicons-x-mark" />
-      <BoardName :board-name="header" :board-id="boardId" @update="handleUpdate" />
+      <div class="m-2">
+        <UButton class="w-10 h-10 flex justify-center" @click="isOpenSlide = false" icon="i-heroicons-x-mark" />
+        <BoardName :board-name="header" :board-id="boardId" @update="handleUpdate" />
       <BoardDescription :board-desc="description" :board-id="boardId" @update="handleUpdateDesc" />
       <div class="pl-6">
         <div class="flex justify-between w-full">
@@ -180,17 +182,8 @@ const handleGetImage = (publicId: string, qual: string) => {
         </UInputMenu>
       </div>
     </div>
-      <UCard class="flex justify-between items-center">
-        <template #header>
-          <p>Background</p>
-        </template>
-        <div @click="isOpenBg = true" class="h-20 w-36 " :class="'bg-' + bgColor">
-        </div>
-      </UCard>
-      <USlideover :overlay="false" v-model="isOpenBg">
-        <UButton class="w-10 h-10 flex justify-center" @click="isOpenBg = false" icon="i-heroicons-x-mark" />
-        <BoardBackground :board-id="boardId" @update="handleUpdateColor" />
-      </USlideover>
+        <BoardBackground :current-color="bgColor" :board-id="boardId" @update="handleUpdateColor" />
+    </div>
       <BoardShare :board-id="boardId" @update="hanldeOpenQr" />
     </USlideover>
   </div>
