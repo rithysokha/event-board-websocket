@@ -69,7 +69,7 @@ onMounted(() => {
       <p class="text-2xl font-bold ">Webboard</p>
       <img src="../assets/board.png" alt="Web board" class="w-8" />
     </div>
-    <p class="text-center">Oh wow, you're beautiful. <br> Just saying...</p>
+    <p class="text-center">With Webboard, <br> Your event is not boring anymore</p>
     <div class=" w-2/3 ">
       <div class="grid grid-cols-4  my-5 w-full lg:w-[70vw] justify-items-center">
         <div v-for="social in socials" :key="social.id" class="relative group">
