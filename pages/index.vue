@@ -38,7 +38,7 @@ onMounted(() => {
       <div class="w-full" ref="animationContainer"></div>
       <UButton @Click="navigateTo('/auth')">Sign up for free</UButton>
     </UContainer>
-    <UContainer class="flex flex-col items-center gap-2">
+    <UContainer class="flex flex-col items-center gap-2 sm:gap-3">
       <p class="font-bold">We have event board</p>
       <Carousel />
       <UButton @Click="navigateTo('/auth')">Make a board</UButton>
