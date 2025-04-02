@@ -44,7 +44,7 @@ const onImageLoad = () => {
 }
 </script>
 <template>
-  <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+  <div class="grid grid-cols-2  m-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
     <UCard v-for="item in presetData" @click="createBoard">
       <img :src="handleGetImage(item.image, '50')" class="rounded-lg" alt="img" @load="onImageLoad"/>
       <p> {{ item.name }} </p>

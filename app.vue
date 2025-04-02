@@ -1,6 +1,6 @@
 <template>
   <NavigationBar v-if="status=='authenticated'"  />
-  <div :class="status=='authenticated'&&'mt-12'"></div>
+  <div :class="status=='authenticated' && !$device.isMobile&&'mt-12'"></div>
   <NuxtRouteAnnouncer />
   <NuxtPage />
   <UNotifications />

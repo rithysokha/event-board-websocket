@@ -101,7 +101,7 @@ const handleDisplayRestoringPrompt = (boardId: string) => {
     </div>
   </UModal>
   <UContainer>
-    <div class="grid gap-2 grid-cols-1 sm:grid-cols-3 md:grid-cols-4">
+    <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       <UCard v-for="item in items" :key="item.name" class="w-full">
         <div class="flex justify-between  sm:w-full sm:h-28 md:h-40 sm:flex-col sm:items-center ">
           <div class="w-10 rounded-md sm:w-full sm:h-full cursor-pointer"
