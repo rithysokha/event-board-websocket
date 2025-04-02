@@ -11,7 +11,7 @@ const backgroundList =[
 ]
 const randomIndex = Math.floor(Math.random()*backgroundList.length)
 const boardBody = {
-  name: "My board",
+  name: "Untitled board",
   belongsTo: data.value?.user.email,
   background: backgroundList[randomIndex]
 }

@@ -5,6 +5,12 @@ import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 const {data: presetData} = useFetch('/api/preset')
 const {data:authData} = useAuth()
 const isLoading = ref(true)
+const backgroundList =[
+  "blue-400",
+  "teal-300",
+  "fuchsia-400"
+]
+const randomIndex = Math.floor(Math.random()*backgroundList.length)
 const createBoard = async () => {
   try {
     const response = await fetch('/api/board', {
@@ -13,9 +19,9 @@ const createBoard = async () => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: "My board",
+        name: "Untitled board",
         belongsTo: authData.value?.user.email,
-        background: "blue-400",
+        background: backgroundList[randomIndex],
         comment:presetData.value.comment,
         reaction:presetData.value.like,
         format:presetData.value.format

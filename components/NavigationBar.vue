@@ -84,7 +84,7 @@ const handleJoin = () =>{
         <div class="p-4 flex flex-col gap-2">
           <p>Please Enter URL</p>
           <UInput color="primary" variant="outline" v-model="joinUrl" placeholder="Link..." />
-          <UButton block @click="handleJoin">Submit</UButton>
+          <UButton block @click="handleJoin">Join</UButton>
         </div>
       </UModal>
     </div>

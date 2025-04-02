@@ -5,7 +5,6 @@
   <NuxtPage />
   <UNotifications />
 </template>
-
 <script setup lang="ts">
 const {status} = useAuth()
 </script>

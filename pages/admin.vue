@@ -24,6 +24,8 @@ const items = [
 ]
 </script>
 <template>
-  <SideTab :items="items" />
+  <ClientOnly >
+    <SideTab :items="items" />
+  </ClientOnly>
 </template>
 

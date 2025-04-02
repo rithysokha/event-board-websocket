@@ -5,9 +5,12 @@ import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 const { data } = useFetch('/api/preset')
 const isOpen = ref(false)
+const isOpenDelete = ref(false)
 const isLoading = ref(true)
 const isUploading = ref(false)
 const isUploadingPhoto = ref(false)
+const presetIdToDelete = ref('')
+const isDeleting = ref(false)
 const presetName = ref('')
 const like = ref(true)
 const comment = ref(true)
@@ -132,9 +135,23 @@ const handleOpenEdit = (id: string) => {
 
 }
 const handleDisplayDeletePrompt = (id: string) => {
+  presetIdToDelete.value=id;
+  isOpenDelete.value=true
 
 }
-
+const handleDeleteTemplate = async () =>{
+  const response = await fetch(`api/preset/${presetIdToDelete.value}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if(response.ok){
+      removePresetFromArray(presetIdToDelete.value)
+      isDeleting.value=false
+      isOpenDelete.value=false
+    }
+}
 const handleGetImage = (publicId: string, qual: string) => {
   if (publicId && publicId.length > 0) {
     const myImage = new CloudinaryImage(publicId, { cloudName: "dbiso7uht" })
@@ -150,6 +167,18 @@ const handleGetImage = (publicId: string, qual: string) => {
   <div class="w-full bg-slate-50 shadow-md flex flex-row-reverse">
     <UButton @click="isOpen = true" class="w-20 flex justify-center mr-10" size="md" icon="i-heroicons-plus" />
   </div>
+  <UModal v-model="isOpenDelete">
+    <div class="p-4 m-4 text-center">
+      <p class="text-red-500 font-bold mb-6">
+        Are you sure to delete this post?
+      </p>
+      <div class="flex justify-center gap-4">
+        <UButton class="w-1/4 flex justify-center" label="No" @click="isOpenDelete = false" />
+        <UButton :loading="isDeleting" class="w-1/4 flex justify-center" color="red" icon="i-heroicons-trash"
+          label="Yes!" @click="handleDeleteTemplate" />
+      </div>
+    </div>
+  </UModal>
   <UModal v-model="isOpen">
     <div class="p-4 flex flex-col gap-4 items-end">
       <UButton @click="handleSavePreset" :loading="isUploading" label="Save" />
