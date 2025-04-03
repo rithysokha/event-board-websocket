@@ -292,7 +292,7 @@ onMounted(() => {
     <div v-for="entry in history" :key="entry.title" class="mb-4 break-inside-avoid-column">
       <UCard class="flex flex-col justify-between">
         <template #header>
-          <div class="flex gap-1 h-5 justify-between">
+          <div class="flex gap-1 h-5 justify-between ">
             <div class="flex gap-1">
               <UAvatar :src="entry.displayPhoto" />
               <p class="font-bold"> {{ entry.postedBy }}</p>
@@ -312,11 +312,8 @@ onMounted(() => {
         <p :class="entry.imgPublicId === '' ? 'text-3xl' : 'text-md'">
           {{ entry.title }}
         </p>
-        <div v-if="entry.imgPublicId !== ''" class="bg-no-repeat bg-center bg-cover w-full" :style="{
-          backgroundImage: 'url(' + handleGetImage(entry.imgPublicId, '1') + ')',
-          aspectRatio: entry.imgWidth + '/' + entry.imgHeigh
-        }">
-          <img loading="lazy" class="rounded-md w-full" :src="handleGetImage(entry.imgPublicId, '80')" alt="" />
+        <div v-if="entry.imgPublicId !== ''" class="bg-no-repeat bg-center bg-cover w-full">
+          <img loading="lazy" class="rounded-md w-full max-h-[80vh] object-contain" :src="handleGetImage(entry.imgPublicId, '80')" alt="" />
         </div>
         <p>{{ entry.description }}</p>
         <template #footer>

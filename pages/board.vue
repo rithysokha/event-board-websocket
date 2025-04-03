@@ -8,10 +8,6 @@ definePageMeta({
 });
 const { data: authData, status: authStatus } = useAuth()
 const isOpenSlide = ref(false)
-const isOpenBg = ref(false)
-const header = ref("")
-const description = ref("")
-const bgColor = ref("")
 const boardState = useBoardStateStore()
 const userStore = useUserStore()
 const userDisplayName = ref("")
@@ -19,20 +15,22 @@ const formats = [
   { name: 'Wall'},
   { name: 'Stream'}
 ]
-const selectedFormat = ref(formats[0])
+const selectedFormat = ref({name:''})
 const route = useRoute();
 const boardId = route.query.boardId;
-const { socket, isConnected, connect, sendMessage, data } = useWebSocket()
+const { connect, sendMessage, data } = useWebSocket()
 
 if (!boardId || typeof boardId !== 'string') {
   throw new Error('Board ID is required and must be a string');
 }
 const { data: boardData }: any = await useFetch(`/api/board?boardId=${boardId}`);
 
-header.value = boardData.value.name
-bgColor.value = boardData.value.background
-description.value = boardData.value.description
-
+if (boardData.value?.format) {
+  const formatIndex = formats.findIndex(f => f.name === boardData.value.format)
+  if (formatIndex >= 0) {
+    selectedFormat.value = formats[formatIndex]
+  }
+}
 const handleOpenSlide = () => {
   if (authData.value?.user.email == boardData.value.belongsTo) {
     isOpenSlide.value = true
@@ -61,6 +59,10 @@ const handleToggleComment = () => {
 editBoard(boardId, 'comment', boardState.commentable)
 }
 
+const handleUpdateColor = (newColor: string) => {
+  editBoard(boardId, 'background', newColor)
+};
+
 const liveUpdateBoard = async ( field: string, value: any) => {
   if (boardData.value) {
     boardData.value[field] = value;
@@ -83,14 +85,11 @@ const editBoard = async (boardId: string, field: string, value: string | boolean
 
 
 const handleUpdate = (newName: string) => {
-  header.value = newName;
+  editBoard(boardId,'name', newName)
   isOpenSlide.value = false
 };
 const handleUpdateDesc = (newDesc: string) => {
-  description.value = newDesc;
-};
-const handleUpdateColor = (newColor: string) => {
-  bgColor.value = newColor;
+  editBoard(boardId,'description', newDesc)
 };
 const hanldeOpenQr = (isOpen: boolean) => {
   isOpenSlide.value = false
@@ -105,7 +104,7 @@ const handlePostRecentBoard = async (userId:string, boardId:string)=>{
 try{
   await $fetch('/api/recent',{
     method: 'POST',
-    body: JSON.stringify({userId:userId, boardId:boardId, name:header.value, background:boardData.value.background})
+    body: JSON.stringify({userId:userId, boardId:boardId, name:boardData.value.name, background:boardData.value.background})
   })
 }catch(error){
   console.log(error)
@@ -151,9 +150,10 @@ const handleGetImage = (publicId: string, qual: string) => {
   <UModal v-model="boardState.isOpenQr">
     <QrCode :board-id="boardId" :width="$device.isMobile ? 200 : 500" :height="$device.isMobile ? 200 : 500" />
   </UModal>
-  <div class="bg-cover min-h-screen" :class="'bg-' + bgColor">
-      <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl mb-4 ">
-        {{ header }}
+  <div class="bg-cover min-h-screen" :class="'bg-' + boardData.background">
+    
+      <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl mb-4 w-fit">
+        {{ boardData.name }}
       </h1>
    
     <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" :board-format="boardData.format" />
@@ -162,8 +162,8 @@ const handleGetImage = (publicId: string, qual: string) => {
     <USlideover v-model="isOpenSlide">
       <div class="m-2">
         <UButton class="w-10 h-10 flex justify-center" @click="isOpenSlide = false" icon="i-heroicons-x-mark" />
-        <BoardName :board-name="header" :board-id="boardId" @update="handleUpdate" />
-      <BoardDescription :board-desc="description" :board-id="boardId" @update="handleUpdateDesc" />
+        <BoardName :board-name="boardData.name" :board-id="boardId" @update="handleUpdate" />
+      <BoardDescription :board-desc="boardData.description" :board-id="boardId" @update="handleUpdateDesc" />
       <div class="pl-6">
         <div class="flex justify-between w-full">
           <p>Like</p>
@@ -182,7 +182,7 @@ const handleGetImage = (publicId: string, qual: string) => {
         </UInputMenu>
       </div>
     </div>
-        <BoardBackground :current-color="bgColor" :board-id="boardId" @update="handleUpdateColor" />
+        <BoardBackground :current-color="boardData.background" :board-id="boardId" @update="handleUpdateColor" />
     </div>
       <BoardShare :board-id="boardId" @update="hanldeOpenQr" />
     </USlideover>

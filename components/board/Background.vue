@@ -20,23 +20,8 @@ const colorCategories = [
     ]
   }
 ];
-const handleColorClick = async () => {
-  try {
-    await fetch(`/api/board/${props.boardId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ background: bgColor.value })
-    });
-  } catch (error) {
-    console.error('Error creating board:', error);
-  }
-}
-
 const changeColor= (color:string) =>{
   bgColor.value=color
-  handleColorClick()
   emit('update',color);
 }
 
