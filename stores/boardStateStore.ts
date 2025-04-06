@@ -7,9 +7,7 @@ export const useBoardStateStore = defineStore({
     description:'',
     bgColor:'',
     header:'',
-    isOpenInputName:false,
-    likeable:true,
-    commentable:true
+    isOpenInputName:false
    }),
   actions: {
     setIsOpenQr(state:boolean){

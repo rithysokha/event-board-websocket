@@ -52,11 +52,11 @@ const handleChangeFormat = () => {
 }
 
 const hadleToggleLike = () => {
- editBoard(boardId, 'reaction', boardState.likeable)
+ editBoard(boardId, 'reaction', boardData.value.reaction)
 }
 
 const handleToggleComment = () => {
-editBoard(boardId, 'comment', boardState.commentable)
+editBoard(boardId, 'comment', boardData.value.comment)
 }
 
 const handleUpdateColor = (newColor: string) => {
@@ -167,11 +167,11 @@ const handleGetImage = (publicId: string, qual: string) => {
       <div class="pl-6">
         <div class="flex justify-between w-full">
           <p>Like</p>
-          <UToggle v-model="boardState.likeable" @update:model-value="hadleToggleLike"/>
+          <UToggle v-model="boardData.reaction" @update:model-value="hadleToggleLike"/>
       </div>
       <div class="w-full flex justify-between">
         <p>Comment</p>
-        <UToggle v-model="boardState.commentable" @update:model-value="handleToggleComment"/>
+        <UToggle v-model="boardData.comment" @update:model-value="handleToggleComment"/>
       </div>
       <div class="w-full flex justify-between">
         <p>Board Format</p>
