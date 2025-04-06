@@ -26,8 +26,6 @@ const handleChnageBoardDesc = (description: string) => {
 
 <template>
   <UCard>
-    <template #header>
-    </template>
     <UForm :state="state" class="space-y-4" @submit="handleChnageBoardDesc">
       <UFormGroup label="Description" name="description">
         <UInput v-model="state.description" />

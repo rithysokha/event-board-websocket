@@ -9,7 +9,14 @@ const state = reactive({
   name : props.boardName as string | undefined
 })
 
-const initName = props.boardName;
+let initName = props.boardName;
+watch(() => props.boardName, (newDesc) => {
+  if (newDesc !== undefined && newDesc !== state.name) {
+    state.name = newDesc;
+    initName = newDesc; 
+  }
+}, { immediate: true });
+
 const validate = (state: any): FormError[] => {
   const errors = []
   if (!state.name) errors.push({ path: 'name', message: 'Required' })
@@ -18,18 +25,8 @@ const validate = (state: any): FormError[] => {
 
 const isNameChanged = computed(() => state.name !== initName);
 const renameBoard = async () => {
-  try {
-    await fetch(`/api/board/${props.boardId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(state)
-    });
     emit('update', state.name);
-  } catch (error) {
-    console.error('Error creating board:', error);
-  }
+    initName = state.name as string;
 };
 
 </script>

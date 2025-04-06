@@ -77,7 +77,7 @@ const liveUpdateBoard = async ( field: string, value: any) => {
 
 const editBoard = async (boardId: string, field: string, value: string | boolean) => {
   try{
-    await useFetch(`/api/board/${boardId}`, {
+    await $fetch(`/api/board/${boardId}`, {
       //@ts-expect-error
       method: 'PUT',
       body: JSON.stringify({ [field]:value})
@@ -92,7 +92,6 @@ const editBoard = async (boardId: string, field: string, value: string | boolean
 
 const handleUpdate = (newName: string) => {
   editBoard(boardId,'name', newName)
-  isOpenSlide.value = false
 };
 const handleUpdateDesc = (newDesc: string) => {
   editBoard(boardId,'description', newDesc)
@@ -157,12 +156,12 @@ const handleGetImage = (publicId: string, qual: string) => {
     <QrCode :board-id="boardId" :width="$device.isMobile ? 200 : 500" :height="$device.isMobile ? 200 : 500" />
   </UModal>
   <div class="bg-cover min-h-screen" :class="'bg-' + boardData.background">
-    
-      <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl w-fit">
+    <div class="ml-4 mb-4">
+      <h1 @click="handleOpenSlide" class=" font-bold cursor-pointer text-2xl w-fit capitalize">
         {{ boardData.name }}
       </h1>
       <p>{{ boardData.description }} </p>
-   
+    </div>
     <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" :board-format="boardData.format" />
   </div>
   <div>
