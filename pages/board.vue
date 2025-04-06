@@ -67,6 +67,12 @@ const liveUpdateBoard = async ( field: string, value: any) => {
   if (boardData.value) {
     boardData.value[field] = value;
   }
+  if (field === 'format') {
+      const formatIndex = formats.findIndex(f => f.name === value);
+      if (formatIndex >= 0) {
+        selectedFormat.value = formats[formatIndex];
+      }
+    }
 }
 
 const editBoard = async (boardId: string, field: string, value: string | boolean) => {
@@ -152,9 +158,10 @@ const handleGetImage = (publicId: string, qual: string) => {
   </UModal>
   <div class="bg-cover min-h-screen" :class="'bg-' + boardData.background">
     
-      <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl mb-4 w-fit">
+      <h1 @click="handleOpenSlide" class="ml-4 font-bold cursor-pointer text-2xl w-fit">
         {{ boardData.name }}
       </h1>
+      <p>{{ boardData.description }} </p>
    
     <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" :board-format="boardData.format" />
   </div>

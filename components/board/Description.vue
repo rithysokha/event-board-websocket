@@ -7,24 +7,20 @@ const emit = defineEmits(['update']);
 const state = reactive({
   description : props.boardDesc as string | undefined
 })
-const initDesc = props.boardDesc;
-
+let initDesc = props.boardDesc;
+watch(() => props.boardDesc, (newDesc) => {
+  if (newDesc !== undefined && newDesc !== state.description) {
+    state.description = newDesc;
+    initDesc = newDesc; 
+  }
+}, { immediate: true });
 const isDescChanged = computed(() => state.description !== initDesc);
 
-const renameBoard = async () => {
-  try {
-    await fetch(`/api/board?boardId=${props.boardId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(state)
-    });
-    emit('update', state.description);
-  } catch (error) {
-    console.error('Error creating board:', error);
-  }
-};
+const handleChnageBoardDesc = (description: string) => {
+  initDesc = description
+  // @ts-expect-error
+  emit('update', description.data.description);
+}
 
 </script>
 
@@ -32,7 +28,7 @@ const renameBoard = async () => {
   <UCard>
     <template #header>
     </template>
-    <UForm :state="state" class="space-y-4" @submit="renameBoard">
+    <UForm :state="state" class="space-y-4" @submit="handleChnageBoardDesc">
       <UFormGroup label="Description" name="description">
         <UInput v-model="state.description" />
       </UFormGroup>
