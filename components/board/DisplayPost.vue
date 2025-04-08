@@ -2,7 +2,7 @@
 defineProps<{
   reaction: boolean
   commentable: boolean,
-  boardFormat:string
+  boardFormat: string
 }>();
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
@@ -11,10 +11,11 @@ import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 const isDeleting = ref(false)
 const isOpenPost = ref(false)
 const maxCommentLength = 50
+const isFetching = ref(true)
 const comment = ref<{ [postId: string]: string }>({})
 const websocketUrl = ref('')
-const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, id: string, postedBy: string, likes: number, commentCount: number, uuid: string, displayPhoto:string }[]>([]);
-const comments = ref<{ comment: string, userDisplayName: string, postId: string, id: string, uuid: string , displayPhoto:string}[]>([]);
+const history = ref<{ title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, id: string, postedBy: string, likes: number, commentCount: number, uuid: string, displayPhoto: string }[]>([]);
+const comments = ref<{ comment: string, userDisplayName: string, postId: string, id: string, uuid: string, displayPhoto: string }[]>([]);
 const route = useRoute();
 const isOpenDeletePost = ref(false)
 const isOpenDeleteComment = ref(false)
@@ -24,6 +25,7 @@ const toast = useToast()
 const reactionStore = useReactionStore()
 const userStore = useUserStore()
 const boardState = useBoardStateStore()
+const imageLoaded = ref<{ [key: string]: boolean }>({});
 const { socket, isConnected, connect, data, sendMessage } = useWebSocket()
 const boardId = route.query.boardId as string;
 if (typeof window !== 'undefined' && window.location) {
@@ -55,7 +57,7 @@ watch(data, (newValue) => {
           postedBy: message.postedBy,
           likes: 0,
           uuid: message.uuid,
-          displayPhoto:message.displayPhoto,
+          displayPhoto: message.displayPhoto,
           commentCount: 0
         });
       } else if (message.type == 'put') {
@@ -65,7 +67,7 @@ watch(data, (newValue) => {
       }
     } else if (message.on == 'comment') {
       if (message.type == 'post') {
-        appendComment(message.postId, message.comment, message.userDisplayName, "","", message.displayPhoto);
+        appendComment(message.postId, message.comment, message.userDisplayName, "", "", message.displayPhoto);
       } else {
         removeCommentFromHistory(message.id)
       }
@@ -79,7 +81,7 @@ const fetchMessageHistory = async () => {
   try {
     const response = await fetch(`/api/board/post?boardId=${boardId}`);
     const messages = await response.json();
-    history.value = messages.map((message: { title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, _id: string, postedBy: string, likes: number, commentCount: string, uuid: string, displayPhoto:string }) => ({
+    history.value = messages.map((message: { title: string, imgPublicId: string, description: string, imgHeigh: number, imgWidth: number, _id: string, postedBy: string, likes: number, commentCount: string, uuid: string, displayPhoto: string }) => ({
       title: message.title,
       imgPublicId: message.imgPublicId,
       description: message.description,
@@ -89,10 +91,12 @@ const fetchMessageHistory = async () => {
       postedBy: message.postedBy,
       likes: message.likes,
       uuid: message.uuid,
-      displayPhoto:message.displayPhoto,
+      displayPhoto: message.displayPhoto,
       commentCount: message.commentCount
     }));
+    isFetching.value = false
   } catch (error) {
+    isFetching.value = false
     console.error('Error fetching message history:', error);
   }
 };
@@ -172,7 +176,7 @@ const handlePost = (message: any) => {
     postedBy: message.postedBy,
     likes: 0,
     uuid: message.uuid,
-    displayPhoto:message.displayPhoto,
+    displayPhoto: message.displayPhoto,
     commentCount: 0
   })
   isOpenPost.value = message.isOpenPost
@@ -209,14 +213,14 @@ const hanldeDeleteComment = async () => {
   }
 }
 
-const appendComment = (postId: string, comment: string, displayName: string, id: string, uuid: string, displayPhoto:string) => {
+const appendComment = (postId: string, comment: string, displayName: string, id: string, uuid: string, displayPhoto: string) => {
   comments.value.push({
     comment: comment,
     userDisplayName: displayName,
     postId: postId,
     id: id,
     uuid: uuid,
-    displayPhoto:displayPhoto
+    displayPhoto: displayPhoto
   })
 }
 
@@ -231,7 +235,7 @@ const handlePostComment = async (postId: string, currentCommentCount: number) =>
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ comment: comment.value[postId], userDisplayName: userStore.displayName, postId: postId, uuid: userStore.uuid, displayPhoto:userStore.displayPhoto })
+      body: JSON.stringify({ comment: comment.value[postId], userDisplayName: userStore.displayName, postId: postId, uuid: userStore.uuid, displayPhoto: userStore.displayPhoto })
     });
     appendComment(postId, comment.value[postId], userStore.displayName, res.insertedId, userStore.uuid, userStore.displayPhoto)
   }
@@ -243,13 +247,13 @@ const handlePostComment = async (postId: string, currentCommentCount: number) =>
 const handleOpenComment = async (postId: string) => {
   const response = await fetch(`/api/comment?postId=${postId}`)
   const comment = await response.json();
-  comments.value = comment.map((comment: { comment: string, userDisplayName: string, _id: string, uuid: string, displayPhoto:string }) => ({
+  comments.value = comment.map((comment: { comment: string, userDisplayName: string, _id: string, uuid: string, displayPhoto: string }) => ({
     comment: comment.comment,
     userDisplayName: comment.userDisplayName,
     postId: postId,
     id: comment._id,
     uuid: comment.uuid,
-    displayPhoto:comment.displayPhoto
+    displayPhoto: comment.displayPhoto
   }));
 }
 
@@ -288,7 +292,9 @@ onMounted(() => {
   <UModal v-model="isOpenPost">
     <BoardPost :board-id="boardId" @post-message="handlePost" />
   </UModal>
-  <div :class="boardFormat=='Wall'?'columns-1 sm:columns-2 md:columns-3 lg:columns-4 space-y-4 mx-1':'columns-1 p-5 sm:p-10'">
+  <PostSckeleton v-if="isFetching" :board-format="boardFormat" />
+  <div
+    :class="boardFormat == 'Wall' ? 'columns-1 sm:columns-2 md:columns-3 lg:columns-4 space-y-4 mx-1' : 'columns-1 p-5 sm:p-10'">
     <div v-for="entry in history" :key="entry.title" class="mb-4 break-inside-avoid-column">
       <UCard class="flex flex-col justify-between">
         <template #header>
@@ -313,7 +319,12 @@ onMounted(() => {
           {{ entry.title }}
         </p>
         <div v-if="entry.imgPublicId !== ''" class="bg-no-repeat bg-center bg-cover w-full">
-          <img loading="lazy" class="rounded-md w-full max-h-[80vh] object-contain" :src="handleGetImage(entry.imgPublicId, '80')" alt="" />
+          <USkeleton class="w-full rounded-md" :class="{ 'hidden': imageLoaded[entry.id] }" :style="{
+            paddingBottom: `${(entry.imgHeigh / entry.imgWidth) * 100 || 56.25}%`
+          }" />
+          <img loading="lazy" class="rounded-md w-full object-contain" :class="{ 'opacity-0': !imageLoaded[entry.id] }"
+            :src="handleGetImage(entry.imgPublicId, '80')" :alt="entry.title || 'Webboard.live'"
+            @load="imageLoaded[entry.id] = true" />
         </div>
         <p>{{ entry.description }}</p>
         <template #footer>
@@ -325,38 +336,58 @@ onMounted(() => {
               <p>{{ entry.likes }}</p>
             </div>
             <div v-if="commentable">
-            <!-- if have comment -->
-            <UChip v-if=" entry.commentCount > 0" :text="entry.commentCount" size="2xl">
-              <UPopover :popper="{ placement: 'bottom-end' }">
+              <!-- if have comment -->
+              <UChip v-if="entry.commentCount > 0" :text="entry.commentCount" size="2xl">
+                <UPopover :popper="{ placement: 'bottom-end' }">
+                  <UButton @click="handleOpenComment(entry.id)" icon="i-heroicons-chat-bubble-bottom-center-text"
+                    variant="ghost" />
+                  <template #panel>
+                    <div v-for="comment in comments.filter(comment => comment.postId === entry.id)"
+                      class="flex items-center w-64 gap-4">
+                      <div class="flex items-center w-64 gap-4">
+                        <UAvatar class="ml-1" size="sm" :src="comment.displayPhoto" />
+                        <div class="mt-1 text-sm">
+                          <p class="font-bold"> {{ comment.userDisplayName }} </p>
+                          <p class=""> {{ comment.comment }} </p>
+                        </div>
+                      </div>
+                      <UDropdown :items="[
+                        [{
+                          label: 'Delete',
+                          icon: 'i-heroicons-trash-20-solid',
+                          click: () => handleDisplayDeletePrompt(comment.postId, comment.id)
+                        }]
+                      ]" :ui="{ base: 'outline-none' }" :popper="{ arrow: true }">
+                        <UButton v-show="comment.uuid == userStore.uuid" color="white"
+                          trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost" />
+                      </UDropdown>
+                    </div>
+                    <div class="flex w-full border-2 rounded-lg">
+                      <UInput v-model="comment[entry.id]" :maxlength="maxCommentLength" placeholder="Write some comment"
+                        class="w-full" variant="none">
+                        <template #trailing>
+                          <span class="text-xs text-gray-500 dark:text-gray-400"> {{ (comment[entry.id] || '').length
+                            }}/{{
+                              maxCommentLength }}</span>
+                        </template>
+                      </UInput>
+                      <UButton @click="handlePostComment(entry.id, entry.commentCount)" variant="ghost"
+                        icon="i-heroicons-arrow-up-circle" />
+                    </div>
+                  </template>
+                </UPopover>
+              </UChip>
+              <!-- If no comment -->
+              <UPopover v-else :popper="{ placement: 'bottom-end' }">
                 <UButton @click="handleOpenComment(entry.id)" icon="i-heroicons-chat-bubble-bottom-center-text"
                   variant="ghost" />
                 <template #panel>
-                  <div v-for="comment in comments.filter(comment => comment.postId === entry.id)"
-                    class="flex items-center w-64 gap-4">
-                    <div class="flex items-center w-64 gap-4">
-                      <UAvatar class="ml-1" size="sm" :src="comment.displayPhoto" />
-                      <div class="mt-1 text-sm">
-                        <p class="font-bold"> {{ comment.userDisplayName }} </p>
-                        <p class=""> {{ comment.comment }} </p>
-                      </div>
-                    </div>
-                    <UDropdown :items="[
-                      [{
-                        label: 'Delete',
-                        icon: 'i-heroicons-trash-20-solid',
-                        click: () => handleDisplayDeletePrompt(comment.postId, comment.id)
-                      }]
-                    ]" :ui="{ base: 'outline-none' }" :popper="{ arrow: true }">
-                      <UButton v-show="comment.uuid == userStore.uuid" color="white"
-                        trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost" />
-                    </UDropdown>
-                  </div>
                   <div class="flex w-full border-2 rounded-lg">
                     <UInput v-model="comment[entry.id]" :maxlength="maxCommentLength" placeholder="Write some comment"
                       class="w-full" variant="none">
                       <template #trailing>
                         <span class="text-xs text-gray-500 dark:text-gray-400"> {{ (comment[entry.id] || '').length
-                        }}/{{
+                          }}/{{
                             maxCommentLength }}</span>
                       </template>
                     </UInput>
@@ -365,27 +396,7 @@ onMounted(() => {
                   </div>
                 </template>
               </UPopover>
-            </UChip>
-            <!-- If no comment -->
-            <UPopover v-else :popper="{ placement: 'bottom-end' }">
-              <UButton @click="handleOpenComment(entry.id)" icon="i-heroicons-chat-bubble-bottom-center-text"
-                variant="ghost" />
-              <template #panel>
-                <div class="flex w-full border-2 rounded-lg">
-                  <UInput v-model="comment[entry.id]" :maxlength="maxCommentLength" placeholder="Write some comment"
-                    class="w-full" variant="none">
-                    <template #trailing>
-                      <span class="text-xs text-gray-500 dark:text-gray-400"> {{ (comment[entry.id] || '').length
-                      }}/{{
-                          maxCommentLength }}</span>
-                    </template>
-                  </UInput>
-                  <UButton @click="handlePostComment(entry.id, entry.commentCount)" variant="ghost"
-                    icon="i-heroicons-arrow-up-circle" />
-                </div>
-              </template>
-            </UPopover>
-          </div>
+            </div>
           </div>
         </template>
       </UCard>
