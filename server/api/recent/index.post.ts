@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     if (existingRecord) {
       await collection.updateOne(
         { userId: value.userId, boardId: value.boardId },
-        { $set: { lastOpen: value.lastOpen || new Date() } }
+        { $set: { ...value} }
       );
       value._id = existingRecord._id;
     } else {
