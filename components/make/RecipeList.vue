@@ -79,7 +79,7 @@ onMounted(() => {
     </UCard>
   </div>
   <div v-else class="grid grid-cols-2  m-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-    <UCard v-for="item in preset" @click="createBoard(item.comment, item.like, item.format)">
+    <UCard v-for="item in preset" @click="createBoard(item.comment, item.like, item.format)" class="cursor-pointer">
       <USkeleton class="w-full rounded-md" :class="{ 'hidden': imageLoaded[item.id] }" :style="{
         paddingBottom: `${56.25}%`
       }" />
