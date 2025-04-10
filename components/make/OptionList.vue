@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-
-const props = defineProps<{
-  items: Array<{ label: string, description: string, imgUrl: string}>
-}>();
 const { data } = useAuth()
 const backgroundList =[
   "blue-400",
@@ -30,21 +26,19 @@ const createBoard = async () => {
     console.error('Error creating board:', error);
   }
 };
-const isLoading = ref(true)
-const onImageLoad = () => {
-  if (isLoading.value === true) {
-    isLoading.value = false;
-  }
-}
+const imageLoading = ref(true)
 </script>
 
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-    <UCard v-for="item in items" class="my-3" @click="createBoard">
+    <UCard class="my-3" @click="createBoard">
       <div class=" hover:cursor-pointer">
-        <img class="w-full rounded-2xl my-2" :src="item.imgUrl" alt="img" @load="onImageLoad" />
-        <p class="font-bold">{{ item.label }} </p>
-        <p class="text-sm">{{ item.description }} </p>
+        <USkeleton class="w-full rounded-md" :class="{ 'hidden': imageLoading }" :style="{
+          paddingBottom: `${56.25}%`
+        }" />
+        <img class="w-full rounded-2xl my-2" src="https://res.cloudinary.com/dbiso7uht/image/upload/q_auto/f_auto/v1743947750/Screenshot_2025-04-06_205327_dnod8z.png" @load="imageLoading = false"  alt="webboard.live" />
+        <p class="font-bold">Blank Board </p>
+        <p class="text-sm">Wall, Stream </p>
       </div>
     </UCard>
   </div>
