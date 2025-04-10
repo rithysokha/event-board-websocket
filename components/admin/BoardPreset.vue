@@ -23,7 +23,7 @@ const onImageLoad = () => {
 }
 
 const formats = [
-  { name: 'Grid'},
+  { name: 'Wall'},
   { name: 'Stream'}
 ]
 const selectedFormat = ref(formats[0])
@@ -203,7 +203,7 @@ const handleGetImage = (publicId: string, qual: string) => {
         class="w-full aspect-square min-h-40 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer overflow-hidden relative">
         <img v-if="previewImage" :src="previewImage" alt="Preview" class="w-full h-full object-cover" />
         <label v-else class="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
-          <span>Select an avatar</span>
+          <span>Select an cover photo</span>
           <input type="file" class="hidden" @change="handleUploadFile" accept="image/*" />
         </label>
       </div>
