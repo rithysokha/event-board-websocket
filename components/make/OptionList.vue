@@ -23,7 +23,7 @@ const createBoard = async () => {
     });
     await navigateTo(`/board?boardId=${response.insertedId}`)
   } catch (error) {
-    console.error('Error creating board:', error);
+    console.error('Error creating board: ', error);
   }
 };
 const imageLoading = ref(true)
