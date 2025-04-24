@@ -142,6 +142,11 @@ const handleGetImage = (publicId: string, qual: string) => {
   }
   return '';
 }
+
+const getContrastTextColor = (bgColor: string) => {
+  const lightBackgrounds = ['gray-50', 'gray-100', 'gray-200', 'red-50', 'red-100', 'yellow-400', 'yellow-500'];  
+  return lightBackgrounds.includes(bgColor) ? 'text-gray-900' : 'text-white';
+}
 </script>
 
 <template>
@@ -155,12 +160,20 @@ const handleGetImage = (publicId: string, qual: string) => {
   <UModal v-model="boardState.isOpenQr">
     <QrCode :board-id="boardId" :width="$device.isMobile ? 200 : 500" :height="$device.isMobile ? 200 : 500" />
   </UModal>
-  <div class="bg-cover min-h-screen" :class="'bg-' + boardData.background">
+  <div class="bg-cover min-h-screen transition-all duration-300" :class="'bg-' + boardData.background">
     <div class="ml-4 mb-4">
-      <h1 @click="handleOpenSlide" class=" font-bold cursor-pointer text-2xl w-fit capitalize">
-        {{ boardData.name }}
-      </h1>
-      <p>{{ boardData.description }} </p>
+      <div class="flex items-center group gap-1 cursor-pointer" @click="handleOpenSlide">
+        <UIcon name="i-heroicons-cog-6-tooth-solid" class="w-5 h-5 transition-all duration-300 group-hover:rotate-90"
+        :class="getContrastTextColor(boardData.background)"
+        />
+        <h1  class=" font-bold  text-2xl w-fit capitalize group-hover:scale-105 group-hover:drop-shadow-md transition-all duration-300"
+        :class="getContrastTextColor(boardData.background)">
+          {{ boardData.name }}
+        </h1>
+      </div>
+        <p
+        :class="getContrastTextColor(boardData.background)"
+        >{{ boardData.description }} </p>
     </div>
     <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" :board-format="boardData.format" />
   </div>

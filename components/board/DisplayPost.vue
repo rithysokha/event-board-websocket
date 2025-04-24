@@ -60,6 +60,7 @@ watch(data, (newValue) => {
           displayPhoto: message.displayPhoto,
           commentCount: 0
         });
+        scrollToBottom()
       } else if (message.type == 'put') {
         liveUpdatePost(message.postId, message.field, message.value)
       } else {
@@ -76,7 +77,12 @@ watch(data, (newValue) => {
     console.error('Error parsing WebSocket message:', error);
   }
 });
-
+const scrollToBottom = () => {
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: "smooth",
+  });
+};
 const fetchMessageHistory = async () => {
   try {
     const response = await fetch(`/api/board/post?boardId=${boardId}`);
@@ -183,6 +189,7 @@ const handlePost = (message: any) => {
   message.type = 'post'
   message.on = 'post'
   sendMessage(message);
+  scrollToBottom()
 }
 const handleLike = (postId: string, currentLikes: number) => {
   if (reactionStore.hasReacted(postId)) {

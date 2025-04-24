@@ -78,7 +78,7 @@ const handleJoin = () =>{
 </script>
 
 <template>
-    <UHorizontalNavigation :links="$device.isMobile? mobileLinks: desktopLinks" :ui="$device.isMobile?{'icon': {'base': 'w-6 h-6'},'container':'flex gap-6', 'base': 'flex flex-col gap-0 my-0 py-1 text-xs'}:{}" class="border-b border-gray-200 dark:border-gray-800 fixed z-50 bg-white" :class="$device.isMobile?'bottom-0':'top-0'" />
+    <UHorizontalNavigation :links="$device.isMobile? mobileLinks: desktopLinks" :ui="$device.isMobile?{'icon': {'base': 'w-6 h-6'},'container':'flex gap-6', 'base': 'flex flex-col gap-0 my-0 py-1 text-xs'}:{}" class="border-b border-gray-200 dark:border-gray-800 fixed z-50 bg-white dark:bg-gray-800 " :class="$device.isMobile?'bottom-0':'top-0'" />
     <div>
       <UModal v-model="isOpen">
         <div class="p-4 flex flex-col gap-2">
