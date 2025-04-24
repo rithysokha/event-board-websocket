@@ -27,6 +27,7 @@ const userStore = useUserStore()
 const boardState = useBoardStateStore()
 const imageLoaded = ref<{ [key: string]: boolean }>({});
 const { socket, isConnected, connect, data, sendMessage } = useWebSocket()
+const {status:authStatus} = useAuth()
 const boardId = route.query.boardId as string;
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
@@ -271,7 +272,9 @@ onMounted(() => {
 </script>
 <template>
   <UButton @click="isOpenPost = true" size="xl" icon="i-heroicons-plus"
-    class="fixed z-50 bottom-2 right-2 rounded-full hover:rotate-90 ease-in-out duration-300 " />
+    class="fixed z-50 right-2 rounded-full hover:rotate-90 ease-in-out duration-300 " 
+    :class="$device.isMobile && authStatus =='authenticated'?'bottom-12':'bottom-2'"
+    />
   <UModal v-model="isOpenDeletePost">
     <div class="p-4 m-4 text-center">
       <p class="text-red-500 font-bold mb-6">
