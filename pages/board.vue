@@ -58,6 +58,9 @@ const hadleToggleLike = () => {
 const handleToggleComment = () => {
 editBoard(boardId, 'comment', boardData.value.comment)
 }
+const handleTogglePost = () => {
+editBoard(boardId, 'post', boardData.value.post)
+}
 
 const handleUpdateColor = (newColor: string) => {
   editBoard(boardId, 'background', newColor)
@@ -175,7 +178,7 @@ const getContrastTextColor = (bgColor: string) => {
         :class="getContrastTextColor(boardData.background)"
         >{{ boardData.description }} </p>
     </div>
-    <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" :board-format="boardData.format" />
+    <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" :board-format="boardData.format" :post="boardData.post"/>
   </div>
   <div>
     <USlideover v-model="isOpenSlide">
@@ -191,6 +194,10 @@ const getContrastTextColor = (bgColor: string) => {
       <div class="w-full flex justify-between">
         <p>Comment</p>
         <UToggle v-model="boardData.comment" @update:model-value="handleToggleComment"/>
+      </div>
+      <div class="w-full flex justify-between">
+        <p>Post</p>
+        <UToggle v-model="boardData.post" @update:model-value="handleTogglePost"/>
       </div>
       <div class="w-full flex justify-between">
         <p>Board Format</p>

@@ -2,7 +2,8 @@
 defineProps<{
   reaction: boolean
   commentable: boolean,
-  boardFormat: string
+  boardFormat: string,
+  post:boolean
 }>();
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
@@ -271,8 +272,8 @@ onMounted(() => {
 });
 </script>
 <template>
-  <UButton @click="isOpenPost = true" size="xl" icon="i-heroicons-plus"
-    class="fixed z-50 right-2 rounded-full hover:rotate-90 ease-in-out duration-300 " 
+  <UButton v-show="post"  @click="isOpenPost = true" size="xl" icon="i-heroicons-plus"
+    class="fixed z-50 right-2 rounded-full hover:rotate-90 ease-in-out transition-all duration-300 " 
     :class="$device.isMobile && authStatus =='authenticated'?'bottom-12':'bottom-2'"
     />
   <UModal v-model="isOpenDeletePost">

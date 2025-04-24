@@ -12,5 +12,6 @@ export const boardSchema = Joi.object({
   comment: Joi.boolean(),
   reaction: Joi.boolean(),
   moderation: Joi.boolean(),
+  post:Joi.boolean(),
   updatedAt: Joi.date().timestamp('javascript').default(() => new Date())
 });
