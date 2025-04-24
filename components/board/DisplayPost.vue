@@ -301,7 +301,9 @@ onMounted(() => {
   </UModal>
   <PostSckeleton v-if="isFetching" :board-format="boardFormat" />
   <div
-    :class="boardFormat == 'Wall' ? 'columns-1 sm:columns-2 md:columns-3 lg:columns-4 space-y-4 mx-1' : 'columns-1 p-5 sm:p-10'">
+    :class="boardFormat == 'Wall' ? 'columns-1 sm:columns-2 md:columns-3 lg:columns-4 space-y-4 mx-1' : 'columns-1 p-5 sm:p-10'"
+    class=" transition-all duration-100 "
+    >
     <div v-for="entry in history" :key="entry.title" class="mb-4 break-inside-avoid-column">
       <UCard class="flex flex-col justify-between">
         <template #header>
