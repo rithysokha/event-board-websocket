@@ -171,7 +171,7 @@ const getContrastTextColor = (bgColor: string) => {
           {{ boardData.name }}
         </h1>
       </div>
-        <p
+        <p class="transition-all duration-300"
         :class="getContrastTextColor(boardData.background)"
         >{{ boardData.description }} </p>
     </div>
