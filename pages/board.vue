@@ -154,10 +154,12 @@ const getContrastTextColor = (bgColor: string) => {
 
 <template>
   <UModal v-model="boardState.isOpenInputName">
-    <div class="p-4">
-      <p>How should we call you?</p>
+    <div class="p-4 flex flex-col gap-2">
+      <p>What should we call you?</p>
       <UInput v-model="userDisplayName" placeholder="Your name here!" />
-      <UButton label="Submit" @click="handleSetDisplayName" />
+      <div class="flex justify-center">
+        <UButton class="max-w-20 flex flex-col items-center" label="OK" @click="handleSetDisplayName" />
+      </div>
     </div>
   </UModal>
   <UModal v-model="boardState.isOpenQr">
@@ -166,7 +168,7 @@ const getContrastTextColor = (bgColor: string) => {
   <div class="bg-cover min-h-screen transition-all duration-300" :class="'bg-' + boardData.background">
     <div class="ml-4 mb-4">
       <div class="flex items-center group gap-1 cursor-pointer" @click="handleOpenSlide">
-        <UIcon name="i-heroicons-cog-6-tooth-solid" class="w-5 h-5 transition-all duration-300 group-hover:rotate-90"
+        <UIcon v-show="authData?.user.email == boardData.belongsTo" name="i-heroicons-cog-6-tooth-solid" class="w-5 h-5 transition-all duration-300 group-hover:rotate-90"
         :class="getContrastTextColor(boardData.background)"
         />
         <h1  class=" font-bold  text-2xl w-fit capitalize group-hover:scale-105 group-hover:drop-shadow-md transition-all duration-300"

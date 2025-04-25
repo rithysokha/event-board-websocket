@@ -108,16 +108,7 @@ const hanldeSubmit = async () => {
       await new Promise((resolve) => setTimeout(resolve, 100)); 
     }
   }
-  if(authStatus.value != 'authenticated' && userStore.displayName.length==0){
-    boardState.setISOpenInputName(true) 
-    return
-  }else if(authData.value?.user && userStore.displayName.length==0){
-    userStore.setDisplayName(authData.value.user.name)
-    userStore.setDisplayPhoto(authData.value.user.image)
-    postBody.value.postedBy = authData.value.user.name
-  }else {
-    postBody.value.postedBy = userStore.displayName
-  }
+  postBody.value.postedBy = userStore.displayName
   savePostToDB();
 
   const message = {

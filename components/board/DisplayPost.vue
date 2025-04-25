@@ -11,6 +11,7 @@ import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 
 const isDeleting = ref(false)
 const isOpenPost = ref(false)
+const {data:authData} = useAuth()
 const maxCommentLength = 50
 const isFetching = ref(true)
 const comment = ref<{ [postId: string]: string }>({})
@@ -265,14 +266,22 @@ const handleOpenComment = async (postId: string) => {
     displayPhoto: comment.displayPhoto
   }));
 }
-
+const handleOpenNewPost = () =>{
+  if(authData.value?.user && userStore.displayName.length==0){
+    userStore.setDisplayName(authData.value.user.name)
+    userStore.setDisplayPhoto(authData.value.user.image)
+    isOpenPost.value = true
+  }else{
+    boardState.setISOpenInputName(true)
+  }
+}
 onMounted(() => {
   connect(`/api/websocket?room=${boardId}`)
   fetchMessageHistory();
 });
 </script>
 <template>
-  <UButton v-show="post"  @click="isOpenPost = true" size="xl" icon="i-heroicons-plus"
+  <UButton v-show="post"  @click="handleOpenNewPost" size="xl" icon="i-heroicons-plus"
     class="fixed z-50 right-2 rounded-full hover:rotate-90 ease-in-out transition-all duration-300 " 
     :class="$device.isMobile && authStatus =='authenticated'?'bottom-12':'bottom-2'"
     />
