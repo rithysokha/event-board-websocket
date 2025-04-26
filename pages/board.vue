@@ -158,7 +158,7 @@ const getContrastTextColor = (bgColor: string) => {
       <p>What should we call you?</p>
       <UInput v-model="userDisplayName" placeholder="Your name here!" />
       <div class="flex justify-center">
-        <UButton class="max-w-20 flex flex-col items-center" label="OK" @click="handleSetDisplayName" />
+        <UButton block class="flex flex-col items-center" label="OK" @click="handleSetDisplayName" />
       </div>
     </div>
   </UModal>

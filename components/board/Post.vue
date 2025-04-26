@@ -140,7 +140,7 @@ const hanldeSubmit = async () => {
       type="submit"
       @click="hanldeSubmit"
     >
-      {{ isSendingData?'Uploading':'Publish' }}
+      {{ isSendingData?'Posting':'Post' }}
     </UButton>
     <UInput v-model="postBody.title" class="w-full" placeholder="Subject" />
     <div

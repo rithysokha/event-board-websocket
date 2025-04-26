@@ -271,6 +271,8 @@ const handleOpenNewPost = () =>{
     userStore.setDisplayName(authData.value.user.name)
     userStore.setDisplayPhoto(authData.value.user.image)
     isOpenPost.value = true
+  }else if(userStore.displayName.length!=0){
+    isOpenPost.value=true
   }else{
     boardState.setISOpenInputName(true)
   }
