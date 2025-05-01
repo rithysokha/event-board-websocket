@@ -12,12 +12,10 @@ export const useWebSocket = () => {
     
     socket.value.onopen = () => {
       isConnected.value = true
-      console.log('WebSocket connected')
     }
     
     socket.value.onclose = () => {
       isConnected.value = false
-      console.log('WebSocket disconnected')
     }
     
     socket.value.onerror = (error) => {

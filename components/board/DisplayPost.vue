@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-defineProps<{
+const props = defineProps<{
   reaction: boolean
   commentable: boolean,
   boardFormat: string,
-  post:boolean
+  post:boolean,
+  boardOwner:string
 }>();
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 
 const isDeleting = ref(false)
-const isOpenPost = ref(false)
-const {data:authData} = useAuth()
+const {data:authData, status:authStatus} = useAuth()
 const maxCommentLength = 50
 const isFetching = ref(true)
 const comment = ref<{ [postId: string]: string }>({})
@@ -29,13 +29,10 @@ const userStore = useUserStore()
 const boardState = useBoardStateStore()
 const imageLoaded = ref<{ [key: string]: boolean }>({});
 const { socket, isConnected, connect, data, sendMessage } = useWebSocket()
-const {status:authStatus} = useAuth()
 const boardId = route.query.boardId as string;
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
 }
-
-
 
 const liveUpdatePost = async (postId: string, field: string, value: any) => {
 
@@ -188,7 +185,7 @@ const handlePost = (message: any) => {
     displayPhoto: message.displayPhoto,
     commentCount: 0
   })
-  isOpenPost.value = message.isOpenPost
+  boardState.setIsOpenNewPost(message.isOpenPost) 
   message.type = 'post'
   message.on = 'post'
   sendMessage(message);
@@ -270,9 +267,9 @@ const handleOpenNewPost = () =>{
   if(authData.value?.user && userStore.displayName.length==0){
     userStore.setDisplayName(authData.value.user.name)
     userStore.setDisplayPhoto(authData.value.user.image)
-    isOpenPost.value = true
+    boardState.setIsOpenNewPost(true)
   }else if(userStore.displayName.length!=0){
-    isOpenPost.value=true
+    boardState.setIsOpenNewPost(true)
   }else{
     boardState.setISOpenInputName(true)
   }
@@ -311,7 +308,7 @@ onMounted(() => {
       </div>
     </div>
   </UModal>
-  <UModal v-model="isOpenPost">
+  <UModal v-model="boardState.isOpenNewPost">
     <BoardPost :board-id="boardId" @post-message="handlePost" />
   </UModal>
   <PostSckeleton v-if="isFetching" :board-format="boardFormat" />
@@ -334,7 +331,7 @@ onMounted(() => {
                 click: () => handleDisplayDeletePrompt(entry.id, entry.id)
               }]
             ]" :ui="{ base: 'outline-none' }" :popper="{ arrow: true }">
-              <UButton v-show="entry.uuid == userStore.uuid" color="white" trailing-icon="i-heroicons-ellipsis-vertical"
+              <UButton v-show="entry.uuid == userStore.uuid || boardOwner==authData?.user.email" color="white" trailing-icon="i-heroicons-ellipsis-vertical"
                 variant="ghost" />
             </UDropdown>
           </div>
@@ -382,7 +379,7 @@ onMounted(() => {
                           click: () => handleDisplayDeletePrompt(comment.postId, comment.id)
                         }]
                       ]" :ui="{ base: 'outline-none' }" :popper="{ arrow: true }">
-                        <UButton v-show="comment.uuid == userStore.uuid" color="white"
+                        <UButton v-show="comment.uuid == userStore.uuid || boardOwner==authData?.user.email" color="white"
                           trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost" />
                       </UDropdown>
                     </div>

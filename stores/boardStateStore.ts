@@ -7,7 +7,8 @@ export const useBoardStateStore = defineStore({
     description:'',
     bgColor:'',
     header:'',
-    isOpenInputName:false
+    isOpenInputName:false,
+    isOpenNewPost:false
    }),
   actions: {
     setIsOpenQr(state:boolean){
@@ -24,6 +25,9 @@ export const useBoardStateStore = defineStore({
     },
     setISOpenInputName(state:boolean){
       this.isOpenInputName = state
+    },
+    setIsOpenNewPost(state:boolean){
+      this.isOpenNewPost=state
     }
   }
 })

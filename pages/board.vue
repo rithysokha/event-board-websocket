@@ -106,6 +106,7 @@ const hanldeOpenQr = (isOpen: boolean) => {
 const handleSetDisplayName = () => {
   userStore.setDisplayName(userDisplayName.value)
   boardState.setISOpenInputName(false)
+  boardState.setIsOpenNewPost(true)
 }
 const { data: avatarData } = await useFetch("/api/avatar")
 const handlePostRecentBoard = async (userId:string, boardId:string)=>{
@@ -180,7 +181,7 @@ const getContrastTextColor = (bgColor: string) => {
         :class="getContrastTextColor(boardData.background)"
         >{{ boardData.description }} </p>
     </div>
-    <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" :board-format="boardData.format" :post="boardData.post"/>
+    <BoardDisplayPost :commentable="boardData.comment" :reaction="boardData.reaction" :board-format="boardData.format" :post="boardData.post" :board-owner="boardData.belongsTo"/>
   </div>
   <div>
     <USlideover v-model="isOpenSlide">
