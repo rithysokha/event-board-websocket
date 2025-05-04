@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: 'sidebase-auth'
+  middleware:['sidebase-auth', 'transition'],
+  pageTransition: {}
 })
 const Recent = defineAsyncComponent(() => import('~/components/home/Recent.vue'))
 const MadeByMe = defineAsyncComponent(() => import('~/components/home/MadeByMe.vue'))
@@ -25,5 +26,7 @@ const items = [
 </script>
 
 <template>
-  <SideTab :items="items" />
+  <div>
+    <SideTab :items="items" />
+  </div>
 </template>

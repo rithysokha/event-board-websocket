@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({
-  middleware:'sidebase-auth',
+  middleware:['sidebase-auth', 'transition'],
+  pageTransition: {}
 })
 const Users = defineAsyncComponent(() => import('~/components/admin/User.vue'))
 const BoardPreset = defineAsyncComponent(() => import('~/components/admin/BoardPreset.vue'))
@@ -25,7 +26,9 @@ const items = [
 </script>
 <template>
   <ClientOnly >
-    <SideTab :items="items" />
+    <div>
+      <SideTab :items="items" />
+    </div>
   </ClientOnly>
 </template>
 

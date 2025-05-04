@@ -3,7 +3,9 @@ definePageMeta({
   auth: {
     unauthenticatedOnly: true,
     navigateAuthenticatedTo: '/dashboard/home'
-  }
+  },
+  middleware: 'transition',
+  pageTransition: {}
 })
 import lottie from 'lottie-web'
 import art from "../assets/user_research.json"

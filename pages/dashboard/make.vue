@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 definePageMeta({
-  middleware:'sidebase-auth'
+  middleware:['sidebase-auth', 'transition'],
+  pageTransition: {}
 })
+
 </script>
 <template>
   <div class="w-screen flex flex-col items-center" :class="!$device.isMobile && 'mt-10'">

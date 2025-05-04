@@ -10,6 +10,9 @@ export default defineNuxtConfig({
   nitro:{
     experimental:{
       websocket:true
+    },
+    prerender: {
+      routes: ['/']
     }
   },
   runtimeConfig: {
@@ -18,9 +21,6 @@ export default defineNuxtConfig({
       baseUrl: process.env.BASE_URL,
       persistState: true, 
     },
-  },
-  i18n: {
-    vueI18n: './i18n.config.ts'
   },
   devtools: { enabled: true },
   components: true,

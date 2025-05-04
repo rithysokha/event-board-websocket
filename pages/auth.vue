@@ -3,7 +3,9 @@ definePageMeta({
   auth: {
     unauthenticatedOnly: true,
     navigateAuthenticatedTo: '/dashboard/home'
-  }
+  },
+  middleware: 'transition',
+  pageTransition: {}
 })
 import googleIcon from "../assets/google.svg";
 import lottie from 'lottie-web'
@@ -49,9 +51,9 @@ const signUpSchema = Joi.object({
   confirmPassword: Joi.string().min(8).required()
     .valid(Joi.ref('password'))
     .messages({
-    'string.min': 'Password must be at least 8 characters',
-    'any.required': 'Password is required'
-  })
+      'string.min': 'Password must be at least 8 characters',
+      'any.required': 'Password is required'
+    })
 });
 
 const loginForm = reactive({ isLogin: true, email: undefined, password: undefined })
@@ -60,7 +62,7 @@ const errorMessage = ref('')
 
 const onSubmit = async (form: any) => {
   errorMessage.value = '';
-  isLoadingBtn.value=true
+  isLoadingBtn.value = true
   try {
     if (form.isLogin) {
       await signIn('credentials', {
@@ -85,11 +87,11 @@ const onSubmit = async (form: any) => {
   } catch (error) {
     errorMessage.value = 'An unexpected error occurred.';
   } finally {
-    isLoadingBtn.value=false
+    isLoadingBtn.value = false
   }
 };
 
-const hadleGoogleSignIn = ()=>{
+const hadleGoogleSignIn = () => {
   isLoadingBtnGoogle.value = true
   signIn('google')
 }
@@ -130,32 +132,36 @@ onMounted(() => {
               </p>
             </template>
             <div v-if="item.key === 'login'" class="space-y-3">
-              <UForm :schema="loginSchema" :state="loginForm">
-                <UFormGroup label="Username" name="email">
-                  <UInput v-model="loginForm
-                  .email" />
-                </UFormGroup>
-                <UFormGroup label="Password" name="password">
-                  <UInput v-model="loginForm
-                  .password" type="password" />
-                </UFormGroup>
-              </UForm>
+              <ClientOnly>
+                <UForm :schema="loginSchema" :state="loginForm">
+                  <UFormGroup label="Username" name="email">
+                    <UInput v-model="loginForm
+                      .email" />
+                  </UFormGroup>
+                  <UFormGroup label="Password" name="password">
+                    <UInput v-model="loginForm
+                      .password" type="password" />
+                  </UFormGroup>
+                </UForm>
+              </ClientOnly>
             </div>
             <div v-else-if="item.key === 'signup'" class="space-y-3">
-              <UForm :schema="signUpSchema" :state="signUpForm">
-              <UFormGroup label="Username" name="email" required>
-                <UInput v-model="signUpForm
-                  .email" type="text" required />
-              </UFormGroup>
-              <UFormGroup label="Password" name="password" required>
-                <UInput v-model="signUpForm
-                  .password" type="password" required />
-              </UFormGroup>
-              <UFormGroup label="Confirm Password" name="confirmPassword" required>
-                <UInput v-model="signUpForm
-                  .confirmPassword" type="password" required />
-              </UFormGroup>
-            </UForm>
+              <ClientOnly>
+                <UForm :schema="signUpSchema" :state="signUpForm">
+                  <UFormGroup label="Username" name="email" required>
+                    <UInput v-model="signUpForm
+                      .email" type="text" required />
+                  </UFormGroup>
+                  <UFormGroup label="Password" name="password" required>
+                    <UInput v-model="signUpForm
+                      .password" type="password" required />
+                  </UFormGroup>
+                  <UFormGroup label="Confirm Password" name="confirmPassword" required>
+                    <UInput v-model="signUpForm
+                      .confirmPassword" type="password" required />
+                  </UFormGroup>
+                </UForm>
+              </ClientOnly>
             </div>
             <template #footer>
               <div class="flex justify-center">

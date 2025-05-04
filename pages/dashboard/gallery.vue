@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({
-  middleware:'sidebase-auth'
+  middleware:['sidebase-auth', 'transition'],
+  pageTransition: {}
 })
 </script>
 <template>

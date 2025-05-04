@@ -4,7 +4,9 @@ import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 definePageMeta({
   ssr: false,
-  auth: false
+  auth: false,
+  middleware: 'transition',
+  pageTransition: {}
 });
 const { data: authData, status: authStatus } = useAuth()
 const isOpenSlide = ref(false)
@@ -154,6 +156,7 @@ const getContrastTextColor = (bgColor: string) => {
 </script>
 
 <template>
+  <div>
   <UModal v-model="boardState.isOpenInputName">
     <div class="p-4 flex flex-col gap-2">
       <p>What should we call you?</p>
@@ -216,4 +219,5 @@ const getContrastTextColor = (bgColor: string) => {
       <BoardShare :board-id="boardId" @update="hanldeOpenQr" />
     </USlideover>
   </div>
+</div>
 </template>

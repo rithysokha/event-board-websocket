@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: 'sidebase-auth',
+  middleware:['sidebase-auth', 'transition'],
+  pageTransition: {}
 })
 const toast = useToast()
 const isLoadingBtn = ref(false)
