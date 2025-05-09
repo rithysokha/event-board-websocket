@@ -272,6 +272,7 @@ const handleOpenNewPost = () =>{
     boardState.setIsOpenNewPost(true)
   }else{
     boardState.setISOpenInputName(true)
+    boardState.setTryToPost(true)
   }
 }
 onMounted(() => {

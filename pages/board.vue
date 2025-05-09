@@ -108,7 +108,10 @@ const hanldeOpenQr = (isOpen: boolean) => {
 const handleSetDisplayName = () => {
   userStore.setDisplayName(userDisplayName.value)
   boardState.setISOpenInputName(false)
-  boardState.setIsOpenNewPost(true)
+  if(boardState.tryToPost){
+    boardState.setIsOpenNewPost(true)
+    boardState.setTryToPost(false)
+  }
 }
 const { data: avatarData } = await useFetch("/api/avatar")
 const handlePostRecentBoard = async (userId:string, boardId:string)=>{
