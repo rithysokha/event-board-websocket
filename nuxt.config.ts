@@ -5,8 +5,12 @@ export default defineNuxtConfig({
     '@nuxtjs/device',
     '@sidebase/nuxt-auth',
     '@pinia/nuxt',
-    'pinia-plugin-persistedstate'
+    'pinia-plugin-persistedstate',
+    'nuxt-gtag'
   ],
+  gtag: {
+    id: 'G-5DXDXZQ6KH'
+  },
   nitro:{
     experimental:{
       websocket:true
