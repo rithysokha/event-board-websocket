@@ -25,7 +25,7 @@ const items = [{
 }, {
   key: 'signup',
   label: 'Sign Up',
-  description: 'Recommend continue with google for easy access,'
+  description: 'Continue with google for easy access,'
 }]
 
 const loginSchema = Joi.object({
