@@ -1,34 +1,42 @@
 <script setup>
-const {data} = await useFetch("/api/user")
+const { data } = await useFetch("/api/user")
 const columns = [
-    { key: 'avatar', label: 'Profile' },
-    { key: 'name', label: 'Name' }, 
-    { key: 'username', label: 'Username/Email' }, 
-    { key: 'role', label: 'Role' },
-    {key: 'actions', label:'Action', class: 'w-24'}
+  { key: 'avatar', label: 'Profile' },
+  { key: 'name', label: 'Name' },
+  { key: 'username', label: 'Username/Email' },
+  { key: 'role', label: 'Role' },
+  { key: 'actions', label: 'Action', class: 'w-24' }
 ]
 
 const items = row => [
   [{
-    label: 'Edit',
+    label: 'Change role to ' + (row.role === 'admin' ? 'user' : 'admin'),
     icon: 'i-heroicons-pencil-square',
     class: 'transition-colors duration-200',
-    click: () => console.log('Edit', row.id)
-  }], [{
-    label: 'block',
-    icon: 'i-heroicons-no-symbol',
-    class: 'transition-colors duration-100'
-  }], [{
-    label: 'Delete',
-    icon: 'i-heroicons-trash',
-    class: 'hover:text-white : hover:bg-red-500 transition-colors duration-200'
+    click: () => handleChangeRole(row._id, row.role)
   }]
 ]
+const handleChangeRole = async(id, role) =>{
+  try{
+    let newRole = role==='admin'?'user':'admin';
+    await $fetch(`/api/user/${id}`, {
+      //@ts-expect-error
+      method: 'PUT',
+      body: JSON.stringify({role:newRole})
+    })
+    const index = data.value.findIndex(user => user._id === id)
+  if (index !== -1) {
+    (data.value[index]).role = newRole
+  }
+  }catch(error){
+    console.log(error)
+  }
+}
 </script>
 
 <template>
   <UTable :rows="data" :columns="columns"
-  :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }">
+    :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }">
     <template #avatar-data="{ row }">
       <UAvatar :src="row.image" :alt="row.name" size="md" />
     </template>
@@ -39,4 +47,3 @@ const items = row => [
     </template>
   </UTable>
 </template>
-
