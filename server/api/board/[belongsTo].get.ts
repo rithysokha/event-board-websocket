@@ -1,5 +1,5 @@
 import { connectToDatabase } from '~/utils/mongodb';
-// get the temporary delted board
+// get the board of indivdual user
 export default defineEventHandler(async (event) => {
   try{
   const {belongsTo} = getRouterParams(event)
