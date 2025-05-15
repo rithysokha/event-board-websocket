@@ -14,9 +14,6 @@ export default defineNuxtConfig({
   nitro:{
     experimental:{
       websocket:true
-    },
-    prerender: {
-      routes: ['/']
     }
   },
   runtimeConfig: {
