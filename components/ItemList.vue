@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ClientOnly } from '#build/components';
-
 const props = defineProps<{
   items: Array<{ background: string, name: string, _id: string, boardId: string }>,
   place: string
@@ -133,5 +131,5 @@ const handleDisplayRestoringPrompt = (boardId: string) => {
       </UCard>
     </div>
   </UContainer>
-  </ClientOnly>
+</ClientOnly>
 </template>
