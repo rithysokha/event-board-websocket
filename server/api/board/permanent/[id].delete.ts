@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     }
     await postCollection.deleteMany({ boardId: id })
     const cacheKey = `board:${id}`
-    clearCache(cacheKey)
+    await clearCache(cacheKey)
     return {
       statusCode: 200,
       message: 'deleted'

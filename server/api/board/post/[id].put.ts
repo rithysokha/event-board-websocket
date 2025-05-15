@@ -1,6 +1,7 @@
 import { connectToDatabase } from "~/utils/mongodb";
 import { ObjectId } from 'mongodb';
 import { editPostSchema } from "~/utils/post/editPostSchema";
+import { clearCache } from "~/utils/cache";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -32,7 +33,8 @@ export default defineEventHandler(async (event) => {
         message: 'Post not found'
       });
     }
-
+    const cacheKey = `post-board:${id}`
+        await clearCache(cacheKey)
     return {
       message: 'Post updated successfully',
       data: value

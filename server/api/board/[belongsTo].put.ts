@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
       });
     }
     const cacheKey = `board:${boardId}`
-    clearCache(cacheKey)
+    await clearCache(cacheKey)
     const db = await connectToDatabase();
     const collection = db.collection("board");
 

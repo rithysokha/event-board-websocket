@@ -1,5 +1,6 @@
 import { connectToDatabase } from "~/utils/mongodb";
 import { ObjectId } from 'mongodb';
+import { clearCache } from "~/utils/cache";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -15,6 +16,8 @@ export default defineEventHandler(async (event) => {
         message: 'Post not found'
       }
     }
+    const cacheKey = `post-board:${id}`
+    await clearCache(cacheKey)
     return {
       statusCode: 200,
       message: 'Post deleted successfully'
