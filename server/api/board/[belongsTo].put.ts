@@ -1,7 +1,7 @@
 import { connectToDatabase } from "~/utils/mongodb";
 import { boardSchema } from "~/utils/board/boardPutValidation";
 import { ObjectId } from 'mongodb';
-import { clearCache, setCache } from "~/utils/cache";
+import { clearCache } from "~/utils/cache";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -34,7 +34,6 @@ export default defineEventHandler(async (event) => {
         message: 'Board not found'
       });
     }
-    setCache(cacheKey, result, 60)
     return {
       message: 'Board updated successfully',
       data: value
