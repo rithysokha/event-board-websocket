@@ -1,9 +1,11 @@
 <script setup lang="ts">
 const items = ref()
-const {data : authData} = useAuth()
+const { data: authData } = useAuth()
 const { data } = await useFetch(`/api/recent/${authData.value?.user.email}`)
-items.value =data.value
+items.value = data.value
 </script>
 <template>
-<LazyItemList :items="items" :place="'recent'"/>
+    <ClientOnly>
+        <ItemList :items="items" :place="'recent'" />
+    </ClientOnly>
 </template>
