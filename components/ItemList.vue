@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { ClientOnly } from '#build/components';
+
 const props = defineProps<{
   items: Array<{ background: string, name: string, _id: string, boardId: string }>,
   place: string
@@ -76,6 +78,7 @@ const handleDisplayRestoringPrompt = (boardId: string) => {
 }
 </script>
 <template>
+  <ClientOnly>
   <UModal v-model="isOpenDeleteBoard">
     <div class="p-4 m-4 text-center">
       <p class="text-red-500 font-bold mb-6">
@@ -130,4 +133,5 @@ const handleDisplayRestoringPrompt = (boardId: string) => {
       </UCard>
     </div>
   </UContainer>
+  </ClientOnly>
 </template>
