@@ -13,7 +13,7 @@ const backgroundList = [
 ]
 const randomIndex = Math.floor(Math.random() * backgroundList.length)
 
-const fetchMessageHistory = async () => {
+const fetchPreset = async () => {
   try {
     const response = await fetch('/api/preset');
     const presetJson = await response.json();
@@ -65,8 +65,8 @@ const handleGetImage = (publicId: string, qual: string) => {
   return '';
 }
 const skeletonCount = [1,2,3,4,5,6]
-onMounted(() => {
-  fetchMessageHistory()
+onBeforeMount(() => {
+  fetchPreset()
 })
 </script>
 <template>

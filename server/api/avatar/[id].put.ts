@@ -1,6 +1,7 @@
 import { connectToDatabase } from "~/utils/mongodb";
 import { ObjectId } from 'mongodb';
 import { avatarSchema } from "~/utils/avatar/avatarValidation";
+import { clearCache } from "~/utils/cache";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -32,7 +33,7 @@ export default defineEventHandler(async (event) => {
         message: 'avatar not found'
       });
     }
-
+    clearCache('avatar')
     return {
       message: 'avatar updated successfully',
       data: value

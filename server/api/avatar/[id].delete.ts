@@ -1,5 +1,6 @@
 import { connectToDatabase } from "~/utils/mongodb";
 import { ObjectId } from 'mongodb';
+import { clearCache } from "~/utils/cache";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -15,6 +16,7 @@ export default defineEventHandler(async (event) => {
         message: 'Avatar not found'
       }
     }
+    clearCache('avatar')
     return {
       statusCode: 200,
       message: 'Avatar deleted successfully'

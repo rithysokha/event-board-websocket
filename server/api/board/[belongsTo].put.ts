@@ -1,6 +1,7 @@
 import { connectToDatabase } from "~/utils/mongodb";
 import { boardSchema } from "~/utils/board/boardPutValidation";
 import { ObjectId } from 'mongodb';
+import { clearCache, setCache } from "~/utils/cache";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,7 +13,8 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Board ID is required and must be a string'
       });
     }
-
+    const cacheKey = `board:${boardId}`
+    clearCache(cacheKey)
     const db = await connectToDatabase();
     const collection = db.collection("board");
 
@@ -22,18 +24,17 @@ export default defineEventHandler(async (event) => {
     if (error) {
       throw createError({ statusCode: 400, message: error.message });
     }
-    const result = await collection.updateOne(
+    const result = await collection.findOneAndUpdate(
       { _id: new ObjectId(boardId) },
       { $set: { ...value} }
     );
-
     if (result.matchedCount === 0) {
       throw createError({
         statusCode: 404,
         message: 'Board not found'
       });
     }
-
+    setCache(cacheKey, result, 60)
     return {
       message: 'Board updated successfully',
       data: value

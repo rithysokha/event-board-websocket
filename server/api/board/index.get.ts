@@ -1,14 +1,19 @@
 import { connectToDatabase } from '~/utils/mongodb';
 import { ObjectId } from 'mongodb';
+import { getCache, setCache } from '~/utils/cache';
 
 export default defineEventHandler(async (event) => {
   const { boardId } = getQuery(event);
-
   if (!boardId || typeof boardId !== 'string') {
     throw createError({
       statusCode: 400,
       statusMessage: 'Board ID is required and must be a string'
     });
+  }
+  const cacheKey = `board:${boardId}`
+  const cached = await getCache(cacheKey)
+  if (cached){
+    return cached;
   }
 
   const db = await connectToDatabase();
@@ -21,6 +26,6 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'Board not found'
     });
   }
-
+  setCache(cacheKey, board, 60)
   return board;
 });

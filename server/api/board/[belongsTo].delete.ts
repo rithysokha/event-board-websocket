@@ -1,9 +1,10 @@
 import { connectToDatabase } from "~/utils/mongodb";
 import { ObjectId } from 'mongodb';
+import { clearCache } from "~/utils/cache";
 
 export default defineEventHandler(async (event) => {
   try {
-    const {belongsTo: id} = getRouterParams(event) //this belongs to is id
+    const {belongsTo: id} = getRouterParams(event)
     const db = await connectToDatabase();
     const collectionBoard = db.collection("board");
     const collectionRecent = db.collection("recent")
@@ -24,6 +25,8 @@ export default defineEventHandler(async (event) => {
     await collectionRecent.deleteMany(
       {boardId:id}
     )
+    const cacheKey = `board:${id}`
+    clearCache(cacheKey)
     return {
       statusCode: 200,
       message: 'deleted'

@@ -1,5 +1,6 @@
 import { connectToDatabase } from "~/utils/mongodb";
 import { ObjectId } from 'mongodb';
+import { clearCache } from "~/utils/cache";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -16,7 +17,8 @@ export default defineEventHandler(async (event) => {
       }
     }
     await postCollection.deleteMany({ boardId: id })
-  
+    const cacheKey = `board:${id}`
+    clearCache(cacheKey)
     return {
       statusCode: 200,
       message: 'deleted'
