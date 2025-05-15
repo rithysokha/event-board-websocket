@@ -1,23 +1,18 @@
 <script setup lang="ts">
 definePageMeta({
-  // auth: {
-  //   unauthenticatedOnly: true,
-  //   navigateAuthenticatedTo: '/dashboard/home'
-  // },
+  auth: {
+    unauthenticatedOnly: true,
+    navigateAuthenticatedTo: '/dashboard/home'
+  },
   middleware: 'transition',
   pageTransition: {}
 })
 import lottie from 'lottie-web'
 import art from "../assets/user_research.json"
 const isLoading = ref(true)
-const { status } = useAuth()
-const router = useRouter()
 
 const animationContainer = ref<HTMLElement | null>(null)
 onMounted(() => {
-  if (status.value === 'authenticated') {
-    router.replace('/dashboard/home')
-  }
   if (animationContainer.value) {
     const animation = lottie.loadAnimation({
       container: animationContainer.value,
