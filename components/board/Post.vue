@@ -86,7 +86,7 @@ const savePostToDB = async () => {
   try {
     postBody.value.boardId = props.boardId
     postBody.value.displayPhoto = userStore.displayPhoto
-    const savedPost = await fetch('api/board/post', {
+    const savedPost = await $fetch('api/board/post', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
