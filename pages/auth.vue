@@ -9,7 +9,7 @@ definePageMeta({
 })
 import googleIcon from "../assets/google.svg";
 import lottie from 'lottie-web'
-import art from "../assets/user_research.json"
+import art from "../assets/auth.json"
 import Joi from "joi";
 
 const isLoadingBtn = ref(false)
