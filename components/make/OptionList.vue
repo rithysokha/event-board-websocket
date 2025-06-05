@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 const { data } = useAuth()
 const backgroundList = [
-  "blue-400",
-  "teal-300",
-  "fuchsia-400"
+  'gray-50', 'gray-100', 'gray-200',
+  'red-50', 'red-100', 'red-400', 'red-600', 'red-900',
+  'green-400', 'green-500',
+  'blue-400',
+  'yellow-400', 'yellow-500',
+  'purple-400', 'purple-500'
 ]
 const randomIndex = Math.floor(Math.random() * backgroundList.length)
 const boardBody = {

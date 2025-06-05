@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const items = [
-  'https://picsum.photos/1920/1080?random=1',
-  'https://picsum.photos/1920/1080?random=2'
+  'https://res.cloudinary.com/dbiso7uht/image/upload/f_auto,q_5/v1744264631/Screenshot_2025-04-10_103552_c9it4q.png',
+  'https://res.cloudinary.com/dbiso7uht/image/upload/f_auto,q_5/v1744256245/lsruzttnxpx6iyki3kcx.png'
 ]
 const carouselRef = ref()
 
