@@ -32,6 +32,7 @@ const handleDeleteBoard = async () => {
       const index = props.items.findIndex(item => item._id === boardIdToDelete.value)
       if (props.place === 'mine') {
         itemStore.addTrash(props.items[index].background, props.items[index].name, props.items[index]._id, props.items[index].boardId)
+        itemStore.removeRecent(boardIdToDelete.value)
       }
       if (index !== -1) {
         props.items.splice(index, 1)

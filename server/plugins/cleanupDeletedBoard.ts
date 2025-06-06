@@ -20,6 +20,7 @@ async function cleanupDeletedBoards() {
     const db = await connectToDatabase()
     const boardCollection = db.collection('board')
     const postCollection = db.collection('post')
+    const recentCollection = db.collection('recent')
     
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
@@ -31,7 +32,8 @@ async function cleanupDeletedBoards() {
     for (const board of oldDeletedBoards) {
       const boardId = board._id.toString()
         await postCollection.deleteMany({ boardId: boardId })
-      await boardCollection.deleteOne({ _id: board._id })
+        await recentCollection.deleteMany({ boardId: boardId })
+        await boardCollection.deleteOne({ _id: board._id })
     }
     console.log('Cleanup completed successfully')
   } catch (error) {

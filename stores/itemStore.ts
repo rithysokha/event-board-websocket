@@ -5,6 +5,7 @@ export const useItemStoreStore = defineStore({
   state: () => ({
     mine: [{ background: "", name: "", _id: "", boardId: "" }],
     trash: [{ background: "", name: "", _id: "", boardId: "" }],
+    recent: [{ background: "", name: "", _id: "", boardId: "" }],
   }),
   actions: {
     addMine(background: string, name: string, _id: string, boardId: string) {
@@ -22,6 +23,17 @@ export const useItemStoreStore = defineStore({
         _id: _id,
         boardId: boardId,
       });
+    },
+    addRecent(background: string, name: string, _id: string, boardId: string) {
+      this.recent.push({
+        background: background,
+        name: name,
+        _id: _id,
+        boardId: boardId,
+      });
+    },
+    setRecent(items: Array<{ background: string, name: string, _id: string, boardId: string }>) {
+      this.recent = items;
     },
     setMine(items: Array<{ background: string, name: string, _id: string, boardId: string }>) {
       this.mine = items;
@@ -43,6 +55,13 @@ export const useItemStoreStore = defineStore({
         this.trash.splice(index, 1);
       }
     },
-
+    removeRecent(boardId: string) {
+      const index = this.recent.findIndex(item => item.boardId === boardId);
+      console.log('remove Recent called');
+      console.log(this.recent);
+      if (index !== -1) {
+        this.recent.splice(index, 1);
+      }
+    },
   },
 });
