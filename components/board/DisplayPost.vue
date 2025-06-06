@@ -476,7 +476,7 @@ onMounted(() => {
       </UCard>
     </div>
   </div>
-  <div v-show="isEmpty" class="fixed bottom-20 right-0">
+  <div v-show="isEmpty" class="fixed right-0" :class="$device.isMobile?'bottom-20':'bottom-12'">
       <div class="w-40 h-40 -rotate-12 " ref="animationContainer"></div>
   </div>
 </template>
