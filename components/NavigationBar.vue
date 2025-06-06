@@ -2,7 +2,9 @@
 const isOpen = ref(false)
 const joinUrl = ref('')
 const {data} = useAuth()
-const desktopLinks = [
+const userStore = useUserStore()
+const userPhoto = ref(userStore.displayPhoto||'')
+const desktopLinks = computed(() =>  [
   [{
     label: 'Home',
     icon: 'i-heroicons-home',
@@ -35,12 +37,12 @@ const desktopLinks = [
 ], [{
     label: data.value?.user.name,
     avatar: {
-      src: data.value?.user.image
+      src: userPhoto.value
     },
     to: '/profile'
   }]
-]
-const mobileLinks = [
+])
+const mobileLinks =  computed(() => [
   [{
     label:'Home',
     icon: 'i-heroicons-home',
@@ -62,14 +64,14 @@ const mobileLinks = [
     click: () => isOpen.value=true
   },
   {
-    label:data.value?.user.name,
+    label:userStore.displayName,
     avatar: {
-      src: data.value?.user.image
+      src: userPhoto.value
     },
     to: '/profile'
   }
 ]
-]
+])
 const handleJoin = () =>{
   if(joinUrl){
     window.open(joinUrl.value, '_blank');

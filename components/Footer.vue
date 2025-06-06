@@ -85,7 +85,7 @@ onMounted(() => {
     </div>
     <div class="flex">
       <div class="h-8 w-8" ref="animationContainer"></div>
-      <USelect variant="none" v-model="language" :options="languages" option-attribute="name" />
+      <!-- <USelect variant="none" v-model="language" :options="languages" option-attribute="name" /> -->
     </div>
   </div>
 </template>

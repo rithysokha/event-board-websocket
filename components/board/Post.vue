@@ -40,8 +40,6 @@ const handleUploadFile = async (event: any) => {
   reader.readAsDataURL(file);
 
   if (file.size > 1048576) {
-    console.log('File is larger than 1MB, compressing...');
-
     // Compression options
     const options = {
       maxSizeMB: 1,

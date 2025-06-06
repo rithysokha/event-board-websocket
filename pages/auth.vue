@@ -140,7 +140,8 @@ onMounted(() => {
                   </UFormGroup>
                   <UFormGroup label="Password" name="password">
                     <UInput v-model="loginForm
-                      .password" type="password" />
+                      .password" type="password" 
+                      />
                   </UFormGroup>
                 </UForm>
               </ClientOnly>
@@ -174,7 +175,7 @@ onMounted(() => {
           <div class="pt-10">
             <UButton block @click="hadleGoogleSignIn" :loading="isLoadingBtnGoogle">
               <img :src="googleIcon" class="w-5" alt="google logo, webboard" />
-              <p>Continue with google</p>
+              <p>Continue with Google</p>
             </UButton>
           </div>
         </template>
