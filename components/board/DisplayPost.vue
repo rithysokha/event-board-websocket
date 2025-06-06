@@ -10,7 +10,9 @@ import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 import lottie from 'lottie-web'
-import art from "@/assets/delete.json"
+import deleteArt from "@/assets/delete.json"
+import pointAt from "@/assets/point_at.json"
+import type { RefSymbol } from '@vue/reactivity';
 
 const isDeleting = ref(false)
 const { data: authData, status: authStatus } = useAuth()
@@ -32,7 +34,8 @@ const boardState = useBoardStateStore()
 const imageLoaded = ref<{ [key: string]: boolean }>({});
 const { socket, isConnected, connect, data, sendMessage } = useWebSocket()
 const boardId = route.query.boardId as string;
-const trashAnimationContainer = ref<HTMLElement | null>(null)
+const animationContainer = ref<HTMLElement | null>(null)
+const isEmpty =ref(false)
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
 }
@@ -82,6 +85,9 @@ watch(data, (newValue) => {
   }
 });
 const scrollToBottom = () => {
+  if(isEmpty.value){
+    isEmpty.value=false
+  }
   window.scrollTo({
     top: document.body.scrollHeight,
     behavior: "smooth",
@@ -109,6 +115,13 @@ const fetchMessageHistory = async () => {
     isFetching.value = false
     toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Error fetching message history:', error);
+  }finally{
+    if(history.value.length==0){
+    nextTick(() => {
+      isEmpty.value=true
+      initAnimation(pointAt)
+    })
+  }
   }
 };
 
@@ -147,10 +160,10 @@ const editPost = async (postId: string, field: string, value: any) => {
     body: JSON.stringify({ [field]: (history.value[index] as any)[field] })
   })
 }
-const initAnimation = () => {
-  if (trashAnimationContainer.value) {
+const initAnimation = (art:any) => {
+  if (animationContainer.value) {
     lottie.loadAnimation({
-      container: trashAnimationContainer.value,
+      container: animationContainer.value,
       renderer: 'svg',
       loop: true,
       autoplay: true,
@@ -163,7 +176,7 @@ const handleDeletePost = async () => {
   try {
     isDeleting.value = true
     nextTick(() => {
-      initAnimation()
+      initAnimation(deleteArt)
     })
     const res = await $fetch(`/api/board/post/${postIdToDelete.value}`, {
       method: 'delete'
@@ -233,7 +246,7 @@ const handleDeleteComment = async () => {
   try {
     isDeleting.value = true
     nextTick(() => {
-      initAnimation()
+      initAnimation(deleteArt)
     })
     await fetch(`/api/comment/${commentIdToDelete.value}`, {
       method: 'delete'
@@ -321,12 +334,12 @@ onMounted(() => {
     :class="$device.isMobile && authStatus == 'authenticated' ? 'bottom-12' : 'bottom-2'" />
   <UModal v-model="isOpenDeletePost">
     <div v-if="!isDeleting" class="p-4 m-4 text-center">
-      <p class="text-red-400 font-bold mb-6">
+      <p class="font-bold mb-6">
         Are you sure to delete this post?
       </p>
       <div class="flex justify-center gap-4">
-        <UButton class="w-1/4 flex justify-center" label="No" @click="isOpenDeletePost = false" />
-        <UButton :loading="isDeleting" class="w-1/4 flex justify-center" color="red" icon="i-heroicons-trash"
+        <UButton color="white" class="w-1/4 flex justify-center" label="No" @click="isOpenDeletePost = false" />
+        <UButton :loading="isDeleting" class="w-1/4 flex justify-center" icon="i-heroicons-trash"
           label="Yes!" @click="handleDeletePost" />
       </div>
     </div>
@@ -336,12 +349,12 @@ onMounted(() => {
   </UModal>
    <UModal v-model="isOpenDeleteComment">
     <div v-if="!isDeleting" class="p-4 m-4 text-center">
-      <p class="text-red-400 font-bold mb-6">
+      <p class="font-bold mb-6">
         Are you sure to delete this comment?
       </p>
       <div class="flex justify-center gap-4">
-        <UButton class="w-1/4 flex justify-center" label="No" @click="isOpenDeleteComment = false" />
-        <UButton :loading="isDeleting" class="w-1/4 flex justify-center" color="red" icon="i-heroicons-trash"
+        <UButton color="white" class="w-1/4 flex justify-center" label="No" @click="isOpenDeleteComment = false" />
+        <UButton :loading="isDeleting" class="w-1/4 flex justify-center" icon="i-heroicons-trash"
           label="Yes!" @click="handleDeleteComment" />
       </div>
     </div>
@@ -462,5 +475,8 @@ onMounted(() => {
         </template>
       </UCard>
     </div>
+  </div>
+  <div v-show="isEmpty" class="fixed bottom-20 right-0">
+      <div class="w-40 h-40 -rotate-12 " ref="animationContainer"></div>
   </div>
 </template>

@@ -22,7 +22,6 @@ const postBody = ref({
   postedBy:'',
   displayPhoto:''
 })
-const {data:authData, status: authStatus} = useAuth()
 
 const handleUploadFile = async (event: any) => {
   const files = event.target.files;

@@ -57,8 +57,6 @@ export const useItemStoreStore = defineStore({
     },
     removeRecent(boardId: string) {
       const index = this.recent.findIndex(item => item.boardId === boardId);
-      console.log('remove Recent called');
-      console.log(this.recent);
       if (index !== -1) {
         this.recent.splice(index, 1);
       }

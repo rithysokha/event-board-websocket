@@ -5,19 +5,20 @@ const props = defineProps<{
 }>();
 import deleteArt from "@/assets/delete.json"
 import restoreArt from "@/assets/success.json"
+import emptyArt from "@/assets/empty.json"
 import lottie from 'lottie-web'
 const boardIdToDelete = ref("")
 const boardIdToRestore = ref("")
 const isOpenDeleteBoard = ref(false)
 const isOpenRestoreBoard = ref(false)
 const itemStore = useItemStoreStore()
-const trashAnimationContainer = ref<HTMLElement | null>(null)
+const animationContainer = ref<HTMLElement | null>(null)
 const toast = useToast()
 const navigateBoard = (boardId: string) => {
   navigateTo(`/board?boardId=${boardId}`)
 }
 const isProcessing = ref(false)
-
+const isEmpty = ref(false)
 const getDeleteUrl = (place: string) => {
   if (place == 'mine')
     return 'board'
@@ -26,9 +27,9 @@ const getDeleteUrl = (place: string) => {
   else return 'board/permanent'
 }
 const initAnimation = (art:any) => {
-  if (trashAnimationContainer.value) {
+  if (animationContainer.value) {
     lottie.loadAnimation({
-      container: trashAnimationContainer.value,
+      container: animationContainer.value,
       renderer: 'svg',
       loop: true,
       autoplay: true,
@@ -103,37 +104,48 @@ const handleDisplayRestoringPrompt = (boardId: string) => {
   boardIdToRestore.value = boardId;
   isOpenRestoreBoard.value = true
 }
+onMounted(()=>{
+  if(props.items.length==0){
+    nextTick(() => {
+      isEmpty.value=true
+      initAnimation(emptyArt)
+    })
+  }
+  })
 </script>
 <template>
   <ClientOnly>
+      <div v-show="isEmpty" class="fixed bottom-12 right-1/2">
+      <div class="w-40 h-40" ref="animationContainer"></div>
+    </div>
     <UModal v-model="isOpenDeleteBoard">
       <div v-if="!isProcessing" class="p-4 m-4 text-center">
-        <p class="text-red-500 font-bold mb-6">
+        <p class="font-bold mb-6">
           Are you sure to delete this item?
         </p>
         <div class="flex justify-center gap-4">
-          <UButton class="w-1/4 flex justify-center" label="No" @click="isOpenDeleteBoard = false" />
-          <UButton :loading="isProcessing" class="w-1/4 flex justify-center" color="red" icon="i-heroicons-trash"
+          <UButton color="white" class="w-1/4 flex justify-center" label="No" @click="isOpenDeleteBoard = false" />
+          <UButton :loading="isProcessing" class="w-1/4 flex justify-center" icon="i-heroicons-trash"
             label="Yes sure!" @click="handleDeleteBoard" />
         </div>
       </div>
       <div v-else class="w-full flex items-center justify-center">
-      <div class="w-36 h-36" ref="trashAnimationContainer"></div>
+      <div class="w-36 h-36" ref="animationContainer"></div>
     </div>
     </UModal>
     <UModal v-model="isOpenRestoreBoard">
       <div v-if="!isProcessing" class="p-4 m-4 text-center">
-        <p class="text-red-500 font-bold mb-6">
+        <p class="font-bold mb-6">
           Are you sure to restore this item?
         </p>
         <div class="flex justify-center gap-4">
-          <UButton class="w-1/4 flex justify-center" label="No" @click="isOpenRestoreBoard = false" />
-          <UButton :loading="isProcessing" class="w-1/4 flex justify-center" color="red" icon="i-heroicons-trash"
+          <UButton color="white" class="w-1/4 flex justify-center" label="No" @click="isOpenRestoreBoard = false" />
+          <UButton :loading="isProcessing" class="w-1/4 flex justify-center" icon="i-heroicons-backward"
             label="Yes sure!" @click="hanldeRestoreBoard" />
         </div>
       </div>
       <div v-else class="w-full flex items-center justify-center">
-      <div class="w-36 h-36" ref="trashAnimationContainer"></div>
+      <div class="w-36 h-36" ref="animationContainer"></div>
     </div>
     </UModal>
     <UContainer>
