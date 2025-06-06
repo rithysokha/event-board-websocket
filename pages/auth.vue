@@ -16,6 +16,7 @@ const isLoadingBtn = ref(false)
 const isLoadingBtnGoogle = ref(false)
 const isLoading = ref(true)
 const animationContainer = ref<HTMLElement | null>(null)
+const toast= useToast()
 
 const { signIn } = useAuth()
 const items = [{
@@ -85,6 +86,8 @@ const onSubmit = async (form: any) => {
       }
     }
   } catch (error) {
+    console.log(error)
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     errorMessage.value = 'An unexpected error occurred.';
   } finally {
     isLoadingBtn.value = false

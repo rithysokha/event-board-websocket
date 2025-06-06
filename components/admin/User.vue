@@ -1,5 +1,6 @@
 <script setup>
 const { data } = await useFetch("/api/user")
+const toast = useToast()
 const columns = [
   { key: 'avatar', label: 'Profile' },
   { key: 'name', label: 'Name' },
@@ -29,6 +30,7 @@ const handleChangeRole = async(id, role) =>{
     (data.value[index]).role = newRole
   }
   }catch(error){
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.log(error)
   }
 }

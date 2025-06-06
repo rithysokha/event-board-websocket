@@ -15,6 +15,7 @@ const avatarBody = ref({
 const avatarIdToDelete = ref('')
 const previewImage = ref<string | null>(null);
 const isUploadingPhoto = ref(false)
+const toast = useToast()
 const columns = [
   { key: 'avatar', label: 'Avatar' },
   { key: 'name', label: 'Name' },
@@ -53,6 +54,7 @@ const handleUploadFile = async (event: any) => {
       const compressedFile = await imageCompression(file, options);
       await uploadFile(compressedFile);
     } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
       console.error('Compression Error:', error);
       isUploadingPhoto.value = false;
       return;
@@ -93,6 +95,7 @@ const uploadFile = async (file: File) => {
     });
     avatarBody.value.url = res.public_id;
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Upload Error:', error);
   } finally {
     isUploadingPhoto.value = false;
@@ -128,6 +131,7 @@ const savePostToDB = async () => {
     avatarBody.value.url = ''
     previewImage.value = ''
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Error creating board:', error);
   }
 };
@@ -145,6 +149,7 @@ const handleDeleteAvatar = async () => {
     isOpenDelete.value = false
     isDeleting.value = false
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.log(error);
   }
 }

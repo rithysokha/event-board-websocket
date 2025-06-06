@@ -3,15 +3,17 @@ const props = defineProps<{
   reaction: boolean
   commentable: boolean,
   boardFormat: string,
-  post:boolean,
-  boardOwner:string
+  post: boolean,
+  boardOwner: string
 }>();
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
+import lottie from 'lottie-web'
+import art from "@/assets/delete.json"
 
 const isDeleting = ref(false)
-const {data:authData, status:authStatus} = useAuth()
+const { data: authData, status: authStatus } = useAuth()
 const maxCommentLength = 50
 const isFetching = ref(true)
 const comment = ref<{ [postId: string]: string }>({})
@@ -30,6 +32,7 @@ const boardState = useBoardStateStore()
 const imageLoaded = ref<{ [key: string]: boolean }>({});
 const { socket, isConnected, connect, data, sendMessage } = useWebSocket()
 const boardId = route.query.boardId as string;
+const trashAnimationContainer = ref<HTMLElement | null>(null)
 if (typeof window !== 'undefined' && window.location) {
   websocketUrl.value = `/api/websocket?room=${boardId}`
 }
@@ -74,6 +77,7 @@ watch(data, (newValue) => {
       }
     }
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Error parsing WebSocket message:', error);
   }
 });
@@ -103,6 +107,7 @@ const fetchMessageHistory = async () => {
     isFetching.value = false
   } catch (error) {
     isFetching.value = false
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Error fetching message history:', error);
   }
 };
@@ -142,10 +147,24 @@ const editPost = async (postId: string, field: string, value: any) => {
     body: JSON.stringify({ [field]: (history.value[index] as any)[field] })
   })
 }
+const initAnimation = () => {
+  if (trashAnimationContainer.value) {
+    lottie.loadAnimation({
+      container: trashAnimationContainer.value,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      animationData: art
+    })
+  }
+}
 
 const handleDeletePost = async () => {
   try {
     isDeleting.value = true
+    nextTick(() => {
+      initAnimation()
+    })
     const res = await $fetch(`/api/board/post/${postIdToDelete.value}`, {
       method: 'delete'
     })
@@ -153,22 +172,31 @@ const handleDeletePost = async () => {
       removePostFromHistory(postIdToDelete.value)
     }
     sendMessage({ type: 'delete', on: 'post', postId: postIdToDelete.value })
-    isDeleting.value = false
+    await new Promise((resolve) => setTimeout(resolve, 800));
     isOpenDeletePost.value = false
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    isDeleting.value = false
   } catch (e) {
     console.log(e)
     isDeleting.value = false
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
+    isOpenDeletePost.value = false
   }
   toast.add({ title: 'Post deleted', icon: 'i-heroicons-trash' })
 }
 
 const handleDisplayDeletePrompt = (postId: string, commentId: string) => {
-  postIdToDelete.value = postId
-  commentIdToDelete.value = commentId
-  if (postId == commentId) {
-    isOpenDeletePost.value = true
-  } else {
-    isOpenDeleteComment.value = true
+  try {
+    postIdToDelete.value = postId
+    commentIdToDelete.value = commentId
+    if (postId == commentId) {
+      isOpenDeletePost.value = true
+    } else {
+      isOpenDeleteComment.value = true
+    }
+  } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
+    console.log(error)
   }
 }
 const handlePost = (message: any) => {
@@ -185,7 +213,7 @@ const handlePost = (message: any) => {
     displayPhoto: message.displayPhoto,
     commentCount: 0
   })
-  boardState.setIsOpenNewPost(message.isOpenPost) 
+  boardState.setIsOpenNewPost(message.isOpenPost)
   message.type = 'post'
   message.on = 'post'
   sendMessage(message);
@@ -201,8 +229,12 @@ const handleLike = (postId: string, currentLikes: number) => {
   }
 }
 
-const hanldeDeleteComment = async () => {
+const handleDeleteComment = async () => {
   try {
+    isDeleting.value = true
+    nextTick(() => {
+      initAnimation()
+    })
     await fetch(`/api/comment/${commentIdToDelete.value}`, {
       method: 'delete'
     })
@@ -211,11 +243,14 @@ const hanldeDeleteComment = async () => {
       editPost(postIdToDelete.value, 'commentCount', history.value[index].commentCount - 1)
     }
     sendMessage({ type: 'delete', on: 'comment', id: commentIdToDelete.value })
-    isDeleting.value = false
+    await new Promise((resolve) => setTimeout(resolve, 800));
     isOpenDeleteComment.value = false
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    isDeleting.value = false
     toast.add({ title: 'Comment deleted', icon: 'i-heroicons-trash' })
 
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.log(error)
   }
 }
@@ -263,14 +298,14 @@ const handleOpenComment = async (postId: string) => {
     displayPhoto: comment.displayPhoto
   }));
 }
-const handleOpenNewPost = () =>{
-  if(authData.value?.user && userStore.displayName.length==0){
+const handleOpenNewPost = () => {
+  if (authData.value?.user && userStore.displayName.length == 0) {
     userStore.setDisplayName(authData.value.user.name)
     userStore.setDisplayPhoto(authData.value.user.image)
     boardState.setIsOpenNewPost(true)
-  }else if(userStore.displayName.length!=0){
+  } else if (userStore.displayName.length != 0) {
     boardState.setIsOpenNewPost(true)
-  }else{
+  } else {
     boardState.setISOpenInputName(true)
     boardState.setTryToPost(true)
   }
@@ -281,13 +316,12 @@ onMounted(() => {
 });
 </script>
 <template>
-  <UButton v-show="post"  @click="handleOpenNewPost" size="xl" icon="i-heroicons-plus"
-    class="fixed z-50 right-2 rounded-full hover:rotate-90 ease-in-out transition-all duration-300 " 
-    :class="$device.isMobile && authStatus =='authenticated'?'bottom-12':'bottom-2'"
-    />
+  <UButton v-show="post" @click="handleOpenNewPost" size="xl" icon="i-heroicons-plus"
+    class="fixed z-50 right-2 rounded-full hover:rotate-90 ease-in-out transition-all duration-300 "
+    :class="$device.isMobile && authStatus == 'authenticated' ? 'bottom-12' : 'bottom-2'" />
   <UModal v-model="isOpenDeletePost">
-    <div class="p-4 m-4 text-center">
-      <p class="text-red-500 font-bold mb-6">
+    <div v-if="!isDeleting" class="p-4 m-4 text-center">
+      <p class="text-red-400 font-bold mb-6">
         Are you sure to delete this post?
       </p>
       <div class="flex justify-center gap-4">
@@ -296,17 +330,23 @@ onMounted(() => {
           label="Yes!" @click="handleDeletePost" />
       </div>
     </div>
+    <div v-else class="w-full flex items-center justify-center">
+      <div class="w-36 h-36" ref="trashAnimationContainer"></div>
+    </div>
   </UModal>
-  <UModal v-model="isOpenDeleteComment">
-    <div class="p-4 m-4 text-center">
-      <p class="text-red-500 font-bold mb-6">
+   <UModal v-model="isOpenDeleteComment">
+    <div v-if="!isDeleting" class="p-4 m-4 text-center">
+      <p class="text-red-400 font-bold mb-6">
         Are you sure to delete this comment?
       </p>
       <div class="flex justify-center gap-4">
         <UButton class="w-1/4 flex justify-center" label="No" @click="isOpenDeleteComment = false" />
         <UButton :loading="isDeleting" class="w-1/4 flex justify-center" color="red" icon="i-heroicons-trash"
-          label="Yes!" @click="hanldeDeleteComment" />
+          label="Yes!" @click="handleDeleteComment" />
       </div>
+    </div>
+    <div v-else class="w-full flex items-center justify-center">
+      <div class="w-36 h-36" ref="trashAnimationContainer"></div>
     </div>
   </UModal>
   <UModal v-model="boardState.isOpenNewPost">
@@ -315,8 +355,7 @@ onMounted(() => {
   <PostSckeleton v-if="isFetching" :board-format="boardFormat" />
   <div
     :class="boardFormat == 'Wall' ? 'columns-1 sm:columns-2 md:columns-3 lg:columns-4 space-y-4 mx-1' : 'columns-1 p-5 sm:p-10'"
-    class=" transition-all duration-100 "
-    >
+    class=" transition-all duration-100 ">
     <div v-for="entry in history" :key="entry.title" class="mb-4 break-inside-avoid-column">
       <UCard class="flex flex-col justify-between">
         <template #header>
@@ -332,8 +371,8 @@ onMounted(() => {
                 click: () => handleDisplayDeletePrompt(entry.id, entry.id)
               }]
             ]" :ui="{ base: 'outline-none' }" :popper="{ arrow: true }">
-              <UButton v-show="entry.uuid == userStore.uuid || boardOwner==authData?.user.email" color="white" trailing-icon="i-heroicons-ellipsis-vertical"
-                variant="ghost" />
+              <UButton v-show="entry.uuid == userStore.uuid || boardOwner == authData?.user.email" color="white"
+                trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost" />
             </UDropdown>
           </div>
         </template>
@@ -380,8 +419,8 @@ onMounted(() => {
                           click: () => handleDisplayDeletePrompt(comment.postId, comment.id)
                         }]
                       ]" :ui="{ base: 'outline-none' }" :popper="{ arrow: true }">
-                        <UButton v-show="comment.uuid == userStore.uuid || boardOwner==authData?.user.email" color="white"
-                          trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost" />
+                        <UButton v-show="comment.uuid == userStore.uuid || boardOwner == authData?.user.email"
+                          color="white" trailing-icon="i-heroicons-ellipsis-vertical" variant="ghost" />
                       </UDropdown>
                     </div>
                     <div class="flex w-full border-2 rounded-lg">
@@ -389,7 +428,7 @@ onMounted(() => {
                         class="w-full" variant="none">
                         <template #trailing>
                           <span class="text-xs text-gray-500 dark:text-gray-400"> {{ (comment[entry.id] || '').length
-                            }}/{{
+                          }}/{{
                               maxCommentLength }}</span>
                         </template>
                       </UInput>
@@ -409,7 +448,7 @@ onMounted(() => {
                       class="w-full" variant="none">
                       <template #trailing>
                         <span class="text-xs text-gray-500 dark:text-gray-400"> {{ (comment[entry.id] || '').length
-                          }}/{{
+                        }}/{{
                             maxCommentLength }}</span>
                       </template>
                     </UInput>

@@ -13,6 +13,7 @@ const isOpenSlide = ref(false)
 const boardState = useBoardStateStore()
 const userStore = useUserStore()
 const userDisplayName = ref("")
+const toast = useToast()
 const formats = [
   { name: 'Wall'},
   { name: 'Stream'}
@@ -45,6 +46,7 @@ watch(data, (newValue) => {
       liveUpdateBoard(message.field, message.value)
     }
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Error parsing WebSocket message:', error);
   }
 });
@@ -90,6 +92,7 @@ const editBoard = async (boardId: string, field: string, value: string | boolean
     liveUpdateBoard(field, value)
      sendMessage({ on:'board',type: 'put',field:field,value: value})
   }catch(error){
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.log(error)
   }
 }
@@ -121,6 +124,7 @@ try{
     body: JSON.stringify({userId:userId, boardId:boardId, name:boardData.value.name, background:boardData.value.background})
   })
 }catch(error){
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
   console.log(error)
 }
 }

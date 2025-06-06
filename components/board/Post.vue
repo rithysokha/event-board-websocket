@@ -52,6 +52,7 @@ const handleUploadFile = async (event: any) => {
 
       await uploadFile(compressedFile);
     } catch (error) {
+      toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
       console.error('Compression Error:', error);
       isUploadingPhoto.value = false;
       return;
@@ -74,6 +75,7 @@ const uploadFile = async (file: File) => {
     postBody.value.imgHeigh=res.height;
     postBody.value.imgWidth = res.width;
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Upload Error:', error);
   } finally {
     isUploadingPhoto.value = false;
@@ -95,6 +97,7 @@ const savePostToDB = async () => {
     postId.value = savedPost.insertedId;
     toast.add({title: 'You have posted', icon: 'i-heroicons-check-circle'})
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Error creating board:', error);
   }
 };

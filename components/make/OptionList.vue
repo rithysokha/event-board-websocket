@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+const toast = useToast()
 const { data } = useAuth()
 const backgroundList = [
   'gray-50', 'gray-100', 'gray-200',
@@ -27,6 +28,7 @@ const createBoard = async () => {
     });
     await navigateTo(`/board?boardId=${response.insertedId}`)
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Error creating board: ', error);
   }
 };

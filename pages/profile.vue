@@ -26,8 +26,8 @@ const handleImageUpload = async (event: any) => {
     }
 
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Error updating profile picture:', error)
-    toast.add({ title: 'Failed to update profile picture', color: 'red' })
   }
 }
 
@@ -48,8 +48,8 @@ const handleChangeProfile = async () => {
     userStore.setDisplayPhoto(uploadeedImageUrl.value??'')
     toast.add({ title: 'Profile picture updated', color: 'green' })
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.log(error)
-    toast.add({ title: 'Something went wrong', color: 'red' })
   }finally{
     showImagePicker.value = false
     isSavingData.value = false

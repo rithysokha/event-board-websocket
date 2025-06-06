@@ -15,6 +15,7 @@ const presetName = ref('')
 const like = ref(true)
 const comment = ref(true)
 const imageUrl = ref('')
+const toast= useToast()
 const previewImage = ref('')
 const onImageLoad = () => {
   if (isLoading.value === true) {
@@ -52,7 +53,8 @@ const handleUploadFile = async (event: any) => {
       const compressedFile = await imageCompression(file, options);
       await uploadFile(compressedFile);
     } catch (error) {
-      console.error('Compression Error:', error);
+      console.log(error)
+      toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
       isUploadingPhoto.value = false;
       return;
     }
@@ -71,6 +73,7 @@ const uploadFile = async (file: File) => {
     });
     imageUrl.value = res.public_id;
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Upload Error:', error);
   } finally {
     isUploadingPhoto.value = false;
@@ -128,6 +131,7 @@ const savePostToDB = async () => {
     imageUrl.value = ''
     previewImage.value = ''
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Error creating board:', error);
   }
 };

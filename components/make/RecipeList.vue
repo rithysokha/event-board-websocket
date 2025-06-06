@@ -4,6 +4,7 @@ import { scale } from '@cloudinary/url-gen/actions/resize';
 import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 const { data: authData } = useAuth()
 const isFetching = ref(true)
+const toast = useToast()
 const preset = ref<{ name: string, image: string, id: string, comment: boolean, like: boolean, format: string }[]>([]);
 const imageLoaded = ref<{ [key: string]: boolean }>({});
 const backgroundList = [
@@ -27,6 +28,7 @@ const fetchPreset = async () => {
     }));
     isFetching.value = false
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     isFetching.value = false
     console.error('Error fetching message history:', error);
   }
@@ -51,6 +53,7 @@ const createBoard = async (comment: boolean, like: boolean, format: string) => {
     const data = await response.json();
     await navigateTo(`/board?boardId=${data.insertedId}`)
   } catch (error) {
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
     console.error('Error creating board:', error);
   }
 };

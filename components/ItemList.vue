@@ -3,11 +3,16 @@ const props = defineProps<{
   items: Array<{ background: string, name: string, _id: string, boardId: string }>,
   place: string
 }>();
+import deleteArt from "@/assets/delete.json"
+import restoreArt from "@/assets/success.json"
+import lottie from 'lottie-web'
 const boardIdToDelete = ref("")
 const boardIdToRestore = ref("")
 const isOpenDeleteBoard = ref(false)
 const isOpenRestoreBoard = ref(false)
 const itemStore = useItemStoreStore()
+const trashAnimationContainer = ref<HTMLElement | null>(null)
+const toast = useToast()
 const navigateBoard = (boardId: string) => {
   navigateTo(`/board?boardId=${boardId}`)
 }
@@ -20,10 +25,23 @@ const getDeleteUrl = (place: string) => {
     return 'recent'
   else return 'board/permanent'
 }
-
+const initAnimation = (art:any) => {
+  if (trashAnimationContainer.value) {
+    lottie.loadAnimation({
+      container: trashAnimationContainer.value,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      animationData: art
+    })
+  }
+}
 const handleDeleteBoard = async () => {
   try {
     isProcessing.value = true
+    nextTick(() => {
+      initAnimation(deleteArt)
+    })
     const res = await $fetch(`/api/${getDeleteUrl(props.place)}/${boardIdToDelete.value}`, {
       method: 'delete'
     })
@@ -38,17 +56,24 @@ const handleDeleteBoard = async () => {
         props.items.splice(index, 1)
       }
     }
-    isProcessing.value = false
+    toast.add({ title: 'Board deleted', icon: 'i-heroicons-trash' })
+    await new Promise((resolve) => setTimeout(resolve, 800));
     isOpenDeleteBoard.value = false
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    isProcessing.value = false
   } catch (e) {
     console.log(e)
     isProcessing.value = false
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
   }
 }
 
 const hanldeRestoreBoard = async () => {
   try {
     isProcessing.value = true
+    nextTick(() => {
+      initAnimation(restoreArt)
+    })
     const res = await $fetch(`/api/board/restore/${boardIdToRestore.value}`, {
       method: 'put'
     })
@@ -58,13 +83,16 @@ const hanldeRestoreBoard = async () => {
       if (index !== -1) {
         props.items.splice(index, 1)
       }
-
     }
-    isProcessing.value = false
+    toast.add({ title: 'Board deleted', icon: 'i-heroicons-check-circle' })
+    await new Promise((resolve) => setTimeout(resolve, 800));
     isOpenRestoreBoard.value = false
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    isProcessing.value = false
   } catch (e) {
     console.log(e)
     isProcessing.value = false
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
   }
 }
 const handleDisplayDeletePrompt = (boardId: string) => {
@@ -79,7 +107,7 @@ const handleDisplayRestoringPrompt = (boardId: string) => {
 <template>
   <ClientOnly>
     <UModal v-model="isOpenDeleteBoard">
-      <div class="p-4 m-4 text-center">
+      <div v-if="!isProcessing" class="p-4 m-4 text-center">
         <p class="text-red-500 font-bold mb-6">
           Are you sure to delete this item?
         </p>
@@ -89,9 +117,12 @@ const handleDisplayRestoringPrompt = (boardId: string) => {
             label="Yes sure!" @click="handleDeleteBoard" />
         </div>
       </div>
+      <div v-else class="w-full flex items-center justify-center">
+      <div class="w-36 h-36" ref="trashAnimationContainer"></div>
+    </div>
     </UModal>
     <UModal v-model="isOpenRestoreBoard">
-      <div class="p-4 m-4 text-center">
+      <div v-if="!isProcessing" class="p-4 m-4 text-center">
         <p class="text-red-500 font-bold mb-6">
           Are you sure to restore this item?
         </p>
@@ -101,6 +132,9 @@ const handleDisplayRestoringPrompt = (boardId: string) => {
             label="Yes sure!" @click="hanldeRestoreBoard" />
         </div>
       </div>
+      <div v-else class="w-full flex items-center justify-center">
+      <div class="w-36 h-36" ref="trashAnimationContainer"></div>
+    </div>
     </UModal>
     <UContainer>
       <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
