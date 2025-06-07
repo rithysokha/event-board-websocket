@@ -12,7 +12,6 @@ import { quality, format } from '@cloudinary/url-gen/actions/delivery';
 import lottie from 'lottie-web'
 import deleteArt from "@/assets/delete.json"
 import pointAt from "@/assets/point_at.json"
-import type { RefSymbol } from '@vue/reactivity';
 
 const isDeleting = ref(false)
 const { data: authData, status: authStatus } = useAuth()
@@ -344,24 +343,24 @@ onMounted(() => {
       </div>
     </div>
     <div v-else class="w-full flex items-center justify-center">
-      <div class="w-36 h-36" ref="trashAnimationContainer"></div>
+      <div class="w-36 h-36" ref="animationContainer"></div>
     </div>
   </UModal>
-   <UModal v-model="isOpenDeleteComment">
-    <div v-if="!isDeleting" class="p-4 m-4 text-center">
-      <p class="font-bold mb-6">
-        Are you sure to delete this comment?
-      </p>
-      <div class="flex justify-center gap-4">
-        <UButton color="white" class="w-1/4 flex justify-center" label="No" @click="isOpenDeleteComment = false" />
-        <UButton :loading="isDeleting" class="w-fit flex justify-center" icon="i-heroicons-trash"
-          label="Yes sure!" @click="handleDeleteComment" />
+    <UModal v-model="isOpenDeleteComment">
+      <div v-if="!isDeleting" class="p-4 m-4 text-center">
+        <p class="font-bold mb-6">
+          Are you sure to delete this item?
+        </p>
+        <div class="flex justify-center gap-4">
+          <UButton color="white" class="w-1/4 flex justify-center" label="No" @click="isOpenDeleteComment = false" />
+          <UButton :loading="isDeleting" class="flex justify-center w-fit" icon="i-heroicons-trash"
+            label="Yes sure!" @click="handleDeleteComment" />
+        </div>
       </div>
+      <div v-else class="w-full flex items-center justify-center">
+      <div class="w-36 h-36" ref="animationContainer"></div>
     </div>
-    <div v-else class="w-full flex items-center justify-center">
-      <div class="w-36 h-36" ref="trashAnimationContainer"></div>
-    </div>
-  </UModal>
+    </UModal>
   <UModal v-model="boardState.isOpenNewPost">
     <BoardPost :board-id="boardId" @post-message="handlePost" />
   </UModal>
