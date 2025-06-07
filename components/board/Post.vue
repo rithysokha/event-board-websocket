@@ -4,7 +4,6 @@ const props = defineProps<{
   boardId: string
 }>();
 const userStore = useUserStore()
-const boardState = useBoardStateStore()
 const toast = useToast()
 const isUploadingPhoto = ref(false)
 const isSendingData = ref(false)
@@ -92,7 +91,6 @@ const savePostToDB = async () => {
       },
       body: JSON.stringify(postBody.value)
     });
-    //@ts-expect-error
     postId.value = savedPost.insertedId;
     toast.add({title: 'You have posted', icon: 'i-heroicons-check-circle'})
   } catch (error) {
@@ -109,7 +107,7 @@ const hanldeSubmit = async () => {
     }
   }
   postBody.value.postedBy = userStore.displayName
-  savePostToDB();
+  await savePostToDB();
 
   const message = {
     title: postBody.value.title,
@@ -117,7 +115,7 @@ const hanldeSubmit = async () => {
     description: postBody.value.description,
     imageHeigh: postBody.value.imgHeigh,
     imageWidth: postBody.value.imgWidth,
-    id: postId,
+    id: postId.value,
     uuid:userStore.uuid,
     postedBy: postBody.value.postedBy,
     displayPhoto:userStore.displayPhoto,
