@@ -13,7 +13,7 @@ const { handleFileSelect, isUploading, previewImage, uploadeedImageUrl } = useCl
 
 const handleSignOut = () => {
   isLoadingBtn.value = true
-  signOut({ callbackUrl: '/auth' })
+  signOut({ callbackUrl: '/' })
   toast.add({ title: "You're signed out" })
   isLoadingBtn.value = false
 }
