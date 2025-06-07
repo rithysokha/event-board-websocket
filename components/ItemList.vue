@@ -125,7 +125,7 @@ onMounted(()=>{
         </p>
         <div class="flex justify-center gap-4">
           <UButton color="white" class="w-1/4 flex justify-center" label="No" @click="isOpenDeleteBoard = false" />
-          <UButton :loading="isProcessing" class="w-1/4 flex justify-center" icon="i-heroicons-trash"
+          <UButton :loading="isProcessing" class="flex justify-center w-fit" icon="i-heroicons-trash"
             label="Yes sure!" @click="handleDeleteBoard" />
         </div>
       </div>
@@ -140,7 +140,7 @@ onMounted(()=>{
         </p>
         <div class="flex justify-center gap-4">
           <UButton color="white" class="w-1/4 flex justify-center" label="No" @click="isOpenRestoreBoard = false" />
-          <UButton :loading="isProcessing" class="w-1/4 flex justify-center" icon="i-heroicons-backward"
+          <UButton :loading="isProcessing" class="w-fit flex justify-center" icon="i-heroicons-backward"
             label="Yes sure!" @click="hanldeRestoreBoard" />
         </div>
       </div>

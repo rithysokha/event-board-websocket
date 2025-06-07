@@ -339,8 +339,8 @@ onMounted(() => {
       </p>
       <div class="flex justify-center gap-4">
         <UButton color="white" class="w-1/4 flex justify-center" label="No" @click="isOpenDeletePost = false" />
-        <UButton :loading="isDeleting" class="w-1/4 flex justify-center" icon="i-heroicons-trash"
-          label="Yes!" @click="handleDeletePost" />
+        <UButton :loading="isDeleting" class="w-fit flex justify-center" icon="i-heroicons-trash"
+          label="Yes sure!" @click="handleDeletePost" />
       </div>
     </div>
     <div v-else class="w-full flex items-center justify-center">
@@ -354,8 +354,8 @@ onMounted(() => {
       </p>
       <div class="flex justify-center gap-4">
         <UButton color="white" class="w-1/4 flex justify-center" label="No" @click="isOpenDeleteComment = false" />
-        <UButton :loading="isDeleting" class="w-1/4 flex justify-center" icon="i-heroicons-trash"
-          label="Yes!" @click="handleDeleteComment" />
+        <UButton :loading="isDeleting" class="w-fit flex justify-center" icon="i-heroicons-trash"
+          label="Yes sure!" @click="handleDeleteComment" />
       </div>
     </div>
     <div v-else class="w-full flex items-center justify-center">
