@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useUserStore = defineStore('displayName', {
+export const useUserStore = defineStore('userStore', {
   state: () => ({
     displayName: '',
     displayPhoto: '',
@@ -15,6 +15,11 @@ export const useUserStore = defineStore('displayName', {
     },
     setUuid(uuid:string){
       this.uuid = uuid
+    },
+    clearData(){
+      this.displayName=''
+      this.displayPhoto=''
+      this.uuid=''
     }
   },
   persist: true,

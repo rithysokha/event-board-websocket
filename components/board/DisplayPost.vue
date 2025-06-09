@@ -84,13 +84,13 @@ watch(data, (newValue) => {
   }
 });
 const scrollToBottom = () => {
-  if(isEmpty.value){
-    isEmpty.value=false
-  }
   window.scrollTo({
     top: document.body.scrollHeight,
     behavior: "smooth",
   });
+    if(isEmpty.value){
+    isEmpty.value=false
+  }
 };
 const fetchMessageHistory = async () => {
   try {

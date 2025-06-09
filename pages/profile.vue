@@ -16,6 +16,7 @@ const handleSignOut = () => {
   signOut({ callbackUrl: '/' })
   toast.add({ title: "You're signed out" })
   isLoadingBtn.value = false
+  userStore.clearData()
 }
 
 const handleImageUpload = async (event: any) => {

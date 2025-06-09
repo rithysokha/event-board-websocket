@@ -134,6 +134,9 @@ onMounted(() => {
   if (userStore.uuid == '') {
     userStore.setUuid(authStatus.value == 'authenticated' ? authData.value?.user.email ?? crypto.randomUUID() : crypto.randomUUID())
   }
+    if(userStore.displayName =='' && authData.value?.user.name){
+    userStore.setDisplayName(authData.value.user.name)
+  }
   if (avatarData.value?.length > 0 && !userStore.displayPhoto) {
       const randomIndex = Math.floor(Math.random() * avatarData.value.length)
       const randomAvatar = avatarData.value[randomIndex]
