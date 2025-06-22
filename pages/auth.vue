@@ -11,6 +11,7 @@ import googleIcon from "../assets/google.svg";
 import lottie from 'lottie-web'
 import art from "../assets/auth.json"
 import Joi from "joi";
+import CryptoJS from 'crypto-js';
 
 const isLoadingBtn = ref(false)
 const isLoadingBtnGoogle = ref(false)
@@ -64,9 +65,12 @@ const signUpSchema = Joi.object({
     })
 });
 
-const loginForm = reactive({ isLogin: true, email: undefined, password: undefined })
-const signUpForm = reactive({ isLogin: false, email: undefined, password: undefined, confirmPassword: undefined, termAndCondition: false })
-const errorMessage = ref('')
+const loginForm = reactive({ isLogin: true, email: undefined, password: '' })
+const signUpForm = reactive({ isLogin: false, email: undefined, password: '', confirmPassword: '', termAndCondition: false })
+
+const hashPassword = (password: string): string => {
+  return CryptoJS.SHA256(password).toString()
+}
 
 const shakeTermsAndConditions = () => {
   isShaking.value = true
@@ -76,13 +80,13 @@ const shakeTermsAndConditions = () => {
 }
 
 const onSubmit = async (form: any) => {
-  errorMessage.value = '';
   isLoadingBtn.value = true
   try {
     if (form.isLogin) {
+      const hashedPassword = hashPassword(loginForm.password)
       await signIn('credentials', {
         email: loginForm.email,
-        password: loginForm.password,
+        password: hashedPassword,
       });
     } else {
       if(!signUpForm.termAndCondition){
@@ -92,24 +96,26 @@ const onSubmit = async (form: any) => {
         })
         return;
       }
+      const hashedPassword = hashPassword(signUpForm.password)
+      const hashedCfPassword = hashPassword(signUpForm.confirmPassword)
       const result = await $fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(signUpForm)
+        body: JSON.stringify(
+        { isLogin: false, email: signUpForm.email, password: hashedPassword, confirmPassword: hashedCfPassword, termAndCondition: signUpForm.termAndCondition}
+        )
       });
       if (result) {
         await signIn('credentials', {
           email: signUpForm.email,
-          password: signUpForm.password,
+          password: hashedCfPassword,
         });
       }
     }
   } catch (error) {
-    console.log(error)
-    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color: 'red' })
-    errorMessage.value = 'An unexpected error occurred.';
+    toast.add({ title: 'Username already taken', icon: 'i-heroicons-exclamation-circle', color: 'red' })
   } finally {
     isLoadingBtn.value = false
   }
