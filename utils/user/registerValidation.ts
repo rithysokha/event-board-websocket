@@ -7,6 +7,7 @@ export const registerSchema = Joi.object({
   confirmPassword: Joi.string().required().valid(Joi.ref('password')).messages({ 'any.only': 'Passwords do not match' }),
   role: Joi.string().default('user'),
   image: Joi.string().default(''),
+  termAndCondition: Joi.boolean().required(),
   blockedAt: Joi.date().timestamp('javascript'),
   createdAt: Joi.date().timestamp('javascript').default(() => new Date()),
 })

@@ -17,7 +17,8 @@ export default defineEventHandler(async (event) => {
       image:value.image,
       password: value.password,
       role: value.role,
-      createdAt: new Date()
+      createdAt: new Date(),
+      ...(value.termAndCondition === true && { acceptTermsAt: new Date() })
     }
     const result = await collection.insertOne(user);
     return result;

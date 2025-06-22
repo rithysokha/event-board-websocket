@@ -16,7 +16,9 @@ const isLoadingBtn = ref(false)
 const isLoadingBtnGoogle = ref(false)
 const isLoading = ref(true)
 const animationContainer = ref<HTMLElement | null>(null)
-const toast= useToast()
+const toast = useToast()
+const showTermsModal = ref(false)
+const isShaking = ref(false)
 
 const { signIn } = useAuth()
 const items = [{
@@ -53,13 +55,25 @@ const signUpSchema = Joi.object({
     .valid(Joi.ref('password'))
     .messages({
       'string.min': 'Password must be at least 8 characters',
-      'any.required': 'Password is required'
+      'any.required': 'Password is required',
+       'any.only': 'Passwords must match'
+    }),
+  termAndCondition: Joi.boolean().valid(true).required()
+    .messages({
+      'boolean.false': 'Please accept terms and conditions'
     })
 });
 
 const loginForm = reactive({ isLogin: true, email: undefined, password: undefined })
-const signUpForm = reactive({ isLogin: false, email: undefined, password: undefined, confirmPassword: undefined })
+const signUpForm = reactive({ isLogin: false, email: undefined, password: undefined, confirmPassword: undefined, termAndCondition: false })
 const errorMessage = ref('')
+
+const shakeTermsAndConditions = () => {
+  isShaking.value = true
+  setTimeout(() => {
+    isShaking.value = false
+  }, 600) 
+}
 
 const onSubmit = async (form: any) => {
   errorMessage.value = '';
@@ -71,6 +85,13 @@ const onSubmit = async (form: any) => {
         password: loginForm.password,
       });
     } else {
+      if(!signUpForm.termAndCondition){
+        shakeTermsAndConditions()
+        toast.add({
+          title: 'Please agree to terms and condition before sign up', icon:'i-heroicons-exclamation-circle', color:'red'
+        })
+        return;
+      }
       const result = await $fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -87,7 +108,7 @@ const onSubmit = async (form: any) => {
     }
   } catch (error) {
     console.log(error)
-    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color:'red' })
+    toast.add({ title: 'Something went wrong please report to owner', icon: 'i-heroicons-exclamation-circle', color: 'red' })
     errorMessage.value = 'An unexpected error occurred.';
   } finally {
     isLoadingBtn.value = false
@@ -136,22 +157,21 @@ onMounted(() => {
             </template>
             <div v-if="item.key === 'login'" class="space-y-3">
               <ClientOnly>
-                <UForm :schema="loginSchema" :state="loginForm">
+                <UForm :schema="loginSchema" :state="loginForm" class=" flex flex-col gap-2">
                   <UFormGroup label="Username" name="email">
                     <UInput v-model="loginForm
                       .email" />
                   </UFormGroup>
                   <UFormGroup label="Password" name="password">
                     <UInput v-model="loginForm
-                      .password" type="password" 
-                      />
+                      .password" type="password" />
                   </UFormGroup>
                 </UForm>
               </ClientOnly>
             </div>
             <div v-else-if="item.key === 'signup'" class="space-y-3">
               <ClientOnly>
-                <UForm :schema="signUpSchema" :state="signUpForm">
+                <UForm :schema="signUpSchema" :state="signUpForm" class=" flex flex-col gap-2">
                   <UFormGroup label="Username" name="email" required>
                     <UInput v-model="signUpForm
                       .email" type="text" required />
@@ -164,13 +184,27 @@ onMounted(() => {
                     <UInput v-model="signUpForm
                       .confirmPassword" type="password" required />
                   </UFormGroup>
+                  <UFormGroup ref="shakeTermsRef"
+                :class="{ 'shake-animation': isShaking }">
+                    <UCheckbox required v-model="signUpForm.termAndCondition">
+                      <template #label>
+                        <span class="text-sm">
+                          I agree to
+                          <button type="button" class="text-primary-500 hover:text-primary-600 underline font-medium"
+                            @click="showTermsModal = true">
+                            terms and conditions
+                          </button>
+                        </span>
+                      </template>
+                    </UCheckbox>
+                  </UFormGroup>
                 </UForm>
               </ClientOnly>
             </div>
             <template #footer>
               <div class="flex justify-center">
                 <UButton type="submit" :loading="isLoadingBtn">
-                  {{ item.key === 'login' ? 'login' : 'signup' }}
+                  {{ item.key === 'login' ? 'Login' : 'Signup' }}
                 </UButton>
               </div>
             </template>
@@ -185,4 +219,24 @@ onMounted(() => {
       </UTabs>
     </div>
   </div>
+  <UModal v-model="showTermsModal">
+    <div class="w-full h-full flex flex-col items-center">
+      <TermAndCondition/>
+      <UButton label="OK" @click="showTermsModal = false" class="w-fit"/>
+    </div>
+  </UModal>
 </template>
+<style>
+@keyframes shake {
+  0%, 20%, 40%, 60%, 80%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-10px);
+  }
+}
+
+.shake-animation {
+  animation: shake 0.6s ease-in-out;
+}
+</style>
