@@ -168,7 +168,7 @@ const handleGetImage = (publicId: string, qual: string) => {
 }
 </script>
 <template>
-  <div class="w-full bg-slate-50 shadow-md flex flex-row-reverse">
+  <div class="w-full bg-slate-50 dark:bg-slate-900 shadow-md flex flex-row-reverse">
     <UButton @click="isOpen = true" class="w-20 flex justify-center mr-10" size="md" icon="i-heroicons-plus" />
   </div>
   <UModal v-model="isOpenDelete">

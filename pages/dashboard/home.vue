@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware:['sidebase-auth', 'transition'],
+  middleware:['sidebase-auth', 'transition', 'terms-check'],
   pageTransition: {}
 })
 const userStore = useUserStore()

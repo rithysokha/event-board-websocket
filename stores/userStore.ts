@@ -4,7 +4,8 @@ export const useUserStore = defineStore('userStore', {
   state: () => ({
     displayName: '',
     displayPhoto: '',
-    uuid:''
+    uuid:'',
+    acceptedTerms:false
   }),
   actions: {
     setDisplayName(displayName:string) {
@@ -20,6 +21,10 @@ export const useUserStore = defineStore('userStore', {
       this.displayName=''
       this.displayPhoto=''
       this.uuid=''
+      this.acceptedTerms=false
+    },
+    acceptTerms(){
+      this.acceptedTerms=true
     }
   },
   persist: true,

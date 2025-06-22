@@ -4,6 +4,9 @@
   <NuxtRouteAnnouncer />
   <NuxtPage :transition="route.meta.pageTransition || { name: 'default-transition', mode: 'out-in' }" />
   <UNotifications />
+  <ClientOnly>
+      <GlobalTermsModal />
+  </ClientOnly>
 </template>
 <script setup lang="ts">
 const {status} = useAuth()

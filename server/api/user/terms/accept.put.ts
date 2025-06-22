@@ -22,7 +22,23 @@ export default defineEventHandler(async (event) => {
         projection: { password: 0 }
       }
   );
-  return result;
+   if (!result) {
+      throw createError({ 
+        statusCode: 404, 
+        message: 'User not found' 
+      });
+    }
+    
+    return {
+      success: true,
+      user: {
+        name: result.name,
+        email: result.email,
+        image: result.image,
+        role: result.role,
+        acceptTermsAt: result.acceptTermsAt.toISOString() 
+      }
+    };
 }catch(error){
   console.log(error)
 }

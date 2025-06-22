@@ -66,6 +66,7 @@ export default NuxtAuthHandler({
         token.email = userInfo.email;
         token.image = userInfo.image
         token.name = userInfo.name;
+        token.acceptTermsAt = userInfo.acceptTermsAt
       }
       return token;
     },
@@ -73,6 +74,8 @@ export default NuxtAuthHandler({
       if (session.user) {
       // @ts-expect-error
         session.user.role = token.role;
+        // @ts-expect-error
+        session.user.acceptTermsAt = token.acceptTermsAt;
       }
       return session;
     },

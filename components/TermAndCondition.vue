@@ -12,9 +12,9 @@ const termsAndConditions = [
     header: "2. Content and Conduct",
     points:[
       "You are responsible for any content( text, image, link, etc.) of you and your guests post",
-      "Please do not post hate speech, harashment or threats",
-      "Please do not post pnographic or violate material",
-      "Please do not post copyrighted or illegal content",
+      "Do not post hate speech, harashment or threats",
+      "Do not post pnographic or violate material",
+      "Do not post copyrighted or illegal content",
       "We reserve the right to remove any content that violates these rules without notice."
     ]
   },

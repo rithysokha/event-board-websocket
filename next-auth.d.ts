@@ -5,7 +5,8 @@ declare module 'next-auth' {
       name: string
       email: string
       image: string
-      role: 'user' | 'admin'
+      role: 'user' | 'admin',
+      acceptTermsAt: string
     }
   }
 }
