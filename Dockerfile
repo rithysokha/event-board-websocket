@@ -1,14 +1,32 @@
-FROM node:20-alpine
+FROM node:20-alpine AS base
 
 WORKDIR /app
 
-COPY .output /app/.output
-COPY package*.json /app/
+FROM base AS deps
 
-RUN npm install --omit=dev
+COPY package*.json ./
+RUN npm ci --ignore-scripts
+
+FROM base AS builder
+
+ENV NODE_ENV=development
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run postinstall && npm run build
+
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NITRO_HOST=0.0.0.0
+ENV NITRO_PORT=3000
+
+COPY --from=builder /app/.output ./.output
 
 EXPOSE 3000
 
-ENV NODE_ENV=production
+USER node
 
-CMD ["npm", "run", "production"]
+CMD ["node", ".output/server/index.mjs"]

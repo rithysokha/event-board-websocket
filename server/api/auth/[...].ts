@@ -19,7 +19,7 @@ export default NuxtAuthHandler({
         const db = await connectToDatabase();
           const collection = db.collection('user');
           const existingUser = await collection.findOne({ email: credentials?.email })
-        if (credentials?.email === existingUser.email && credentials?.password === existingUser.password) {
+        if (credentials?.email === existingUser?.email && credentials?.password === existingUser.password) {
           return existingUser;
         } else {
           console.error('Warning: Malicious login attempt registered, bad credentials provided')
