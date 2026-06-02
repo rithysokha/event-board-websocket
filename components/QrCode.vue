@@ -13,7 +13,7 @@ onMounted(() => {
   const qrCode = new QRCodeStyling({
     width: props.width,
     height: props.height,
-    data: `https://webboard.live/board?boardId=${props.boardId}`,
+    data: `${process.env.BASE_URL}/board?boardId=${props.boardId}`,
     image: icon,
     dotsOptions: {
       color: "#16b0e2",
